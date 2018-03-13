@@ -1,0 +1,10 @@
+{
+  "content": "content.md",
+  "title": "Morbi vel est finibus",
+  "slug": "morbi-vel-est",
+  "date": "2018-01-01T10:00:00Z",
+  "tags": ["lorem", "ipsum", "platea"],
+  "categories": ["Blog", "Solor"],
+  "published": true,
+  "intro": "Aenean mollis justo quis risus convallis aliquam. Ut est tellus, facilisis ultrices lorem a, ullamcorper elementum quam. Ut sed augue id neque pulvinar condimentum ut ac tellus. Proin ultricies et risus quis facilisis."
+}

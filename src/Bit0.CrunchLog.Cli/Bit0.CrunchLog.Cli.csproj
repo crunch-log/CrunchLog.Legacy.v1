@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="a\**" />
+    <EmbeddedResource Remove="a\**" />
+    <None Remove="a\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.0-alpha.163" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bit0.CrunchLog\Bit0.CrunchLog.csproj" />
+  </ItemGroup>
+
+</Project>

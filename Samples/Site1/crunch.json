@@ -1,0 +1,79 @@
+{
+  "site": {
+    "baseurl": "http://localhost/",
+    
+    "languageCode": "en-US",
+    
+    "title": "Sample Blog",
+    "subTitle": "Lorem ipsum dolor amet",
+    
+    "theme": "default",
+    
+    "favicon": "/favicon.ico",
+    
+    "pagination": {
+      "enable": true,
+      "pageSize": 10
+    }
+  },
+  
+  "copyright": {
+    "startYear": 2017,
+    "owner": "Nullbit Solutions"
+  },
+  "tags": ["static", "blog", "csharp", "dotnet", "core"],
+  
+  "permalinks": {
+    "posts": "/:year/:month/:slug"
+  },
+  
+  "dateFormat": "yyyy-MM-ss",
+  
+  "authors": {
+    "jdoe": {
+      "name": "Jane Doe",
+      "email": "jane.doe@example.com",
+      "social": {
+        "facebook": "#",
+        "github": "#",
+        "instagram": "#",
+        "twitter": "#",
+        "youtube": "#"
+      }
+    },
+    "jsmith": {
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "social": {
+        "facebook": "#",
+        "github": "#"
+      }
+    }
+  },
+  
+  "menu": {
+    "main": [
+      { 
+        "title": "Home",
+        "url:": "/",
+        "order": 100
+      },
+      { 
+        "title": "About",
+        "url:": "/#",
+        "order": 200
+      },
+      { 
+        "title": "Contact",
+        "url:": "/#",
+        "order": 300
+      }
+    ]
+  },
+  
+  "paths": {
+    "posts": "Content/Posts/",
+    "pages": "Content/",
+    "output": "_site/"
+  }
+}

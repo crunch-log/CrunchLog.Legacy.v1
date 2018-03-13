@@ -1,0 +1,9 @@
+{
+  "content": "title.md",
+  "title": "In hac habitasse platea dictumst",
+  "date": "2018-01-01T10:00:00Z",
+  "tags": ["lorem", "ipsum", "platea"],
+  "categories": ["Blog", "Solor"],
+  "published": false,
+  "intro": "Morbi vel est finibus, vehicula libero non, congue odio. Vestibulum vel volutpat est, tempus venenatis leo. In hac habitasse platea dictumst. Aliquam eget velit ullamcorper quam auctor placerat et a dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+}

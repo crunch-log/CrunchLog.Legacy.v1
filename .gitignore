@@ -286,3 +286,8 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+*.pyc
+
+# CrunchLog
+/Samples/Site1/_site
+/src/Bit0.CrunchLog.Cli/a

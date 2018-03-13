@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>b1thunt3r</Authors>
+    <Company>Nullbit</Company>
+    <Description>Static blog generator</Description>
+    <Copyright>Copyright (c) 2018 Nullbit.</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Site1\Content\Posts\001\content.md" />
+    <None Include="Site1\Content\Posts\001\post.json" />
+    <None Include="Site1\Content\Posts\002\post.json" />
+    <None Include="Site1\Content\Posts\002\post.md" />
+    <None Include="Site1\Content\Posts\003\003.md" />
+    <None Include="Site1\Content\Posts\003\post.json" />
+    <None Include="Site1\Content\Posts\post.json" />
+    <None Include="Site1\Content\Posts\title.md" />
+    <None Include="Site1\Content\Posts\vestibulum-vel-volutpat\004.json" />
+    <None Include="Site1\Content\Posts\vestibulum-vel-volutpat\004.md" />
+    <None Include="Site1\crunch.json" />
+  </ItemGroup>
+
+</Project>

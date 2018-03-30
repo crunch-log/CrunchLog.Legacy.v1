@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Bit0.CrunchLog.Logging;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bit0.CrunchLog
 {
@@ -28,6 +30,8 @@ namespace Bit0.CrunchLog
             services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().Config);
             services.AddTransient<IContentProvider, ContentProvider>();
             services.AddTransient<IContentGenerator, ContentGenerator>();
+
+            services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
 
             ServiceProvider = services.BuildServiceProvider();
         }

@@ -1,18 +1,21 @@
 ﻿using Bit0.CrunchLog.Cli.Extra;
-using Bit0.CrunchLog.ContentTypes;
 using Bit0.CrunchLog.Repositories;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Bit0.CrunchLog.Config;
+using Unosquare.Labs.EmbedIO;
 
 namespace Bit0.CrunchLog.Cli
 {
     [Command("crunch")]
     [Subcommand(Strings.GenerateCommand, typeof(GenerateCommand))]
     [Subcommand(Strings.CleanCommand, typeof(CleanCommand))]
+    [Subcommand(Strings.RunCommand, typeof(RunCommand))]
     public class CliOptions : CliBase
     {
         [Option(Strings.VersionTemplate, Description = Strings.VersionDescription)]
@@ -46,12 +49,11 @@ namespace Bit0.CrunchLog.Cli
         protected override Int32 OnExecute(CommandLineApplication app)
         {
             var args = BuildArguments(app, BasePath, VerboseLevel);
-            return Execute(args, () =>
+            return Execute(args, (provider, logger) =>
             {
-                Logger.LogDebug("Clean");
-                var generator = ServiceProvider.GetService<IContentGenerator>();
+                logger.LogDebug("Clean");
+                var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
-
             });
         }
     }
@@ -69,23 +71,72 @@ namespace Bit0.CrunchLog.Cli
         protected override Int32 OnExecute(CommandLineApplication app)
         {
             var args = BuildArguments(app, BasePath, VerboseLevel);
-            return Execute(args, () =>
+            return Execute(args, (provider, logger) =>
             {
-                Logger.LogDebug("Generate");
-                var generator = ServiceProvider.GetService<IContentGenerator>();
+                logger.LogDebug("Generate");
+                var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
-                generator.PublishAll<Post>();
+                generator.PublishAll();
             });
         }
 
     }
 
+    [Command(Description = Strings.RunCommandDescription)]
+    public class RunCommand : CliBase
+    {
+        [Argument(0, Description = Strings.BasePathDescription)]
+        [DirectoryExists]
+        private String BasePath { get; } = "";
+
+        [Argument(1, Description = Strings.UrlDescription)]
+        [DirectoryExists]
+        private String Url { get; } = "";
+
+        [Option(Strings.VerboseTemplate, Description = Strings.VerboseDescription)]
+        private LogLevel VerboseLevel { get; } = LogLevel.Information;
+
+        protected override Int32 OnExecute(CommandLineApplication app)
+        {
+            var args = BuildArguments(app, BasePath, VerboseLevel, Url);
+            return Execute(args, (provider, logger, config) =>
+            {
+                logger.LogDebug("Run");
+                var generator = provider.GetService<IContentGenerator>();
+                generator.CleanOutput();
+                generator.PublishAll();
+                
+                var server = WebServer
+                    .Create(args.Url)
+                    .EnableCors()
+                    .WithLocalSession()
+                    .WithStaticFolderAt(config.OutputPath.FullName);
+
+                var cts = new CancellationTokenSource();
+                var task = server.RunAsync(cts.Token);
+
+                OpenBrowser(args.Url);
+
+                Console.WriteLine("Press any key to close server.");
+                Console.ReadKey(true);
+                cts.Cancel();
+
+                try
+                {
+                    task.Wait(cts.Token);
+                } catch (AggregateException)
+                {
+                    // We'd also actually verify the exception cause was that the task
+                    // was cancelled.
+                    server.Dispose();
+                }
+            });
+        }
+    }
+
     [HelpOption(Strings.HelpTemplate)]
     public abstract class CliBase
     {
-        protected ILogger<CliOptions> Logger;
-        protected IServiceProvider ServiceProvider;
-
         protected static String Version => GetVersion<CrunchLog>();
         protected static String RunnerVersion => GetVersion<CliOptions>();
 
@@ -106,8 +157,12 @@ namespace Bit0.CrunchLog.Cli
         // ReSharper disable once UnusedMember.Global
         protected abstract Int32 OnExecute(CommandLineApplication app);
 
-        protected Int32 Execute(Arguments args, Action executeFunc)
+        protected Int32 Execute(
+            Arguments args, 
+            Action<IServiceProvider, ILogger<CliOptions>, CrunchConfig> executeFunc)
         {
+            ILogger<CliOptions> logger = null;
+
             var sw = Stopwatch.StartNew();
 
             WriteBanner();
@@ -116,36 +171,83 @@ namespace Bit0.CrunchLog.Cli
             {
                 ServiceProviderFactory.Build(args);
 
-                ServiceProvider = ServiceProviderFactory.ServiceProvider;
-                Logger = ServiceProvider.GetService<ILogger<CliOptions>>();
+                var provider = ServiceProviderFactory.ServiceProvider;
+                logger = provider.GetService<ILogger<CliOptions>>();
+                var config = provider.GetService<CrunchConfig>();
 
-                executeFunc();
+                executeFunc(provider, logger, config);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);
+                logger.LogError(ex, ex.Message);
                 return 0;
             }
 
             sw.Stop();
 
-            Logger.LogInformation($"Time elapsed: {sw.Elapsed}");
+            logger.LogInformation($"Time elapsed: {sw.Elapsed}");
 
             return 1;
         }
 
-        protected Arguments BuildArguments(CommandLineApplication app, String basePath = null, LogLevel verboseLevel = LogLevel.Information)
+        protected Int32 Execute(
+            Arguments args,
+            Action<IServiceProvider, ILogger<CliOptions>> executeFunc)
+        {
+            return Execute(args, (provider, logger, config) => executeFunc(provider, logger));
+        }
+
+        protected Arguments BuildArguments(
+            CommandLineApplication app, 
+            String basePath = null,
+            LogLevel verboseLevel = LogLevel.Information, 
+            String url = Arguments.UrlDefault)
         {
             if (String.IsNullOrWhiteSpace(basePath))
             {
                 basePath = app.WorkingDirectory;
             }
 
+            if (String.IsNullOrWhiteSpace(url))
+            {
+                url = Arguments.UrlDefault;
+            }
+
             return new Arguments
             {
                 BasePath = basePath,
+                Url = url,
                 VerboseLevel = verboseLevel
             };
+        }
+
+        protected static void OpenBrowser(String url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch
+            {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", url);
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
     }
 

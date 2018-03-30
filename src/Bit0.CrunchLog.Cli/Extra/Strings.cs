@@ -20,5 +20,9 @@ namespace Bit0.CrunchLog.Cli.Extra
         public const String CleanCommandDescription = "Clean output";
 
         public const String VerboseDescription = "Verbose level";
+        
+        public const String RunCommand = "run";
+        public const String RunCommandDescription = "Generate and Run in a preview server";
+        public const String UrlDescription = "Url for the preview server";
     }
 }

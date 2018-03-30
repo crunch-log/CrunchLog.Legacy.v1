@@ -6,6 +6,8 @@ namespace Bit0.CrunchLog.Config
 {
     public class Arguments : Dictionary<String, Object>
     {
+        public const String UrlDefault = "http://localhost:3576/";
+
         public String BasePath
         {
             get => this["basePath"] as String;
@@ -18,10 +20,17 @@ namespace Bit0.CrunchLog.Config
             set => this["verboseLevel"] = value;
         }
 
+        public String Url
+        {
+            get => this["url"] as String;
+            set => this["url"] = value;
+        }
+
         public Arguments()
         {
             BasePath = ".";
             VerboseLevel = LogLevel.Information;
+            Url = UrlDefault;
         }
     }
 }

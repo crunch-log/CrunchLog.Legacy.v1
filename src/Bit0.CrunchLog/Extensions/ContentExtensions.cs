@@ -8,8 +8,8 @@ namespace Bit0.CrunchLog.Extensions
     {
         public static void WriteFile(this Content content, DirectoryInfo outputDir)
         {
-            var fullSlug = content.GetFullSlug();
-            var outDir = new DirectoryInfo(outputDir.CombinePath(fullSlug.Substring(1)).NormalizePath());
+            var permaLink = content.PermaLink;
+            var outDir = new DirectoryInfo(outputDir.CombinePath(permaLink.Substring(1)).NormalizePath());
 
             if (!outDir.Exists)
             {
@@ -28,7 +28,7 @@ namespace Bit0.CrunchLog.Extensions
             }
         }
 
-        private static String GetFullSlug(this Content content)
+        public static String GetFullSlug(this Content content)
         {
             return content.PermaLink
                     .Replace(":year", content.Date.ToString("yyyy"))

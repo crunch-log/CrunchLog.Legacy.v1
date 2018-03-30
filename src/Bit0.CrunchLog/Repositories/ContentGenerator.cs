@@ -36,11 +36,41 @@ namespace Bit0.CrunchLog.Repositories
 
         }
 
+        public void CreateCategories()
+        {
+
+        }
+
+        public void CreateTags()
+        {
+
+        }
+
+        public void CreateArchive()
+        {
+
+        }
+
+        public void CreateHome()
+        {
+
+        }
+
+        public void CreateContent()
+        {
+            var allContent = _contentProvider.AllContent.ToList();
+            var published = allContent.Where(c => c.Value.Published).ToList();
+
+            foreach (var content in published)
+            {
+                content.Value.WriteFile(_config.OutputPath);
+            }
+
+            _logger.LogInformation($"Published: {published.Count}/{allContent.Count}");
+        }
+
         public void PublishAll()
         {
-            var all = _contentProvider.GetAll().ToList();
-            var published = all.Where(c => c.Value.Published).ToList();
-
             // get posts
             // create archive, tag and category pages
             // create main index
@@ -49,12 +79,7 @@ namespace Bit0.CrunchLog.Repositories
             // create a tree
             // generate permalink from tree
 
-            foreach (var content in published)
-            {
-                content.Value.WriteFile(_config.OutputPath);
-            }
-
-            _logger.LogInformation($"Published: {published.Count}/{all.Count}");
+            var archives = _contentProvider.PostArchives;
         }
     }
 }

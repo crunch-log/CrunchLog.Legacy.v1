@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Markdig;
 using Newtonsoft.Json;
 
-namespace Bit0.CrunchLog.ContentTypes
+namespace Bit0.CrunchLog
 {
-    [ContentType(CrunchConfigKeys.Posts)]
-    public class Post : IContent
+    public class Content
     {
         private String _mdFile;
         private String _slug;
@@ -64,6 +62,9 @@ namespace Bit0.CrunchLog.ContentTypes
         [JsonProperty("title")]
         public String Title { get; set; }
 
+        [JsonProperty("layout")]
+        public String Layout { get; set; } = Layouts.Post;
+
         [JsonProperty("slug")]
         public String Slug
         {
@@ -105,7 +106,7 @@ namespace Bit0.CrunchLog.ContentTypes
         public FileInfo ContentFile => new FileInfo(MetaFile?.Directory?.CombinePath(MarkdownFile));
 
         [JsonIgnore]
-        public String Content
+        public String Text
         {
             get
             {
@@ -115,6 +116,15 @@ namespace Bit0.CrunchLog.ContentTypes
         }
 
         [JsonIgnore]
-        public IContent Parent => null;
+        public Content Parent => null;
+
+        [JsonIgnore]
+        public IEnumerable<Content> Children => null;
+    }
+
+    public static class Layouts
+    {
+        public const String Post = "post";
+        public const String Page = "page";
     }
 }

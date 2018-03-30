@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.ContentTypes;
-using Bit0.CrunchLog.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -24,26 +20,24 @@ namespace Bit0.CrunchLog.Repositories
             _jsonSerializer = jsonSerializer;
         }
 
-        public IDictionary<FileInfo, TContent> GetAll<TContent>() where TContent : IContent, new()
+        public IDictionary<FileInfo, Content> GetAll()
         {
-            var list = new Dictionary<FileInfo, TContent>();
-
-            var contentType = typeof(TContent).GetCustomAttribute<ContentTypeAttribute>();
-            var type = contentType.ContentTypeName;
-
-            var contentPath = new DirectoryInfo(_config.BasePath.CombinePath(_config.Paths[type]));
-
-            foreach (var metaFile in contentPath.GetFiles("*.json", SearchOption.AllDirectories))
+            var list = new Dictionary<FileInfo, Content>();
+            
+            foreach (var metaFile in _config.BasePath.GetFiles("*.json", SearchOption.AllDirectories))
             {
-                var content = new TContent
+                var content = new Content
                 {
                     MetaFile = metaFile,
-                    PermaLink = _config.Permalinks[type]
+                    PermaLink = _config.Permalink
                 };
+
                 _jsonSerializer.Populate(metaFile?.OpenText(), content);
 
                 list.Add(metaFile, content);
             }
+
+            _logger.LogDebug($"Fount {list.Count} documents");
 
             return list;
         }

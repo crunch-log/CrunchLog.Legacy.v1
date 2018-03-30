@@ -23,9 +23,7 @@
   },
   "tags": ["static", "blog", "csharp", "dotnet", "core"],
   
-  "permalinks": {
-    "posts": "/:year/:month/:slug"
-  },
+  "permalink": "/:year/:month/:slug",
   
   "dateFormat": "yyyy-MM-ss",
   
@@ -71,9 +69,5 @@
     ]
   },
   
-  "paths": {
-    "posts": "Content/Posts/",
-    "pages": "Content/",
-    "output": "_site/"
-  }
+  "output": "_site/"
 }

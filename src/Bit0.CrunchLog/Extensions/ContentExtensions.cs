@@ -1,5 +1,4 @@
-﻿using Bit0.CrunchLog.ContentTypes;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -7,7 +6,7 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static void WriteFile(this IContent content, DirectoryInfo outputDir)
+        public static void WriteFile(this Content content, DirectoryInfo outputDir)
         {
             var fullSlug = content.GetFullSlug();
             var outDir = new DirectoryInfo(outputDir.CombinePath(fullSlug.Substring(1)).NormalizePath());
@@ -23,13 +22,13 @@ namespace Bit0.CrunchLog.Extensions
                 var sb = new StringBuilder();
                 sb.AppendLine($"<h1>{content.Title}</h1>");
                 sb.AppendLine($"<p>{content.Intro}</p>");
-                sb.AppendLine(content.Content);
+                sb.AppendLine(content.Text);
 
                 writer.Write(sb.ToString());
             }
         }
 
-        private static String GetFullSlug(this IContent content)
+        private static String GetFullSlug(this Content content)
         {
             return content.PermaLink
                     .Replace(":year", content.Date.ToString("yyyy"))

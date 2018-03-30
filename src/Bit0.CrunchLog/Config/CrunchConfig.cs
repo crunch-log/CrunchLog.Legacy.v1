@@ -19,12 +19,8 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("tags")]
         public IEnumerable<String> Tags { get; set; } = new List<String>();
 
-        [JsonProperty("permalinks")]
-        public IDictionary<String, String> Permalinks { get; set; } = new Dictionary<String, String>
-        {
-            {CrunchConfigKeys.Posts, @"/:year/:month/:slug"},
-        };
-
+        [JsonProperty("permalink")]
+        public String Permalink { get; set; } = @"/:year/:month/:slug";
 
         [JsonProperty("dateformat")]
         public String DateFormat { get; set; } = "yyyy-MM-dd hh:mm";
@@ -35,30 +31,18 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("menu")]
         public IDictionary<String, IEnumerable<Menu>> Menu { get; set; }
 
-        [JsonProperty("paths")]
-        public IDictionary<String, String> Paths { get; set; } = new Dictionary<String, String>
-        {
-            {CrunchConfigKeys.Posts, @"Contents\Posts\"},
-            {CrunchConfigKeys.Pages, @"Contents\Pages\"},
-            {CrunchConfigKeys.Output, @"_site\"},
-        };
+        [JsonProperty("output")]
+        public String Output { get; set; } = @"_site\";
 
         [JsonIgnore]
         public DirectoryInfo BasePath => _configFile.Directory;
 
         [JsonIgnore]
-        public DirectoryInfo OutputPath => new DirectoryInfo(BasePath.CombinePath(Paths[CrunchConfigKeys.Output].NormalizePath()));
+        public DirectoryInfo OutputPath => new DirectoryInfo(BasePath.CombinePath(Output.NormalizePath()));
 
         public CrunchConfig(FileInfo configFile)
         {
             _configFile = configFile;
         }
-    }
-
-    public static class CrunchConfigKeys
-    {
-        public const String Posts = "posts";
-        public const String Pages = "pages";
-        public const String Output = "output";
     }
 }

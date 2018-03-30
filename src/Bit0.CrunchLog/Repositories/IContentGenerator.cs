@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.ContentTypes;
 using Bit0.CrunchLog.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -8,7 +7,7 @@ namespace Bit0.CrunchLog.Repositories
 {
     public interface IContentGenerator
     {
-        void PublishAll<TContent>() where TContent : IContent, new();
+        void PublishAll();
         void CleanOutput();
     }
 
@@ -37,17 +36,25 @@ namespace Bit0.CrunchLog.Repositories
 
         }
 
-        public void PublishAll<TContent>() where TContent : IContent, new()
+        public void PublishAll()
         {
-            var all = _contentProvider.GetAll<TContent>().ToList();
+            var all = _contentProvider.GetAll().ToList();
             var published = all.Where(c => c.Value.Published).ToList();
+
+            // get posts
+            // create archive, tag and category pages
+            // create main index
+
+            // get parent for pages
+            // create a tree
+            // generate permalink from tree
 
             foreach (var content in published)
             {
                 content.Value.WriteFile(_config.OutputPath);
             }
 
-            _logger.LogInformation($"Published {typeof(TContent).Name}: {published.Count}/{all.Count}");
+            _logger.LogInformation($"Published: {published.Count}/{all.Count}");
         }
     }
 }

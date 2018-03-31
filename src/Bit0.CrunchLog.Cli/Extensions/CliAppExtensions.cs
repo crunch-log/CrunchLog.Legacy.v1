@@ -115,9 +115,8 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
             try
             {
-                ServiceProviderFactory.Build(args);
+                var provider = ServiceProviderFactory.Build(args);
 
-                var provider = ServiceProviderFactory.ServiceProvider;
                 logger = provider.GetService<ILogger<CliOptions>>();
                 var config = provider.GetService<CrunchConfig>();
 

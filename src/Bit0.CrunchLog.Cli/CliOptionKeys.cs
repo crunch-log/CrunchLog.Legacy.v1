@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bit0.CrunchLog.Cli.Extra
+namespace Bit0.CrunchLog.Cli
 {
     public static class CliOptionKeys
     {

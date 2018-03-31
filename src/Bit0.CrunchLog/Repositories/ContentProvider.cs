@@ -12,8 +12,8 @@ namespace Bit0.CrunchLog.Repositories
     public interface IContentProvider
     {
         IDictionary<FileInfo, Content> AllContent { get; }
+        IDictionary<FileInfo, Content> PublishedContent { get; }
         IDictionary<FileInfo, Content> Posts { get; }
-        IDictionary<FileInfo, Content> PublishedPosts { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostTags { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostCategories { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostArchives { get; }
@@ -73,24 +73,24 @@ namespace Bit0.CrunchLog.Repositories
             }
         }
 
-        public IDictionary<FileInfo, Content> Posts
+        public IDictionary<FileInfo, Content> PublishedContent
         {
             get
             {
                 return AllContent
-                    .Where(x => x.Value.Layout == Layouts.Post)
-                    .OrderByDescending(x => x.Value.Date)
-                    .ThenByDescending(x => x.Value.Slug)
+                    .Where(x => x.Value.Published)
                     .ToDictionary(k => k.Key, v => v.Value);
             }
         }
 
-        public IDictionary<FileInfo, Content> PublishedPosts
+        public IDictionary<FileInfo, Content> Posts
         {
             get
             {
-                return Posts
-                    .Where(x => x.Value.Published)
+                return PublishedContent
+                    .Where(x => x.Value.Layout == Layouts.Post)
+                    .OrderByDescending(x => x.Value.Date)
+                    .ThenByDescending(x => x.Value.Slug)
                     .ToDictionary(k => k.Key, v => v.Value);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -36,6 +37,11 @@ namespace Bit0.CrunchLog.Extensions
                     .Replace(":day", content.Date.ToString("dd"))
                     .Replace(":slug", content.Slug)
                 ;
+        }
+
+        public static void WriteFile(this KeyValuePair<String, IEnumerable<FileInfo>> list, DirectoryInfo outputDir)
+        {
+
         }
     }
 }

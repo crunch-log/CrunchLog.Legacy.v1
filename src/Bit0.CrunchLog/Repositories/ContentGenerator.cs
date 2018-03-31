@@ -44,16 +44,37 @@ namespace Bit0.CrunchLog.Repositories
         public void PublishCategories()
         {
             var categories = _contentProvider.PostCategories;
+
+            foreach (var category in categories)
+            {
+                category.WriteFile(_config.OutputPath);
+            }
+
+            _logger.LogInformation($"Categories published: {categories.Count}");
         }
 
         public void PublishTags()
         {
             var tags = _contentProvider.PostTags;
+
+            foreach (var tag in tags)
+            {
+                tag.WriteFile(_config.OutputPath);
+            }
+
+            _logger.LogInformation($"Tags published: {tags.Count}");
         }
 
         public void PublishArchive()
         {
             var archives = _contentProvider.PostArchives;
+
+            foreach (var archive in archives)
+            {
+                archive.WriteFile(_config.OutputPath);
+            }
+
+            _logger.LogInformation($"Archives published: {archives.Count}");
         }
 
         public void PublishHome()
@@ -63,15 +84,14 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishContent()
         {
-            var allContent = _contentProvider.AllContent.ToList();
-            var published = allContent.Where(c => c.Value.Published).ToList();
+            var published = _contentProvider.PublishedContent.ToList();
 
             foreach (var content in published)
             {
                 content.Value.WriteFile(_config.OutputPath);
             }
 
-            _logger.LogInformation($"Published: {published.Count}/{allContent.Count}");
+            _logger.LogInformation($"Published: {published.Count}");
         }
 
         public void PublishAll()

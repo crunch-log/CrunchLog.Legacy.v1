@@ -51,7 +51,7 @@ namespace Bit0.CrunchLog
                         return $"{MetaFile.Name.Replace(".json", "")}.md";
                     }
 
-                    throw new FileNotFoundException($"Could not find fil for {MetaFile?.Name}");
+                    throw new FileNotFoundException($"Could not find file for {MetaFile?.Name}");
                 }
 
                 return _mdFile;
@@ -96,7 +96,7 @@ namespace Bit0.CrunchLog
         [JsonProperty("intro")]
         public String Intro { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty("permaLink")]
         public String PermaLink { get; set; }
 
         [JsonIgnore]

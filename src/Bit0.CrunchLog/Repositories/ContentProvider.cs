@@ -13,6 +13,7 @@ namespace Bit0.CrunchLog.Repositories
     {
         IDictionary<FileInfo, Content> AllContent { get; }
         IDictionary<FileInfo, Content> Posts { get; }
+        IDictionary<FileInfo, Content> PublishedPosts { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostTags { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostCategories { get; }
         IDictionary<String, IEnumerable<FileInfo>> PostArchives { get; }
@@ -26,6 +27,8 @@ namespace Bit0.CrunchLog.Repositories
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILogger<ContentProvider> _logger;
 
+        private IDictionary<FileInfo, Content> _allContent;
+
         public ContentProvider(JsonSerializer jsonSerializer, CrunchConfig config, ILogger<ContentProvider> logger)
         {
             _logger = logger;
@@ -37,29 +40,36 @@ namespace Bit0.CrunchLog.Repositories
         {
             get
             {
-                var list = new Dictionary<FileInfo, Content>();
-
-                foreach (var metaFile in _config.BasePath.GetFiles("*.json", SearchOption.AllDirectories))
+                if (_allContent == null)
                 {
-                    var content = new Content
-                    {
-                        MetaFile = metaFile,
-                        PermaLink = _config.Permalink
-                    };
 
-                    _jsonSerializer.Populate(metaFile?.OpenText(), content);
+                    _allContent = new Dictionary<FileInfo, Content>();
 
-                    if (content.PermaLink == _config.Permalink)
+                    var metaFiles = _config.BasePath
+                        .GetFiles("*.json", SearchOption.AllDirectories)
+                        .Where(f => !f.FullName.Equals(_config.BasePath.CombinePath("crunch.json")));
+                    foreach (var metaFile in metaFiles)
                     {
-                        content.PermaLink = content.GetFullSlug();
+                        var content = new Content
+                        {
+                            MetaFile = metaFile,
+                            PermaLink = _config.Permalink
+                        };
+
+                        _jsonSerializer.Populate(metaFile?.OpenText(), content);
+
+                        if (content.PermaLink == _config.Permalink)
+                        {
+                            content.PermaLink = content.GetFullSlug();
+                        }
+
+                        _allContent.Add(metaFile, content);
                     }
 
-                    list.Add(metaFile, content);
+                    _logger.LogDebug($"Fount {_allContent.Count} documents");
                 }
 
-                _logger.LogDebug($"Fount {list.Count} documents");
-
-                return list;
+                return _allContent;
             }
         }
 
@@ -75,16 +85,27 @@ namespace Bit0.CrunchLog.Repositories
             }
         }
 
+        public IDictionary<FileInfo, Content> PublishedPosts
+        {
+            get
+            {
+                return Posts
+                    .Where(x => x.Value.Published)
+                    .ToDictionary(k => k.Key, v => v.Value);
+            }
+        }
+
         public IDictionary<String, IEnumerable<FileInfo>> PostTags
         {
             get
             {
                 return Posts
+                    .Where(x => x.Value.Tags != null)
                     .SelectMany(x => x.Value.Tags)
                     .Distinct()
                     .ToDictionary(
                         k => k, 
-                        v => AllContent
+                        v => Posts
                             .Where(x => x.Value.Tags.Contains(v))
                             .Select(x => x.Key)
                     );
@@ -96,11 +117,12 @@ namespace Bit0.CrunchLog.Repositories
             get
             {
                 return Posts
+                    .Where(x => x.Value.Categories != null)
                     .SelectMany(x => x.Value.Categories)
                     .Distinct()
                     .ToDictionary(
                         k => k, 
-                        v => AllContent
+                        v => Posts
                             .Where(x => x.Value.Categories.Contains(v))
                             .Select(x => x.Key)
                     );

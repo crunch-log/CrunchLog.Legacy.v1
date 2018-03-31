@@ -7,8 +7,13 @@ namespace Bit0.CrunchLog.Repositories
 {
     public interface IContentGenerator
     {
-        void PublishAll();
         void CleanOutput();
+        void PublishAll();
+        void PublishArchive();
+        void PublishCategories();
+        void PublishContent();
+        void PublishHome();
+        void PublishTags();
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -36,27 +41,27 @@ namespace Bit0.CrunchLog.Repositories
 
         }
 
-        public void CreateCategories()
+        public void PublishCategories()
         {
-
+            var categories = _contentProvider.PostCategories;
         }
 
-        public void CreateTags()
+        public void PublishTags()
         {
-
+            var tags = _contentProvider.PostTags;
         }
 
-        public void CreateArchive()
+        public void PublishArchive()
         {
-
+            var archives = _contentProvider.PostArchives;
         }
 
-        public void CreateHome()
+        public void PublishHome()
         {
-
+            var posts = _contentProvider.Posts.Take(10);
         }
 
-        public void CreateContent()
+        public void PublishContent()
         {
             var allContent = _contentProvider.AllContent.ToList();
             var published = allContent.Where(c => c.Value.Published).ToList();
@@ -79,7 +84,12 @@ namespace Bit0.CrunchLog.Repositories
             // create a tree
             // generate permalink from tree
 
-            var archives = _contentProvider.PostArchives;
+            PublishContent();
+            PublishArchive();
+            PublishCategories();
+            PublishTags();
+            PublishHome();
+
         }
     }
 }

@@ -40,34 +40,34 @@ namespace Bit0.CrunchLog.Repositories
         {
             get
             {
-                if (_allContent == null)
+                if (_allContent != null)
                 {
+                    return _allContent;
+                }
 
-                    _allContent = new Dictionary<FileInfo, Content>();
+                _allContent = new Dictionary<FileInfo, Content>();
 
-                    var metaFiles = _config.BasePath
-                        .GetFiles("*.json", SearchOption.AllDirectories)
-                        .Where(f => !f.FullName.Equals(_config.BasePath.CombinePath("crunch.json")));
-                    foreach (var metaFile in metaFiles)
+                var metaFiles = _config.Paths.BasePath
+                    .GetFiles("*.json", SearchOption.AllDirectories);
+                foreach (var metaFile in metaFiles)
+                {
+                    var content = new Content
                     {
-                        var content = new Content
-                        {
-                            MetaFile = metaFile,
-                            PermaLink = _config.Permalink
-                        };
+                        MetaFile = metaFile,
+                        PermaLink = _config.Permalink
+                    };
 
-                        _jsonSerializer.Populate(metaFile?.OpenText(), content);
+                    _jsonSerializer.Populate(metaFile.OpenText(), content);
 
-                        if (content.PermaLink == _config.Permalink)
-                        {
-                            content.PermaLink = content.GetFullSlug();
-                        }
-
-                        _allContent.Add(metaFile, content);
+                    if (content.PermaLink == _config.Permalink)
+                    {
+                        content.PermaLink = content.GetFullSlug();
                     }
 
-                    _logger.LogDebug($"Fount {_allContent.Count} documents");
+                    _allContent.Add(metaFile, content);
                 }
+
+                _logger.LogDebug($"Fount {_allContent.Count} documents");
 
                 return _allContent;
             }

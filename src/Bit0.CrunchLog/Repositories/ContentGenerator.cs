@@ -32,12 +32,12 @@ namespace Bit0.CrunchLog.Repositories
 
         public void CleanOutput()
         {
-            if (_config.OutputPath.Exists)
+            if (_config.Paths.OutputPath.Exists)
             {
-                _config.OutputPath.Delete(true);
+                _config.Paths.OutputPath.Delete(true);
             }
 
-            _logger.LogInformation($"Cleaned output folder {_config.OutputPath.FullName}");
+            _logger.LogInformation($"Cleaned output folder {_config.Paths.OutputPath.FullName}");
 
         }
 
@@ -47,7 +47,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var category in categories)
             {
-                category.WriteFile(_config.OutputPath);
+                category.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Categories published: {categories.Count}");
@@ -59,7 +59,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var tag in tags)
             {
-                tag.WriteFile(_config.OutputPath);
+                tag.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Tags published: {tags.Count}");
@@ -71,7 +71,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var archive in archives)
             {
-                archive.WriteFile(_config.OutputPath);
+                archive.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Archives published: {archives.Count}");
@@ -88,7 +88,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var content in published)
             {
-                content.Value.WriteFile(_config.OutputPath);
+                content.Value.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Published: {published.Count}");

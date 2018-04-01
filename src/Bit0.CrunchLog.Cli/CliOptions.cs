@@ -107,7 +107,7 @@ namespace Bit0.CrunchLog.Cli
                     .Create(args.Url)
                     .EnableCors()
                     .WithLocalSession()
-                    .WithStaticFolderAt(config.OutputPath.FullName);
+                    .WithStaticFolderAt(config.Paths.OutputPath.FullName);
 
                 var cts = new CancellationTokenSource();
                 var task = server.RunAsync(cts.Token);

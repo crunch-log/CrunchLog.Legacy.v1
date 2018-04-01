@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Bit0.CrunchLog.Extensions;
 
 namespace Bit0.CrunchLog
@@ -29,11 +30,11 @@ namespace Bit0.CrunchLog
 
         private CrunchConfig ReadConfigFile()
         {
-            var configFile = _basePath.GetFiles("crunch.json", SearchOption.TopDirectoryOnly).SingleOrDefault();
+            var configFile = _basePath.GetFiles(StaticPaths.ConfigFile, SearchOption.TopDirectoryOnly).SingleOrDefault();
 
             if (configFile == null)
             {
-                var errorMsg = $"Cannot find {_basePath.CombinePath("crunch.json")}";
+                var errorMsg = $"Cannot find {_basePath.CombinePath(StaticPaths.ConfigFile)}";
                 throw new FileNotFoundException(errorMsg);
             }
 
@@ -43,7 +44,7 @@ namespace Bit0.CrunchLog
             _jsonSerializer.Populate(configFile.OpenText(), config);
 
             _logger.LogDebug("Configration read");
-            _logger.LogInformation($"Output path: {config.OutputPath}");
+            _logger.LogInformation($"Output path: {config.Paths.OutputPath}");
             
             return config;
         }

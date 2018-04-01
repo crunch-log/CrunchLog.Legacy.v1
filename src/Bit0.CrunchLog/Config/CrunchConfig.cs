@@ -31,18 +31,14 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("menu")]
         public IDictionary<String, IEnumerable<Menu>> Menu { get; set; }
 
-        [JsonProperty("output")]
-        public String Output { get; set; } = @"_site\";
-
-        [JsonIgnore]
-        public DirectoryInfo BasePath => _configFile.Directory;
-
-        [JsonIgnore]
-        public DirectoryInfo OutputPath => new DirectoryInfo(BasePath.CombinePath(Output.NormalizePath()));
+        [JsonProperty("paths")]
+        public ConfigPaths Paths { get; set; }
 
         public CrunchConfig(FileInfo configFile)
         {
             _configFile = configFile;
+
+            Paths = new ConfigPaths(_configFile);
         }
     }
 }

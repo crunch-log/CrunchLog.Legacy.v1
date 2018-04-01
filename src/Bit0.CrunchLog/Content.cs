@@ -38,10 +38,10 @@ namespace Bit0.CrunchLog
                     }
 
                     // find <dirName>.md
-                    if (dir?.GetFiles($"{dir?.Name}.md", SearchOption.TopDirectoryOnly)
+                    if (dir?.GetFiles($"{dir.Name}.md", SearchOption.TopDirectoryOnly)
                             .SingleOrDefault() != null)
                     {
-                        return $"{dir?.Name}.md";
+                        return $"{dir.Name}.md";
                     }
 
                     // fnd <jsonFileName>.md

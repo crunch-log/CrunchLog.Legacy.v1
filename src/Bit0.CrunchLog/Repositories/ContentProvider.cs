@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.ViewModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -11,12 +11,12 @@ namespace Bit0.CrunchLog.Repositories
 {
     public interface IContentProvider
     {
-        IDictionary<FileInfo, Content> AllContent { get; }
-        IDictionary<FileInfo, Content> PublishedContent { get; }
-        IDictionary<FileInfo, Content> Posts { get; }
-        IDictionary<String, IEnumerable<FileInfo>> PostTags { get; }
-        IDictionary<String, IEnumerable<FileInfo>> PostCategories { get; }
-        IDictionary<String, IEnumerable<FileInfo>> PostArchives { get; }
+        IEnumerable<Content> AllContent { get; }
+        IEnumerable<Content> PublishedContent { get; }
+        IEnumerable<Content> Posts { get; }
+        IEnumerable<TagViewModel> PostTags { get; }
+        IEnumerable<CategoryViewModel> PostCategories { get; }
+        IEnumerable<ArchiveViewModel> PostArchives { get; }
 
     }
 
@@ -27,7 +27,7 @@ namespace Bit0.CrunchLog.Repositories
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILogger<ContentProvider> _logger;
 
-        private IDictionary<FileInfo, Content> _allContent;
+        private IEnumerable<Content> _allContent;
 
         public ContentProvider(JsonSerializer jsonSerializer, CrunchConfig config, ILogger<ContentProvider> logger)
         {
@@ -36,7 +36,7 @@ namespace Bit0.CrunchLog.Repositories
             _jsonSerializer = jsonSerializer;
         }
 
-        public IDictionary<FileInfo, Content> AllContent
+        public IEnumerable<Content> AllContent
         {
             get
             {
@@ -45,10 +45,9 @@ namespace Bit0.CrunchLog.Repositories
                     return _allContent;
                 }
 
-                _allContent = new Dictionary<FileInfo, Content>();
+                var allContent = new List<Content>();
 
-                var metaFiles = _config.Paths.BasePath
-                    .GetFiles("*.json", SearchOption.AllDirectories);
+                var metaFiles = _config.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
                 foreach (var metaFile in metaFiles)
                 {
                     var content = new Content
@@ -64,79 +63,89 @@ namespace Bit0.CrunchLog.Repositories
                         content.PermaLink = content.GetFullSlug();
                     }
 
-                    _allContent.Add(metaFile, content);
+                    if (content.Author == null)
+                    {
+                        content.Author = _config.Authors.FirstOrDefault().Value;
+                    }
+
+                    // don't need it
+                    //content.Tags = content.Tags.Concat(_config.Tags);
+
+                    allContent.Add(content);
                 }
 
-                _logger.LogDebug($"Fount {_allContent.Count} documents");
+                _logger.LogDebug($"Fount {allContent.Count} documents");
+
+                _allContent = allContent;
 
                 return _allContent;
             }
         }
 
-        public IDictionary<FileInfo, Content> PublishedContent
+        public IEnumerable<Content> PublishedContent
         {
             get
             {
                 return AllContent
-                    .Where(x => x.Value.Published)
-                    .ToDictionary(k => k.Key, v => v.Value);
+                    .Where(x => x.Published);
             }
         }
 
-        public IDictionary<FileInfo, Content> Posts
+        public IEnumerable<Content> Posts
         {
             get
             {
                 return PublishedContent
-                    .Where(x => x.Value.Layout == Layouts.Post)
-                    .OrderByDescending(x => x.Value.Date)
-                    .ThenByDescending(x => x.Value.Slug)
-                    .ToDictionary(k => k.Key, v => v.Value);
+                    .Where(x => x.Layout == Layouts.Post)
+                    .OrderByDescending(x => x.Date)
+                    .ThenByDescending(x => x.Slug);
             }
         }
 
-        public IDictionary<String, IEnumerable<FileInfo>> PostTags
+        public IEnumerable<TagViewModel> PostTags
         {
             get
             {
                 return Posts
-                    .Where(x => x.Value.Tags != null)
-                    .SelectMany(x => x.Value.Tags)
+                    .Where(x => x.Tags != null)
+                    .SelectMany(x => x.Tags)
                     .Distinct()
-                    .ToDictionary(
-                        k => k, 
-                        v => Posts
-                            .Where(x => x.Value.Tags.Contains(v))
-                            .Select(x => x.Key)
-                    );
+                    .Select(x => new TagViewModel
+                    {
+                        Name = x,
+                        Posts = Posts
+                            .Where(p => p.Tags.Contains(x))
+                            .Select(p => new PostViewModel(p, _config.Tags))
+                    });
             }
         }
 
-        public IDictionary<String, IEnumerable<FileInfo>> PostCategories
+        public IEnumerable<CategoryViewModel> PostCategories
         {
             get
             {
                 return Posts
-                    .Where(x => x.Value.Categories != null)
-                    .SelectMany(x => x.Value.Categories)
+                    .Where(x => x.Categories != null)
+                    .SelectMany(x => x.Categories)
                     .Distinct()
-                    .ToDictionary(
-                        k => k, 
-                        v => Posts
-                            .Where(x => x.Value.Categories.Contains(v))
-                            .Select(x => x.Key)
-                    );
+                    .Select(x => new CategoryViewModel
+                    {
+                        Name = x,
+                        Posts = Posts
+                            .Where(p => p.Categories.Contains(x))
+                            .Select(p => new PostViewModel(p, _config.Tags))
+                    });
             }
         }
 
-        public IDictionary<String, IEnumerable<FileInfo>> PostArchives
+        public IEnumerable<ArchiveViewModel> PostArchives
         {
             get
             {
-                var archives = new Dictionary<String, IEnumerable<FileInfo>>();
+                var archives = new List<ArchiveViewModel>();
 
                 var permaLinks = Posts
-                    .Select(x => x.Value.PermaLink.Split('/'))
+                    .Select(x => x.PermaLink.Split('/'))
                     .ToList();
 
                 var years = permaLinks
@@ -146,9 +155,13 @@ namespace Bit0.CrunchLog.Repositories
                 foreach (var year in years)
                 {
                     var ySlug = $"/{year}/";
-                    archives.Add(ySlug, 
-                        Posts.Where(x => x.Value.PermaLink.StartsWith(ySlug))
-                            .Select( x => x.Key));
+                    archives.Add(new ArchiveViewModel
+                    {
+                        Name = ySlug,
+                        Posts = Posts
+                            .Where(x => x.PermaLink.StartsWith(ySlug))
+                            .Select(p => new PostViewModel(p, _config.Tags))
+                    });
 
                     var months = permaLinks
                         .Where(x => x[1] == year)
@@ -158,22 +171,31 @@ namespace Bit0.CrunchLog.Repositories
                     foreach (var month in months)
                     {
                         var mSlug = $"/{year}/{month}/";
-                        archives.Add(mSlug, 
-                            Posts.Where(x => x.Value.PermaLink.StartsWith(mSlug))
-                                .Select( x => x.Key));
-
-                        var days = permaLinks
-                            .Where(x => x[1] == year && x[2] == month)
-                            .Select(x => x[3])
-                            .Distinct();
-
-                        foreach (var day in days)
+                        archives.Add(new ArchiveViewModel
                         {
-                            var dSlug = $"/{year}/{month}/{day}/";
-                            archives.Add(dSlug,
-                                Posts.Where(x => x.Value.PermaLink.StartsWith(dSlug))
-                                    .Select(x => x.Key));
-                        }
+                            Name = mSlug,
+                            Posts = Posts
+                                .Where(x => x.PermaLink.StartsWith(mSlug))
+                                .Select(p => new PostViewModel(p, _config.Tags))
+                        });
+
+                        // in case we need it in future
+                        //var days = permaLinks
+                        //    .Where(x => x[1] == year && x[2] == month)
+                        //    .Select(x => x[3])
+                        //    .Distinct();
+
+                        //foreach (var day in days)
+                        //{
+                        //    var dSlug = $"/{year}/{month}/{day}/";
+                        //    archives.Add(new ArchiveViewModel
+                        //    {
+                        //        Name = dSlug,
+                        //        Posts = Posts
+                        //            .Where(x => x.PermaLink.StartsWith(dSlug))
+                        //            .Select(p => new PostViewModel(p))
+                        //    });
+                        //}
                     }
                 }
 

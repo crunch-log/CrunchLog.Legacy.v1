@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config

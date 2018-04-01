@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace Bit0.CrunchLog.Repositories
@@ -43,7 +44,7 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishCategories()
         {
-            var categories = _contentProvider.PostCategories;
+            var categories = _contentProvider.PostCategories.ToList();
 
             foreach (var category in categories)
             {
@@ -55,7 +56,7 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishTags()
         {
-            var tags = _contentProvider.PostTags;
+            var tags = _contentProvider.PostTags.ToList();
 
             foreach (var tag in tags)
             {
@@ -67,7 +68,7 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishArchive()
         {
-            var archives = _contentProvider.PostArchives;
+            var archives = _contentProvider.PostArchives.ToList();
 
             foreach (var archive in archives)
             {
@@ -79,7 +80,16 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishHome()
         {
-            var posts = _contentProvider.Posts.Take(10);
+            var home = new HomeViewModel
+            {
+                Title = "Home",
+                Keywords = _config.Tags,
+
+                Tags = _contentProvider.PostTags,
+                Categories = _contentProvider.PostCategories,
+                Archives = _contentProvider.PostArchives,
+                Posts = _contentProvider.Posts.Take(10).Select(p => new PostViewModel(p, _config.Tags)),
+            };
         }
 
         public void PublishContent()
@@ -88,7 +98,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var content in published)
             {
-                content.Value.WriteFile(_config.Paths.OutputPath);
+                content.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Published: {published.Count}");

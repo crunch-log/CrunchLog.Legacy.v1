@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Bit0.CrunchLog.ViewModels;
 
 namespace Bit0.CrunchLog.Extensions
 {
@@ -39,7 +39,7 @@ namespace Bit0.CrunchLog.Extensions
                 ;
         }
 
-        public static void WriteFile(this KeyValuePair<String, IEnumerable<FileInfo>> list, DirectoryInfo outputDir)
+        public static void WriteFile(this IPostListViewModel list, DirectoryInfo outputDir)
         {
 
         }

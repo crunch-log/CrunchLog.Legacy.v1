@@ -121,6 +121,11 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
                 executeFunc(provider, logger, config);
             }
+            catch (OperationCanceledException)
+            {
+                logger.LogInformation("Server Closed");
+                return 1;
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);

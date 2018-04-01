@@ -12,5 +12,10 @@ namespace Bit0.CrunchLog.Config
         public String Email { get; set; }
         [JsonProperty("social")]
         public IDictionary<String, String> Social { get; set; }
+
+        public override String ToString()
+        {
+            return Name;
+        }
     }
 }

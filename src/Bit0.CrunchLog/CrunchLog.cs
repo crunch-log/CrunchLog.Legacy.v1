@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
-using System.Net;
 using Bit0.CrunchLog.Extensions;
 
 namespace Bit0.CrunchLog

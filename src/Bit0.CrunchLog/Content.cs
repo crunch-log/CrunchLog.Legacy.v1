@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Convertors;
 using Bit0.CrunchLog.Extensions;
 using Markdig;
 using Newtonsoft.Json;
@@ -99,6 +101,10 @@ namespace Bit0.CrunchLog
         [JsonProperty("permaLink")]
         public String PermaLink { get; set; }
 
+        [JsonProperty("author")]
+        [JsonConverter(typeof(AuthorConvertor))]
+        public Author Author { get; set; }
+
         [JsonIgnore]
         public FileInfo MetaFile { get; set; }
 
@@ -120,6 +126,11 @@ namespace Bit0.CrunchLog
 
         [JsonIgnore]
         public IEnumerable<Content> Children => null;
+
+        public override String ToString()
+        {
+            return PermaLink;
+        }
     }
 
     public static class Layouts

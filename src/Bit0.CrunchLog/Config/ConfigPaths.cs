@@ -26,6 +26,14 @@ namespace Bit0.CrunchLog.Config
         [JsonIgnore]
         public DirectoryInfo OutputPath => new DirectoryInfo(BasePath.CombinePath(Output.NormalizePath()));
 
+        [JsonIgnore]
+        public DirectoryInfo ContentPath => new DirectoryInfo(BasePath.CombinePath(Content.NormalizePath()));
+    
+        [JsonIgnore]
+        public DirectoryInfo ThemesPath => new DirectoryInfo(BasePath.CombinePath(Themes.NormalizePath()));
+    
+        [JsonIgnore]
+        public DirectoryInfo PluginsPath => new DirectoryInfo(BasePath.CombinePath(Plugins.NormalizePath()));
     }
 
     public static class StaticPaths

@@ -1,9 +1,10 @@
 {
   "title": "Aliquam eget velit",
   "slug": "aliquam-eget-elit",
-  "date": "2018-01-03T10:00:00Z",
-  "tags": ["lorem", "ipsum", "platea"],
-  "categories": ["Blog", "Solor"],
+  "date": "2017-01-03T10:00:00Z",
+  "author": "jsmith", 
+  "tags": ["lorem", "ipsum", "velit"],
+  "categories": ["Blog", "Eget"],
   "published": true,
   "intro": "Aenean mollis justo quis risus convallis aliquam. Ut est tellus, facilisis ultrices lorem a, ullamcorper elementum quam. Ut sed augue id neque pulvinar condimentum ut ac tellus. Proin ultricies et risus quis facilisis."
 }

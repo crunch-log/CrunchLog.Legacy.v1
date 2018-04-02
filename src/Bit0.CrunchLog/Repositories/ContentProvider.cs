@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.ViewModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -99,7 +97,7 @@ namespace Bit0.CrunchLog.Repositories
                         Name = x,
                         Posts = Posts
                             .Where(p => p.Tags.Contains(x))
-                            .Select(p => new PostViewModel(p, _config.Tags))
+                            .Select(p => new PostViewModel(_config, p))
                     });
             }
         }
@@ -117,7 +115,7 @@ namespace Bit0.CrunchLog.Repositories
                         Name = x,
                         Posts = Posts
                             .Where(p => p.Categories.Contains(x))
-                            .Select(p => new PostViewModel(p, _config.Tags))
+                            .Select(p => new PostViewModel(_config, p))
                     });
             }
         }
@@ -144,7 +142,7 @@ namespace Bit0.CrunchLog.Repositories
                         Name = ySlug,
                         Posts = Posts
                             .Where(x => x.PermaLink.StartsWith(ySlug))
-                            .Select(p => new PostViewModel(p, _config.Tags))
+                            .Select(p => new PostViewModel(_config, p))
                     });
 
                     var months = permaLinks
@@ -160,7 +158,7 @@ namespace Bit0.CrunchLog.Repositories
                             Name = mSlug,
                             Posts = Posts
                                 .Where(x => x.PermaLink.StartsWith(mSlug))
-                                .Select(p => new PostViewModel(p, _config.Tags))
+                                .Select(p => new PostViewModel(_config, p))
                         });
                     }
                 }

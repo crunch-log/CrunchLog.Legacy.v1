@@ -80,15 +80,12 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishHome()
         {
-            var home = new HomeViewModel
+            var home = new HomeViewModel(_config)
             {
-                Title = "Home",
-                Keywords = _config.Tags,
-
                 Tags = _contentProvider.PostTags,
                 Categories = _contentProvider.PostCategories,
                 Archives = _contentProvider.PostArchives,
-                Posts = _contentProvider.Posts.Take(10).Select(p => new PostViewModel(p, _config.Tags)),
+                Posts = _contentProvider.Posts.Take(10).Select(p => new PostViewModel(_config, p)),
             };
         }
 

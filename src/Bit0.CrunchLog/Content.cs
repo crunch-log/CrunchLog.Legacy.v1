@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.ViewModels;
 using Markdig;
 using Newtonsoft.Json;
 
@@ -15,7 +16,7 @@ namespace Bit0.CrunchLog
         private String _slug;
 
         public Content()
-        {}
+        { }
 
         public Content(FileInfo metaFile, String permaLink)
         {
@@ -40,11 +41,11 @@ namespace Bit0.CrunchLog
                         return "post.md";
                     }
 
-                    // find content.md
-                    if (dir?.GetFiles("content.md", SearchOption.TopDirectoryOnly)
+                    // find md
+                    if (dir?.GetFiles("md", SearchOption.TopDirectoryOnly)
                             .SingleOrDefault() != null)
                     {
-                        return "content.md";
+                        return "md";
                     }
 
                     // find <dirName>.md
@@ -138,9 +139,37 @@ namespace Bit0.CrunchLog
         [JsonIgnore]
         public IEnumerable<Content> Children => null;
 
+        [JsonIgnore]
+        public PostViewModel Post { get; private set; }
+
         public override String ToString()
         {
             return PermaLink;
+        }
+
+        public void Fix(CrunchConfig config)
+        {
+
+            // fix permalink
+            PermaLink = PermaLink
+                .Replace(":year", Date.ToString("yyyy"))
+                .Replace(":month", Date.ToString("MM"))
+                .Replace(":day", Date.ToString("dd"))
+                .Replace(":slug", Slug);
+
+            // fix author
+            if (!String.IsNullOrWhiteSpace(AuthorKey)
+                && config.Authors.ContainsKey(AuthorKey))
+            {
+                Author = config.Authors[AuthorKey];
+            }
+            else
+            {
+                var author = config.Authors.FirstOrDefault();
+
+                AuthorKey = author.Key;
+                Author = author.Value;
+            }
         }
     }
 

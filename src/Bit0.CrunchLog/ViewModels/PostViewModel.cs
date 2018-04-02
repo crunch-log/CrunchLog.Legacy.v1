@@ -7,34 +7,35 @@ namespace Bit0.CrunchLog.ViewModels
 {
     public class PostViewModel
     {
-        public PostViewModel()
-        { }
-
-        public PostViewModel(Content post, IEnumerable<String> keywords)
+        public PostViewModel(CrunchConfig config, Content post)
         {
             Title = post.Title;
             Content = post.Text;
             Description = post.Intro;
             Author = post.Author;
             Date = post.Date;
-            Keywords = keywords.Concat(post.Tags);
+            Keywords = config.Tags.Concat(post.Tags);
             PermaLink = post.PermaLink;
+
+            Config = config;
         }
 
 
-        public String Title { get; set; }
+        public String Title { get; }
 
-        public IEnumerable<String> Keywords { get; set; }
+        public IEnumerable<String> Keywords { get; }
 
-        public String Description { get; set; }
+        public String Description { get; }
 
-        public String Content { get; set; }
+        public String Content { get; }
 
-        public String PermaLink { get; set; }
+        public String PermaLink { get; }
 
-        public Author Author { get; set; }
+        public Author Author { get; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; }
+
+        public CrunchConfig Config { get; }
 
         public override String ToString()
         {

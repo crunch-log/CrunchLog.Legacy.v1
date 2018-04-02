@@ -69,5 +69,10 @@
     ]
   },
   
-  "output": "_site/"
+  "paths": {
+    "output": "_site/",
+    "content":  "Content",
+    "themes":  "Themes",
+    "plugins":  "Plugins"
+  } 
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
@@ -50,27 +51,10 @@ namespace Bit0.CrunchLog.Repositories
                 var metaFiles = _config.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
                 foreach (var metaFile in metaFiles)
                 {
-                    var content = new Content
-                    {
-                        MetaFile = metaFile,
-                        PermaLink = _config.Permalink
-                    };
+                    var content = new Content(metaFile, _config.Permalink);
 
                     _jsonSerializer.Populate(metaFile.OpenText(), content);
-
-                    if (content.PermaLink == _config.Permalink)
-                    {
-                        content.PermaLink = content.GetFullSlug();
-                    }
-
-                    if (content.Author == null)
-                    {
-                        content.Author = _config.Authors.FirstOrDefault().Value;
-                    }
-
-                    // don't need it
-                    //content.Tags = content.Tags.Concat(_config.Tags);
-
+                    content.Fix(_config);
                     allContent.Add(content);
                 }
 
@@ -178,24 +162,6 @@ namespace Bit0.CrunchLog.Repositories
                                 .Where(x => x.PermaLink.StartsWith(mSlug))
                                 .Select(p => new PostViewModel(p, _config.Tags))
                         });
-
-                        // in case we need it in future
-                        //var days = permaLinks
-                        //    .Where(x => x[1] == year && x[2] == month)
-                        //    .Select(x => x[3])
-                        //    .Distinct();
-
-                        //foreach (var day in days)
-                        //{
-                        //    var dSlug = $"/{year}/{month}/{day}/";
-                        //    archives.Add(new ArchiveViewModel
-                        //    {
-                        //        Name = dSlug,
-                        //        Posts = Posts
-                        //            .Where(x => x.PermaLink.StartsWith(dSlug))
-                        //            .Select(p => new PostViewModel(p))
-                        //    });
-                        //}
                     }
                 }
 

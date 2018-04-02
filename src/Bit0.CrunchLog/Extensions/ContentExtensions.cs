@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.ViewModels;
 
 namespace Bit0.CrunchLog.Extensions
@@ -37,6 +39,27 @@ namespace Bit0.CrunchLog.Extensions
                     .Replace(":day", content.Date.ToString("dd"))
                     .Replace(":slug", content.Slug)
                 ;
+        }
+
+        public static void Fix(this Content content, CrunchConfig config)
+        {
+            if (content.PermaLink == config.Permalink)
+            {
+                content.PermaLink = content.GetFullSlug();
+            }
+
+            if (!String.IsNullOrWhiteSpace(content.AuthorKey) 
+                && config.Authors.ContainsKey(content.AuthorKey))
+            {
+                content.Author = config.Authors[content.AuthorKey];
+            }
+            else
+            {
+                var author = config.Authors.FirstOrDefault();
+
+                content.AuthorKey = author.Key;
+                content.Author = author.Value;
+            }
         }
 
         public static void WriteFile(this IPostListViewModel list, DirectoryInfo outputDir)

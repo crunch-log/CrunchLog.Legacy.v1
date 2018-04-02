@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Convertors;
 using Bit0.CrunchLog.Extensions;
 using Markdig;
 using Newtonsoft.Json;
@@ -14,6 +13,15 @@ namespace Bit0.CrunchLog
     {
         private String _mdFile;
         private String _slug;
+
+        public Content()
+        {}
+
+        public Content(FileInfo metaFile, String permaLink)
+        {
+            MetaFile = metaFile;
+            PermaLink = permaLink;
+        }
 
         [JsonProperty("content")]
         public String MarkdownFile
@@ -102,7 +110,10 @@ namespace Bit0.CrunchLog
         public String PermaLink { get; set; }
 
         [JsonProperty("author")]
-        [JsonConverter(typeof(AuthorConvertor))]
+        //[JsonConverter(typeof(AuthorConvertor))]
+        public String AuthorKey { get; set; }
+
+        [JsonIgnore]
         public Author Author { get; set; }
 
         [JsonIgnore]

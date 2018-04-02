@@ -11,8 +11,6 @@ namespace Bit0.CrunchLog
 {
     public static class ServiceProviderFactory
     {
-        public static IServiceProvider ServiceProvider = null;
-
         public static IServiceProvider Build(Arguments args)
         {
             var services = new ServiceCollection();
@@ -35,9 +33,7 @@ namespace Bit0.CrunchLog
             // inject timesamp in log, in future replace with another logger
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
 
-            ServiceProvider = services.BuildServiceProvider();
-
-            return ServiceProvider;
+            return services.BuildServiceProvider();
         }
     }
 }

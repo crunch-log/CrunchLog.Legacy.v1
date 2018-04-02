@@ -41,6 +41,7 @@ namespace Bit0.CrunchLog
 
             var config = new CrunchConfig(configFile);
             _jsonSerializer.Populate(configFile.OpenText(), config);
+            config.Fix();
 
             _logger.LogDebug("Configration read");
             _logger.LogInformation($"Output path: {config.Paths.OutputPath}");

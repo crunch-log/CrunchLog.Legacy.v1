@@ -111,7 +111,6 @@ namespace Bit0.CrunchLog
         public String PermaLink { get; set; }
 
         [JsonProperty("author")]
-        //[JsonConverter(typeof(AuthorConvertor))]
         public String AuthorKey { get; set; }
 
         [JsonIgnore]

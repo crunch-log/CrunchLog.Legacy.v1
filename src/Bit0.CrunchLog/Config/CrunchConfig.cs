@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
@@ -38,6 +39,12 @@ namespace Bit0.CrunchLog.Config
             _configFile = configFile;
 
             Paths = new ConfigPaths(_configFile);
+        }
+
+        public void Fix()
+        {
+            // load themes directory
+            Site.Theme = new DirectoryInfo(Paths.ThemesPath.CombinePath(Site.ThemeKey));
         }
     }
 }

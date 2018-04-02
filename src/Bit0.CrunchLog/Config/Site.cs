@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
@@ -17,7 +18,11 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("subtitle")]
         public String SubTitle { get; set; } = "Static blog generator";
 
-        [JsonProperty("theme")] public String Theme { get; set; } = "default";
+        [JsonProperty("theme")]
+        public String ThemeKey { get; set; } = "default";
+
+        [JsonIgnore]
+        public DirectoryInfo Theme { get; set; }
 
         [JsonProperty("favicon")]
         public String FavIcon { get; set; } = "favicon.ico";

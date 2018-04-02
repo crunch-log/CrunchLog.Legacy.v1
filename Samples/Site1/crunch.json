@@ -25,7 +25,7 @@
   
   "permalink": "/:year/:month/:slug",
   
-  "dateFormat": "yyyy-MM-ss",
+  "dateFormat": "yyyy-MM-dd",
   
   "authors": {
     "jdoe": {

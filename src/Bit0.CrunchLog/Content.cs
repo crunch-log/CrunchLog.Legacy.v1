@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.ViewModels;
+using Bit0.CrunchLog.TemplateModels;
 using Markdig;
 using Newtonsoft.Json;
 
@@ -18,10 +18,10 @@ namespace Bit0.CrunchLog
         public Content()
         { }
 
-        public Content(FileInfo metaFile, String permaLink)
+        public Content(FileInfo metaFile, String permalink)
         {
             MetaFile = metaFile;
-            PermaLink = permaLink;
+            Permalink = permalink;
         }
 
         [JsonProperty("content")]
@@ -108,7 +108,7 @@ namespace Bit0.CrunchLog
         public String Intro { get; set; }
 
         [JsonProperty("permaLink")]
-        public String PermaLink { get; set; }
+        public String Permalink { get; set; }
 
         [JsonProperty("author")]
         public String AuthorKey { get; set; }
@@ -139,18 +139,18 @@ namespace Bit0.CrunchLog
         public IEnumerable<Content> Children => null;
 
         [JsonIgnore]
-        public PostViewModel Post { get; private set; }
+        public PostTemplateModel Post { get; private set; }
 
         public override String ToString()
         {
-            return PermaLink;
+            return Permalink;
         }
 
         public void Fix(CrunchConfig config)
         {
 
             // fix permalink
-            PermaLink = PermaLink
+            Permalink = Permalink
                 .Replace(":year", Date.ToString("yyyy"))
                 .Replace(":month", Date.ToString("MM"))
                 .Replace(":day", Date.ToString("dd"))

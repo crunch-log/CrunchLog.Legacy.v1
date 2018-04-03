@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.ViewModels;
+using Bit0.CrunchLog.TemplateModels;
+using Bit0.CrunchLog.Theme;
 using Microsoft.Extensions.Logging;
 
-namespace Bit0.CrunchLog.Repositories
+namespace Bit0.CrunchLog
 {
     public interface IContentGenerator
     {
@@ -21,11 +22,16 @@ namespace Bit0.CrunchLog.Repositories
     public class ContentGenerator : IContentGenerator
     {
         private readonly IContentProvider _contentProvider;
+        private readonly IThemeHandler _themeHandler;
         private readonly CrunchConfig _config;
         private readonly ILogger<ContentGenerator> _logger;
 
-        public ContentGenerator(IContentProvider contentProvider, CrunchConfig config, ILogger<ContentGenerator> logger)
+        public ContentGenerator(IContentProvider contentProvider,
+            IThemeHandler themeHandler,
+            CrunchConfig config,
+            ILogger<ContentGenerator> logger)
         {
+            _themeHandler = themeHandler;
             _logger = logger;
             _config = config;
             _contentProvider = contentProvider;
@@ -48,7 +54,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var category in categories)
             {
-                category.WriteFile(_config.Paths.OutputPath);
+                //category.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Categories published: {categories.Count}");
@@ -60,7 +66,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var tag in tags)
             {
-                tag.WriteFile(_config.Paths.OutputPath);
+                //tag.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Tags published: {tags.Count}");
@@ -72,7 +78,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var archive in archives)
             {
-                archive.WriteFile(_config.Paths.OutputPath);
+                //archive.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Archives published: {archives.Count}");
@@ -80,13 +86,15 @@ namespace Bit0.CrunchLog.Repositories
 
         public void PublishHome()
         {
-            var home = new HomeViewModel(_config)
+            var home = new HomeTemplateModel(_config)
             {
                 Tags = _contentProvider.PostTags,
                 Categories = _contentProvider.PostCategories,
                 Archives = _contentProvider.PostArchives,
-                Posts = _contentProvider.Posts.Take(10).Select(p => new PostViewModel(_config, p)),
+                Posts = _contentProvider.Posts.Take(10).Select(p => new PostTemplateModel(_config, p)),
             };
+
+            _themeHandler.WriteFile("home", home);
         }
 
         public void PublishContent()
@@ -95,7 +103,7 @@ namespace Bit0.CrunchLog.Repositories
 
             foreach (var content in published)
             {
-                content.WriteFile(_config.Paths.OutputPath);
+                //content.WriteFile(_config.Paths.OutputPath);
             }
 
             _logger.LogInformation($"Published: {published.Count}");
@@ -110,6 +118,8 @@ namespace Bit0.CrunchLog.Repositories
             // get parent for pages
             // create a tree
             // generate permalink from tree
+
+            _themeHandler.InitOutput();
 
             PublishContent();
             PublishArchive();

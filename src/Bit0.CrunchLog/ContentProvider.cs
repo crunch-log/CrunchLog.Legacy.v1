@@ -2,20 +2,20 @@
 using System.IO;
 using System.Linq;
 using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.ViewModels;
+using Bit0.CrunchLog.TemplateModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Bit0.CrunchLog.Repositories
+namespace Bit0.CrunchLog
 {
     public interface IContentProvider
     {
         IEnumerable<Content> AllContent { get; }
         IEnumerable<Content> PublishedContent { get; }
         IEnumerable<Content> Posts { get; }
-        IEnumerable<TagViewModel> PostTags { get; }
-        IEnumerable<CategoryViewModel> PostCategories { get; }
-        IEnumerable<ArchiveViewModel> PostArchives { get; }
+        IEnumerable<TagTemplateModel> PostTags { get; }
+        IEnumerable<CategoryTemplateModel> PostCategories { get; }
+        IEnumerable<ArchiveTemplateModel> PostArchives { get; }
 
     }
 
@@ -84,7 +84,7 @@ namespace Bit0.CrunchLog.Repositories
             }
         }
 
-        public IEnumerable<TagViewModel> PostTags
+        public IEnumerable<TagTemplateModel> PostTags
         {
             get
             {
@@ -92,17 +92,18 @@ namespace Bit0.CrunchLog.Repositories
                     .Where(x => x.Tags != null)
                     .SelectMany(x => x.Tags)
                     .Distinct()
-                    .Select(x => new TagViewModel
+                    .Select(x => new TagTemplateModel
                     {
                         Name = x,
+                        Permalink = $"/tag/{x}",
                         Posts = Posts
                             .Where(p => p.Tags.Contains(x))
-                            .Select(p => new PostViewModel(_config, p))
+                            .Select(p => new PostTemplateModel(_config, p))
                     });
             }
         }
 
-        public IEnumerable<CategoryViewModel> PostCategories
+        public IEnumerable<CategoryTemplateModel> PostCategories
         {
             get
             {
@@ -110,24 +111,25 @@ namespace Bit0.CrunchLog.Repositories
                     .Where(x => x.Categories != null)
                     .SelectMany(x => x.Categories)
                     .Distinct()
-                    .Select(x => new CategoryViewModel
+                    .Select(x => new CategoryTemplateModel
                     {
                         Name = x,
+                        Permalink = $"/category/{x}",
                         Posts = Posts
                             .Where(p => p.Categories.Contains(x))
-                            .Select(p => new PostViewModel(_config, p))
+                            .Select(p => new PostTemplateModel(_config, p))
                     });
             }
         }
 
-        public IEnumerable<ArchiveViewModel> PostArchives
+        public IEnumerable<ArchiveTemplateModel> PostArchives
         {
             get
             {
-                var archives = new List<ArchiveViewModel>();
+                var archives = new List<ArchiveTemplateModel>();
 
                 var permaLinks = Posts
-                    .Select(x => x.PermaLink.Split('/'))
+                    .Select(x => x.Permalink.Split('/'))
                     .ToList();
 
                 var years = permaLinks
@@ -137,12 +139,13 @@ namespace Bit0.CrunchLog.Repositories
                 foreach (var year in years)
                 {
                     var ySlug = $"/{year}/";
-                    archives.Add(new ArchiveViewModel
+                    archives.Add(new ArchiveTemplateModel
                     {
                         Name = ySlug,
+                        Permalink = ySlug,
                         Posts = Posts
-                            .Where(x => x.PermaLink.StartsWith(ySlug))
-                            .Select(p => new PostViewModel(_config, p))
+                            .Where(x => x.Permalink.StartsWith(ySlug))
+                            .Select(p => new PostTemplateModel(_config, p))
                     });
 
                     var months = permaLinks
@@ -153,12 +156,13 @@ namespace Bit0.CrunchLog.Repositories
                     foreach (var month in months)
                     {
                         var mSlug = $"/{year}/{month}/";
-                        archives.Add(new ArchiveViewModel
+                        archives.Add(new ArchiveTemplateModel
                         {
                             Name = mSlug,
+                            Permalink = mSlug,
                             Posts = Posts
-                                .Where(x => x.PermaLink.StartsWith(mSlug))
-                                .Select(p => new PostViewModel(_config, p))
+                                .Where(x => x.Permalink.StartsWith(mSlug))
+                                .Select(p => new PostTemplateModel(_config, p))
                         });
                     }
                 }

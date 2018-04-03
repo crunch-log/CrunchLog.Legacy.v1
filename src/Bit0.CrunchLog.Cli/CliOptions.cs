@@ -1,5 +1,4 @@
 ﻿using Bit0.CrunchLog.Cli.Extensions;
-using Bit0.CrunchLog.Repositories;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

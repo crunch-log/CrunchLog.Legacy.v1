@@ -29,7 +29,7 @@ namespace Bit0.CrunchLog.Config
         public IDictionary<String, Author> Authors { get; set; }
 
         [JsonProperty("menu")]
-        public IDictionary<String, IEnumerable<Menu>> Menu { get; set; }
+        public IDictionary<String, IEnumerable<MenuItem>> Menu { get; set; }
 
         [JsonProperty("paths")]
         public ConfigPaths Paths { get; set; }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Bit0.CrunchLog.Config;
 
-namespace Bit0.CrunchLog.ViewModels
+namespace Bit0.CrunchLog.TemplateModels
 {
-    public class PostViewModel
+    public class PostTemplateModel : ITemplateModel
     {
-        public PostViewModel(CrunchConfig config, Content post)
+        public PostTemplateModel(CrunchConfig config, Content post)
         {
             Title = post.Title;
             Content = post.Text;
@@ -15,7 +15,7 @@ namespace Bit0.CrunchLog.ViewModels
             Author = post.Author;
             Date = post.Date;
             Keywords = config.Tags.Concat(post.Tags);
-            PermaLink = post.PermaLink;
+            Permalink = post.Permalink;
 
             Config = config;
         }
@@ -29,7 +29,7 @@ namespace Bit0.CrunchLog.ViewModels
 
         public String Content { get; }
 
-        public String PermaLink { get; }
+        public String Permalink { get; set; }
 
         public Author Author { get; }
 
@@ -39,7 +39,7 @@ namespace Bit0.CrunchLog.ViewModels
 
         public override String ToString()
         {
-            return PermaLink;
+            return Permalink;
         }
     }
 }

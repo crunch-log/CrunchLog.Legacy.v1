@@ -73,7 +73,7 @@ namespace Bit0.CrunchLog.Cli
                 logger.LogDebug("Generate");
                 var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
-                generator.PublishAll();
+                generator.Publish();
             });
         }
 
@@ -101,11 +101,11 @@ namespace Bit0.CrunchLog.Cli
                 logger.LogDebug("Run");
                 var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
-                generator.PublishAll();
+                generator.Publish();
 
                 Terminal.OnLogMessageReceived += (s, e) =>
                 {
-                    var level = LogLevel.None;
+                    LogLevel level;
 
                     switch (e.MessageType)
                     {

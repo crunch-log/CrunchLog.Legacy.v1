@@ -11,7 +11,7 @@ namespace Bit0.CrunchLog
     public interface IContentGenerator
     {
         void CleanOutput();
-        void PublishAll();
+        void Publish();
         void PublishArchive();
         void PublishCategories();
         void PublishContent();
@@ -116,7 +116,7 @@ namespace Bit0.CrunchLog
             _config.Paths.ImagesPath.Copy(_config.Paths.OutputPath.CombineDirPath("images"));
         }
 
-        public void PublishAll()
+        public void Publish()
         {
             // get posts
             // create archive, tag and category pages
@@ -133,7 +133,7 @@ namespace Bit0.CrunchLog
             PublishCategories();
             PublishTags();
             PublishHome();
-
+            PublishImages();
         }
     }
 }

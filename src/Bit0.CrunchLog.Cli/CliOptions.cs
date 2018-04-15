@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using Unosquare.Labs.EmbedIO;
+using Unosquare.Swan;
 
 namespace Bit0.CrunchLog.Cli
 {
@@ -101,13 +102,47 @@ namespace Bit0.CrunchLog.Cli
                 var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
                 generator.PublishAll();
-                
+
+                Terminal.OnLogMessageReceived += (s, e) =>
+                {
+                    var level = LogLevel.None;
+
+                    switch (e.MessageType)
+                    {
+                        case LogMessageType.None:
+                            level = LogLevel.None;
+                            break;
+                        case LogMessageType.Info:
+                            level = LogLevel.Information;
+                            break;
+                        case LogMessageType.Debug:
+                            level = LogLevel.Debug;
+                            break;
+                        case LogMessageType.Trace:
+                            level = LogLevel.Trace;
+                            break;
+                        case LogMessageType.Error:
+                            level = LogLevel.Error;
+                            break;
+                        case LogMessageType.Warning:
+                            level = LogLevel.Warning;
+                            break;
+                        case LogMessageType.Fatal:
+                            level = LogLevel.Critical;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    logger.Log(level, new EventId(2001, e.Source), $"[{e.Source}] {e.Message}", e.Exception, (state, exception) => state.ToString());
+                };
+                Terminal.Settings.DisplayLoggingMessageType = LogMessageType.None;
+
                 var server = WebServer
                     .Create(args.Url)
                     .EnableCors()
                     .WithLocalSession()
                     .WithStaticFolderAt(config.Paths.OutputPath.FullName);
-
                 var cts = new CancellationTokenSource();
                 var task = server.RunAsync(cts.Token);
 

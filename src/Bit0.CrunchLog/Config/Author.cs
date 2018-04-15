@@ -10,6 +10,8 @@ namespace Bit0.CrunchLog.Config
         public String Name { get; set; }
         [JsonProperty("email")]
         public String Email { get; set; }
+        [JsonProperty("homepage")]
+        public String HomePage { get; set; }
         [JsonProperty("social")]
         public IDictionary<String, String> Social { get; set; }
 

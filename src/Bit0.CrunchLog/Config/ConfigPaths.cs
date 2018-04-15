@@ -15,25 +15,29 @@ namespace Bit0.CrunchLog.Config
             _configFile = configFile;
         }
 
-        [JsonProperty("content")] public String Content { get; set; } = StaticPaths.Content;
-        [JsonProperty("themes")] public String Themes { get; set; } = StaticPaths.Themes;
-        [JsonProperty("plugins")] public String Plugins { get; set; } = StaticPaths.Plugins;
-        [JsonProperty("output")]public String Output { get; set; } = StaticPaths.Output;
+        [JsonProperty("content")] public String ContentPathKey { get; set; } = StaticPaths.Content;
+        [JsonProperty("themes")] public String ThemesPathKey { get; set; } = StaticPaths.Themes;
+        [JsonProperty("plugins")] public String PluginsPathKey { get; set; } = StaticPaths.Plugins;
+        [JsonProperty("output")] public String OutputPathKey { get; set; } = StaticPaths.Output;
+        [JsonProperty("images")] public String ImagesPathKey { get; set; } = StaticPaths.Images;
 
         [JsonIgnore]
         public DirectoryInfo BasePath => _configFile.Directory;
 
         [JsonIgnore]
-        public DirectoryInfo OutputPath => new DirectoryInfo(BasePath.CombinePath(Output.NormalizePath()));
+        public DirectoryInfo OutputPath => BasePath.CombineDirPath(OutputPathKey.NormalizePath());
 
         [JsonIgnore]
-        public DirectoryInfo ContentPath => new DirectoryInfo(BasePath.CombinePath(Content.NormalizePath()));
+        public DirectoryInfo ContentPath => BasePath.CombineDirPath(ContentPathKey.NormalizePath());
     
         [JsonIgnore]
-        public DirectoryInfo ThemesPath => new DirectoryInfo(BasePath.CombinePath(Themes.NormalizePath()));
+        public DirectoryInfo ThemesPath => BasePath.CombineDirPath(ThemesPathKey.NormalizePath());
     
         [JsonIgnore]
-        public DirectoryInfo PluginsPath => new DirectoryInfo(BasePath.CombinePath(Plugins.NormalizePath()));
+        public DirectoryInfo PluginsPath => BasePath.CombineDirPath(PluginsPathKey.NormalizePath());
+
+        [JsonIgnore]
+        public DirectoryInfo ImagesPath => BasePath.CombineDirPath(ImagesPathKey.NormalizePath());
     }
 
     public static class StaticPaths
@@ -42,6 +46,7 @@ namespace Bit0.CrunchLog.Config
         public const String Content = "Content";
         public const String Themes = "Themes";
         public const String Plugins = "Plugins";
+        public const String Images = "Content/Images";
         public const String Output = "_site";
     }
 }

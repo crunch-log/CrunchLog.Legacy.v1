@@ -1,40 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Markdig.Extensions.DefinitionLists;
 
 namespace Bit0.CrunchLog.Extensions
 {
     public static class DirectoryInfoExtensions
     {
-        public static String CombinePath(this DirectoryInfo dir, params String[] paths)
+        public static DirectoryInfo CombineDirPath(this DirectoryInfo dir, params String[] paths)
         {
             var pathList = new List<String>(new[] { dir.FullName });
             pathList.AddRange(paths);
 
-            return Path.Combine(pathList.ToArray());
-        }
-
-        public static String CombinePathEx(this DirectoryInfo dir, String extension, params String[] paths)
-        {
-            var pathList = new List<String>(new[] { dir.FullName });
-            pathList.AddRange(paths);
-
-            return Path.ChangeExtension(dir.CombinePath(pathList.ToArray()), extension);
+            return new DirectoryInfo(Path.Combine(pathList.ToArray()).NormalizePath());
         }
         
+        public static FileInfo CombineFilePath(this DirectoryInfo dir, String extension, params String[] paths)
+        {
+            var pathList = new List<String>(new[] { dir.FullName });
+            pathList.AddRange(paths);
+
+            return new FileInfo(Path.ChangeExtension(dir.CombineDirPath(pathList.ToArray()).FullName, extension).NormalizePath());
+        }
+
+        public static FileInfo CombineFilePath(this DirectoryInfo dir, String file)
+        {
+            return dir.CombineFilePath(Path.GetExtension(file), Path.GetFileNameWithoutExtension(file));
+        }
+
         public static String NormalizePath(this String path)
         {
             return path.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar);
         }
 
-        
+
         public static void Copy(this DirectoryInfo dir, DirectoryInfo destDir, Boolean copySubDirs = true)
         {
             if (!dir.Exists)
             {
                 throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
+                    message: "Source directory does not exist or could not be found: "
                     + dir.FullName);
             }
 
@@ -44,23 +48,24 @@ namespace Bit0.CrunchLog.Extensions
             {
                 destDir.Create();
             }
-        
+
             // Get the files in the directory and copy them to the new location.
             var files = dir.GetFiles();
             foreach (var file in files)
             {
-                var temppath = destDir.CombinePath(file.Name);
-                file.CopyTo(temppath, true);
+                var temppath = destDir.CombineDirPath(file.Name);
+                file.CopyTo(destFileName: temppath.FullName, overwrite: true);
             }
 
             // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
+            if (!copySubDirs)
             {
-                foreach (var subdir in dirs)
-                {
-                    var temppath = new DirectoryInfo(destDir.CombinePath(subdir.Name));
-                    subdir.Copy(temppath, copySubDirs);
-                }
+                return;
+            }
+            foreach (var subdir in dirs)
+            {
+                var temppath = destDir.CombineDirPath(subdir.Name);
+                subdir.Copy(temppath);
             }
         }
     }

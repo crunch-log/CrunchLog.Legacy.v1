@@ -8,8 +8,6 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchConfig
     {
-        private readonly FileInfo _configFile;
-
         [JsonProperty("site")]
         public Site Site { get; set; } = new Site();
 
@@ -36,15 +34,13 @@ namespace Bit0.CrunchLog.Config
 
         public CrunchConfig(FileInfo configFile)
         {
-            _configFile = configFile;
-
-            Paths = new ConfigPaths(_configFile);
+            Paths = new ConfigPaths(configFile);
         }
 
         public void Fix()
         {
             // load themes directory
-            Site.Theme = new DirectoryInfo(Paths.ThemesPath.CombinePath(Site.ThemeKey));
+            Site.Theme = Paths.ThemesPath.CombineDirPath(Site.ThemeKey);
         }
     }
 }

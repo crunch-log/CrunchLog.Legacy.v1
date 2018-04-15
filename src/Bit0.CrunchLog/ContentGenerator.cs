@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.TemplateModels;
-using Bit0.CrunchLog.Theme;
+using Bit0.CrunchLog.ThemeHandler;
 using Microsoft.Extensions.Logging;
 
 namespace Bit0.CrunchLog
@@ -16,6 +17,7 @@ namespace Bit0.CrunchLog
         void PublishContent();
         void PublishHome();
         void PublishTags();
+        void PublishImages();
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -91,10 +93,10 @@ namespace Bit0.CrunchLog
                 Tags = _contentProvider.PostTags,
                 Categories = _contentProvider.PostCategories,
                 Archives = _contentProvider.PostArchives,
-                Posts = _contentProvider.Posts.Take(10).Select(p => new PostTemplateModel(_config, p)),
+                Posts = _contentProvider.Posts.Take(10).Select(p => p.Post),
             };
 
-            _themeHandler.WriteFile("home", home);
+            _themeHandler.WriteHtml("home", home);
         }
 
         public void PublishContent()
@@ -107,6 +109,11 @@ namespace Bit0.CrunchLog
             }
 
             _logger.LogInformation($"Published: {published.Count}");
+        }
+
+        public void PublishImages()
+        {
+            _config.Paths.ImagesPath.Copy(_config.Paths.OutputPath.CombineDirPath("images"));
         }
 
         public void PublishAll()

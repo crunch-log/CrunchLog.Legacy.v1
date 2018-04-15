@@ -120,7 +120,7 @@ namespace Bit0.CrunchLog
         public FileInfo MetaFile { get; set; }
 
         [JsonIgnore]
-        public FileInfo ContentFile => new FileInfo(MetaFile?.Directory?.CombinePath(MarkdownFile));
+        public FileInfo ContentFile => MetaFile?.Directory?.CombineFilePath(MarkdownFile);
 
         [JsonIgnore]
         public String Text
@@ -148,7 +148,6 @@ namespace Bit0.CrunchLog
 
         public void Fix(CrunchConfig config)
         {
-
             // fix permalink
             Permalink = Permalink
                 .Replace(":year", Date.ToString("yyyy"))
@@ -169,6 +168,8 @@ namespace Bit0.CrunchLog
                 AuthorKey = author.Key;
                 Author = author.Value;
             }
+
+            Post = new PostTemplateModel(config, this);
         }
     }
 

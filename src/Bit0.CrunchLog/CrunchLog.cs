@@ -33,7 +33,7 @@ namespace Bit0.CrunchLog
 
             if (configFile == null)
             {
-                var errorMsg = $"Cannot find {_basePath.CombinePath(StaticPaths.ConfigFile)}";
+                var errorMsg = $"Cannot find {_basePath.CombineDirPath(StaticPaths.ConfigFile)}";
                 throw new FileNotFoundException(errorMsg);
             }
 

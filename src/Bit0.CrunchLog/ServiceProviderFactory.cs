@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using Bit0.CrunchLog.Logging;
-using Bit0.CrunchLog.Theme;
+using Bit0.CrunchLog.ThemeHandler;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bit0.CrunchLog

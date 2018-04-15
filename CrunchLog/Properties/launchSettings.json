@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CrunchLog": {
-      "commandName": "Project",
-      "commandLineArgs": "U:\\Projects\\CrunchLog\\CrunchLog\\Samples\\Site1"
-    }
-  }
-}

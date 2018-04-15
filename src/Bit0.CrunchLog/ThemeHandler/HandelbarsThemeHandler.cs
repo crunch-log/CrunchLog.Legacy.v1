@@ -21,15 +21,30 @@ namespace Bit0.CrunchLog.ThemeHandler
                 ExpressionNameResolver = new UpperCamelCaseExpressionNameResolver()
             });
 
-            var hbs = config.Site.Theme.CombineDirPath("shared").GetFiles(".hbs", SearchOption.AllDirectories);
+            _handlebars = handlebars;
 
-            handlebars.RegisterHelper("alt", (output, context, arguments) =>
+            RegisterPartials(config);
+            RegisterHelpers();
+        }
+
+        private void RegisterHelpers()
+        {
+            _handlebars.RegisterHelper("alt", (output, context, arguments) =>
             {
                 var i = (Int32) arguments[0];
                 output.WriteSafeString(i % 2 == 0 ? arguments[1] : arguments[2]);
             });
+        }
 
-            _handlebars = handlebars;
+        private void RegisterPartials(CrunchConfig config)
+        {
+            var partials = config.Site.Theme.CombineDirPath("shared").GetFiles(".hbs", SearchOption.AllDirectories);
+            foreach (var partial in partials)
+            {
+                var name = Path.GetFileNameWithoutExtension(partial.FullName);
+                var partialTemplate = File.ReadAllText(partial.FullName);
+                _handlebars.RegisterTemplate(name, partialTemplate);
+            }
         }
 
         public override void WriteFile(string template, ITemplateModel model)

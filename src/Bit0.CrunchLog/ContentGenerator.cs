@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.TemplateModels;
@@ -88,7 +87,7 @@ namespace Bit0.CrunchLog
 
         public void PublishHome()
         {
-            var home = new HomeTemplateModel(_config)
+            var model = new HomeTemplateModel(_config)
             {
                 Tags = _contentProvider.PostTags,
                 Categories = _contentProvider.PostCategories,
@@ -96,7 +95,7 @@ namespace Bit0.CrunchLog
                 Posts = _contentProvider.Posts.Take(10).Select(p => p.Post),
             };
 
-            _themeHandler.WriteHtml("home", home);
+            _themeHandler.WriteFile(model);
         }
 
         public void PublishContent()
@@ -105,7 +104,8 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                //content.WriteFile(_config.Paths.OutputPath);
+                var model = new PostTemplateModel(_config, content);
+                _themeHandler.WriteFile(model);
             }
 
             _logger.LogInformation($"Published: {published.Count}");

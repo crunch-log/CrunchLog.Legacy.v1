@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.TemplateModels;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
 
 namespace Bit0.CrunchLog.ThemeHandler
 {
@@ -42,16 +41,10 @@ namespace Bit0.CrunchLog.ThemeHandler
             }
         }
 
-        public void WriteHtml(String template, ITemplateModel model)
+        public void WriteFile(ITemplateModel model)
         {
-            WriteFile(template + ".html", model);
+            WriteFile(model.Layout, model);
         }
-
-        public void WriteCss(String template, ITemplateModel model)
-        {
-            WriteFile(template + ".css", model);
-        }
-
         public abstract void WriteFile(String template, ITemplateModel model);
     }
 }

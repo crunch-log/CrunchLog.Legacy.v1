@@ -4,6 +4,7 @@ namespace Bit0.CrunchLog.TemplateModels
 {
     public interface ITemplateModel
     {
-        String Permalink { get; set; }
+        String Permalink { get; }
+        String Layout { get; }
     }
 }

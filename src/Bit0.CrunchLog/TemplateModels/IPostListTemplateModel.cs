@@ -10,12 +10,13 @@ namespace Bit0.CrunchLog.TemplateModels
         IEnumerable<PostTemplateModel> Posts {get; set; }
     }
 
-    public class PostListBaseTemplateModel : IPostListTemplateModel
+    public abstract class PostListBaseTemplateModel : IPostListTemplateModel
     {
         public String Name { get; set; }
         public IEnumerable<PostTemplateModel> Posts {get; set; }
 
         public String Permalink { get; set; }
+        public abstract String Layout { get; }
 
         public override String ToString()
         {

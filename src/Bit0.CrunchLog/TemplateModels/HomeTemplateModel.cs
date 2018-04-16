@@ -13,9 +13,9 @@ namespace Bit0.CrunchLog.TemplateModels
 
         public CrunchConfig Config { get; }
 
-        public String Permalink { get; set; } = "/";
+        public String Permalink => "/";
 
-        public IEnumerable<MenuItem> Menu => Config.Menu["main"];
+        public String Layout => Layouts.Home;
 
         public IEnumerable<TagTemplateModel> Tags {get; set; }
         public IEnumerable<CategoryTemplateModel> Categories {get; set; }

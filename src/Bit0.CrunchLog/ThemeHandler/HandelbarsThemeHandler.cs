@@ -23,8 +23,8 @@ namespace Bit0.CrunchLog.ThemeHandler
 
             _handlebars = handlebars;
 
-            RegisterPartials(config);
             RegisterHelpers();
+            RegisterPartials(config);
         }
 
         private void RegisterHelpers()
@@ -38,16 +38,28 @@ namespace Bit0.CrunchLog.ThemeHandler
 
         private void RegisterPartials(CrunchConfig config)
         {
-            var partials = config.Site.Theme.CombineDirPath("shared").GetFiles(".hbs", SearchOption.AllDirectories);
-            foreach (var partial in partials)
+            var templates = config.Site.Theme.GetFiles("*.hbs", SearchOption.AllDirectories);
+            foreach (var partial in templates)
             {
-                var name = Path.GetFileNameWithoutExtension(partial.FullName);
-                var partialTemplate = File.ReadAllText(partial.FullName);
-                _handlebars.RegisterTemplate(name, partialTemplate);
+                var dir = partial.DirectoryName.Replace(config.Site.Theme.FullName, "");
+                dir = dir.Replace("\\shared\\", "");
+
+                if (!String.IsNullOrWhiteSpace(dir))
+                {
+                    dir += "/";
+                }
+
+                var name = $"{dir}{Path.GetFileNameWithoutExtension(partial.FullName)}";
+                var source = File.ReadAllText(partial.FullName);
+
+                using (var reader = new StringReader (source)) {
+                    var partialTemplate = _handlebars.Compile (reader);
+                    _handlebars.RegisterTemplate(name, partialTemplate);
+                }
             }
         }
 
-        public override void WriteFile(string template, ITemplateModel model)
+        public override void WriteFile(String template, ITemplateModel model)
         {
             var outputDir = Config.Paths.OutputPath.CombineDirPath(model.Permalink.Substring(1));
             if (!outputDir.Exists)
@@ -57,13 +69,11 @@ namespace Bit0.CrunchLog.ThemeHandler
             
             var file = outputDir.CombineFilePath(".html", "index");
 
-            var templateFile = Config.Site.Theme.CombineFilePath(".hbs", template);
-            var handlebarsTemplate = _handlebars.Compile(templateFile.OpenText().ReadToEnd());
+            var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[template];
 
             using (var write = file.CreateText())
             {
-                var content = handlebarsTemplate(model);
-                write.Write(content);
+                handlebarsTemplate(write, model);
             }
         }
     }

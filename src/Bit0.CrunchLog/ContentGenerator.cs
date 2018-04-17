@@ -79,7 +79,7 @@ namespace Bit0.CrunchLog
 
             foreach (var archive in archives)
             {
-                //archive.WriteFile(_config.Paths.OutputPath);
+                //_themeHandler.WriteFile(archive);
             }
 
             _logger.LogInformation($"Archives published: {archives.Count}");
@@ -128,12 +128,12 @@ namespace Bit0.CrunchLog
 
             _themeHandler.InitOutput();
 
+            PublishImages();
+            PublishHome();
             PublishContent();
             PublishArchive();
             PublishCategories();
             PublishTags();
-            PublishHome();
-            PublishImages();
         }
     }
 }

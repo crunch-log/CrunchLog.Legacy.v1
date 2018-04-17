@@ -13,15 +13,15 @@ namespace Bit0.CrunchLog.ThemeHandler
         {
             Config = config;
 
-            var themeConfig = Config.Site.Theme.CombineFilePath(".json", "theme");
-            var theme = new Theme(themeConfig);
-            jsonSerializer.Populate(themeConfig.OpenText(), theme);
+            var themeMeta = Config.Site.Theme.CombineFilePath(".json", "theme");
+            var theme = new Theme(themeMeta);
+            jsonSerializer.Populate(themeMeta.OpenText(), theme);
 
-            ThemeConfig = theme;
+            Theme = theme;
         }
 
         protected CrunchConfig Config { get; }
-        protected Theme ThemeConfig { get; } 
+        protected Theme Theme { get; } 
 
         public void InitOutput()
         {
@@ -30,12 +30,12 @@ namespace Bit0.CrunchLog.ThemeHandler
                 Config.Paths.OutputPath.Create();
             }
 
-            foreach (var dir in ThemeConfig.Assets.Directories.Select(d => ThemeConfig.Directory.CombineDirPath(d)))
+            foreach (var dir in Theme.Assets.Directories.Select(d => Theme.Directory.CombineDirPath(d)))
             {
                 dir.Copy(Config.Paths.OutputPath.CombineDirPath(dir.Name));
             }
 
-            foreach (var file in ThemeConfig.Assets.Files.Select(f => ThemeConfig.Directory.CombineFilePath(f)))
+            foreach (var file in Theme.Assets.Files.Select(f => Theme.Directory.CombineFilePath(f)))
             {
                 file.CopyTo(Config.Paths.OutputPath.CombineDirPath(file.Name).FullName, true);
             }

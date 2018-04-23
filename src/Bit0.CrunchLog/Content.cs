@@ -10,13 +10,6 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
-    public interface IContent
-    {
-        String Layout { get; set; }
-        String Permalink { get; set; }
-        String Title { get; set; }
-    }
-
     public class Content : IContent
     {
         private String _mdFile;
@@ -178,17 +171,5 @@ namespace Bit0.CrunchLog
 
             Post = new PostTemplateModel(config, this);
         }
-    }
-
-    public static class Layouts
-    {
-        public const String Post = "post";
-        public const String Page = "page";
-        public const String Home = "home";
-        public const String Tags = "tags";
-        public const String Category = "category";
-        public const String Archive = "archive";
-        public const String List = "list";
-        public const String Empty = "empty";
     }
 }

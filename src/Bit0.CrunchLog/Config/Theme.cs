@@ -43,22 +43,4 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("license")]
         public License License { get; set; }
     }
-
-    public class License
-    {
-        [JsonProperty("name")]
-        public String Name { get; set; }
-        
-        [JsonProperty("link")]
-        public String Link { get; set; }
-    }
-
-    public class Assets
-    {
-        [JsonProperty("dirs")]
-        public IEnumerable<String> Directories { get; set; }
-
-        [JsonProperty("files")]
-        public IEnumerable<String> Files { get; set; }
-    }
 }

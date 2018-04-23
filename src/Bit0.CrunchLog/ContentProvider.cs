@@ -8,48 +8,6 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
-    public interface IContentProvider
-    {
-        IEnumerable<Content> AllContent { get; }
-        IEnumerable<Content> PublishedContent { get; }
-        IEnumerable<Content> Posts { get; }
-        IEnumerable<Content> Pages { get; }
-        IEnumerable<ContentListItem> PostTags { get; }
-        IEnumerable<ContentListItem> PostCategories { get; }
-        IEnumerable<ContentListItem> PostArchives { get; }
-        IDictionary<String, IContent> Links { get; }
-        ContentTreeNode Tree { get; }
-        IDictionary<String, ContentTreeNode> TreeLinks { get; }
-    }
-
-    public class ContentListItem : IContent
-    {
-        public String Layout { get; set; }
-        public String Permalink { get; set; }
-        public String Title { get; set; }
-        public IEnumerable<IContent> Children { get; set; }
-    }
-
-    public class ContentTreeNode
-    {
-        public String Permalink { get; set; }
-        public IContent Parent { get; set; }
-        public IContent Current { get; set; }
-        public IList<ContentTreeNode> Children { get; set; } = new List<ContentTreeNode>();
-
-        public override String ToString()
-        {
-            return $"{Permalink}, Children: {Children.Count}";
-        }
-    }
-
-    public class EmptyContent : IContent
-    {
-        public String Layout { get; set; } = Layouts.Empty;
-        public String Permalink { get; set; } = "";
-        public String Title { get; set; } = "{EMPTY}";
-    }
-
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ContentProvider : IContentProvider
     {
@@ -187,6 +145,7 @@ namespace Bit0.CrunchLog
                         .Select(x => x[2])
                         .Distinct();
 
+                    // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (var month in months)
                     {
                         var mSlug = $"/{year}/{month}/";
@@ -243,93 +202,6 @@ namespace Bit0.CrunchLog
 
                 return dict.OrderBy(l => l.Key).ToDictionary(k => k.Key, v => v.Value);
             }
-        }
-
-        public IDictionary<String, ContentTreeNode> TreeLinks { get; } = new Dictionary<String, ContentTreeNode>();
-
-        public ContentTreeNode Tree
-        {
-            get
-            {
-                // add home
-                // add pages
-                // add posts
-                // add archives
-                // add categories
-                // add tags
-                Links.Keys.ToList().ForEach(x => { AddNode(x); });
-                return TreeLinks.FirstOrDefault().Value;
-            }
-        }
-
-        private ContentTreeNode AddNode(String path)
-        {
-            var segments = path.Split('/').Where(s => !String.IsNullOrWhiteSpace(s)).ToArray();
-            if (!segments.Any())
-            {
-                if (!path.Equals("/", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return null;
-                }
-
-                var home = new ContentTreeNode
-                {
-                    Current = Links[path],
-                    Parent = null,
-                    Permalink = path
-                };
-                TreeLinks.Add(path, home);
-
-                return home;
-            }
-
-            var parent = $"/{String.Join("/", segments.Reverse().Skip(1).Reverse())}/".Replace("//", "/");
-            var parentNode = TreeLinks.FirstOrDefault(n => n.Key == parent).Value
-                             ?? AddNode(parent);
-
-            IContent content;
-            if (Links.ContainsKey(path))
-            {
-                content = Links[path];
-            }
-            else
-            {
-                if (path.Equals("/category/", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    content = new ContentListItem
-                    {
-                        Permalink = path,
-                        Layout = Layouts.Category,
-                        Title = "Categories",
-                        Children = PostCategories
-                    };
-                }
-                else if (path.Equals("/tag/", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    content = new ContentListItem
-                    {
-                        Permalink = path,
-                        Layout = Layouts.Tags,
-                        Title = "Tags",
-                        Children = PostTags
-                    };
-                }
-                else
-                {
-                    content = new EmptyContent();
-                }
-            }
-
-            var node = new ContentTreeNode
-            {
-                Current = content,
-                Parent = parentNode.Current,
-                Permalink = path
-            };
-
-            parentNode.Children.Add(node);
-            TreeLinks.Add(path, node);
-            return node;
         }
     }
 }

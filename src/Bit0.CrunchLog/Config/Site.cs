@@ -26,8 +26,5 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("favicon")]
         public String FavIcon { get; set; } = "favicon.ico";
-
-        [JsonProperty("pagination")]
-        public Pagination Pagination { get; set; } = new Pagination();
     }
 }

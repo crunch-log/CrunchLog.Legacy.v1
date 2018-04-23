@@ -31,6 +31,9 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("paths")]
         public ConfigPaths Paths { get; set; }
+        
+        [JsonProperty("pagination")]
+        public Pagination Pagination { get; set; } = new Pagination();
 
         public CrunchConfig(FileInfo configFile)
         {

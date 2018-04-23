@@ -146,7 +146,7 @@ namespace Bit0.CrunchLog
             return Permalink;
         }
 
-        public void Fix(CrunchConfig config)
+        public void UpdateProperties(CrunchConfig config)
         {
             // fix permalink
             Permalink = Permalink

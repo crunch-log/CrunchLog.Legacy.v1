@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.TemplateModels;
@@ -26,7 +24,7 @@ namespace Bit0.CrunchLog.ThemeHandler
             _handlebars = handlebars;
 
             RegisterHelpers();
-            RegisterPartials();
+            RegisterTemplates();
         }
 
         private void RegisterHelpers()
@@ -45,9 +43,40 @@ namespace Bit0.CrunchLog.ThemeHandler
                 }
             });
 
-            _handlebars.RegisterHelper("sep", (output, options, context, args) =>
+            _handlebars.RegisterHelper("partial", (output, options, context, args) =>
             {
-                if (args[0] is Boolean isLast && !isLast)
+                if (args[0] is String template && _handlebars.Configuration.RegisteredTemplates.ContainsKey(template))
+                {
+                    var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[template];
+                    handlebarsTemplate(output, context);
+                    return;
+                }
+
+                options.Inverse(output, context);
+            });
+
+            _handlebars.RegisterHelper("times", (output, options, context, args) =>
+            {
+                if (args[0] is String s && Int32.TryParse(s, out var n))
+                {
+                    for (var i = 0; i < n; i++)
+                    {
+                        options.Template(output, context);
+                    }
+                    return;
+                }
+
+                options.Inverse(output, context);
+            });
+
+            _handlebars.RegisterHelper("partial-helper", (output, options, context, args) =>
+            {
+                options.Template(output, context);
+            });
+
+            _handlebars.RegisterHelper("ifContext", (output, options, context, args) =>
+            {
+                if (String.Equals(args[0].GetType().Name, $"{args[1]}TemplateModel", StringComparison.InvariantCultureIgnoreCase))
                 {
                     options.Template(output, context);
                     return;
@@ -55,26 +84,15 @@ namespace Bit0.CrunchLog.ThemeHandler
 
                 options.Inverse(output, context);
             });
-
-            _handlebars.RegisterHelper("partial", (output, options, context, args) =>
-            {
-                if (args[0] is String template && _handlebars.Configuration.RegisteredTemplates.ContainsKey(template))
-                {
-                    var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[template];
-                    handlebarsTemplate(output, context);
-                }
-
-                options.Inverse(output, context);
-            });
         }
 
-        private void RegisterPartials()
+        private void RegisterTemplates()
         {
-            RegisterPartials("shared");
-            RegisterPartials("layouts");
+            RegisterTemplates("shared");
+            RegisterTemplates("layouts");
         }
 
-        private void RegisterPartials(String subDir)
+        private void RegisterTemplates(String subDir)
         {
             var dirPath = Theme.Directory.CombineDirPath(subDir);
             var templates = dirPath.GetFiles("*.hbs", SearchOption.AllDirectories);
@@ -110,7 +128,7 @@ namespace Bit0.CrunchLog.ThemeHandler
 
         public override void WriteFile(String template, ITemplateModel model)
         {
-            var outputDir = Config.Paths.OutputPath.CombineDirPath(model.Permalink.Substring(1));
+            var outputDir = Config.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
             if (!outputDir.Exists)
             {
                 outputDir.Create();

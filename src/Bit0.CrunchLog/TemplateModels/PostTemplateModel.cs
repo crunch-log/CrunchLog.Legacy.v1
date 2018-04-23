@@ -28,10 +28,10 @@ namespace Bit0.CrunchLog.TemplateModels
         public IEnumerable<String> Keywords { get; }
         public String Description { get; }
         public String Content { get; }
-        public String Permalink { get; }
+        public String Permalink { get; set; }
         public Author Author { get; }
         public DateTime Date { get; }
-        public CrunchConfig Config { get; }
+        public CrunchConfig Config { get; set; }
         public override String ToString()
         {
             return Permalink;

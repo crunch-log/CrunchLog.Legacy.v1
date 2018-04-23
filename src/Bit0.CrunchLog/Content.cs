@@ -10,7 +10,14 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
-    public class Content
+    public interface IContent
+    {
+        String Layout { get; set; }
+        String Permalink { get; set; }
+        String Title { get; set; }
+    }
+
+    public class Content : IContent
     {
         private String _mdFile;
         private String _slug;
@@ -182,5 +189,6 @@ namespace Bit0.CrunchLog
         public const String Category = "category";
         public const String Archive = "archive";
         public const String List = "list";
+        public const String Empty = "empty";
     }
 }

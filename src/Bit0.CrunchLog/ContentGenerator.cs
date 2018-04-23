@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.TemplateModels;
 using Bit0.CrunchLog.ThemeHandler;
 using Microsoft.Extensions.Logging;
 
@@ -51,51 +50,50 @@ namespace Bit0.CrunchLog
 
         public void PublishCategories()
         {
-            var categories = _contentProvider.PostCategories.ToList();
+        //    var pages = _contentProvider.PostCategories.SelectMany(a => a.Pages).ToList();
 
-            foreach (var category in categories)
-            {
-                //category.WriteFile(_config.Paths.OutputPath);
-            }
+        //    foreach (var page in pages)
+        //    {
+        //        //category.WriteFile(_config.Paths.OutputPath);
+        //    }
 
-            _logger.LogInformation($"Categories published: {categories.Count}");
+        //    _logger.LogInformation($"Categories published in {pages.Count} pages");
         }
 
         public void PublishTags()
         {
-            var tags = _contentProvider.PostTags.ToList();
+            //var pages = _contentProvider.PostTags.SelectMany(a => a.Pages).ToList();
 
-            foreach (var tag in tags)
-            {
-                //tag.WriteFile(_config.Paths.OutputPath);
-            }
+            //foreach (var page in pages)
+            //{
+            //    //tag.WriteFile(_config.Paths.OutputPath);
+            //}
 
-            _logger.LogInformation($"Tags published: {tags.Count}");
+            //_logger.LogInformation($"Tags published in {pages.Count} pages");
         }
 
         public void PublishArchive()
         {
-            var archives = _contentProvider.PostArchives.ToList();
+            //var pages = _contentProvider.PostArchives.SelectMany(a => a.Pages).ToList();
 
-            foreach (var archive in archives)
-            {
-                //_themeHandler.WriteFile(archive);
-            }
+            //foreach (var page in pages)
+            //{
+            //    //_themeHandler.WriteFile(archive);
+            //}
 
-            _logger.LogInformation($"Archives published: {archives.Count}");
+            //_logger.LogInformation($"Archives published in {pages.Count} pages");
         }
 
         public void PublishHome()
         {
-            var model = new HomeTemplateModel(_config)
-            {
-                Tags = _contentProvider.PostTags,
-                Categories = _contentProvider.PostCategories,
-                Archives = _contentProvider.PostArchives,
-                Posts = _contentProvider.Posts.Take(10).Select(p => p.Post),
-            };
+            //var pages = _contentProvider.Home.Pages.ToList();
 
-            _themeHandler.WriteFile(model);
+            //foreach (var page in pages)
+            //{
+            //    _themeHandler.WriteFile(page);
+            //}
+
+            //_logger.LogInformation($"Home published in {pages.Count} pages");
         }
 
         public void PublishContent()
@@ -104,11 +102,10 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                var model = new PostTemplateModel(_config, content);
-                _themeHandler.WriteFile(model);
+                _themeHandler.WriteFile(content.Post);
             }
 
-            _logger.LogInformation($"Published: {published.Count}");
+            _logger.LogInformation($"Published {published.Count} posts/pages");
         }
 
         public void PublishImages()
@@ -118,16 +115,19 @@ namespace Bit0.CrunchLog
 
         public void Publish()
         {
-            // get posts
-            // create archive, tag and category pages
-            // create main index
+            // [x] create posts pages
+            // [x] create main index
+            // [ ] create archive pages
+            // [ ] create tag pages
+            // [ ] create category pages
+            // [ ] pagination
 
-            // get parent for pages
-            // create a tree
-            // generate permalink from tree
+            // [ ] get parent for pages
+            // [ ] create a tree
+            // [ ] generate permalink from tree
 
             _themeHandler.InitOutput();
-
+                    
             PublishImages();
             PublishHome();
             PublishContent();

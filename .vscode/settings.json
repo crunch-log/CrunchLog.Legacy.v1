@@ -1,0 +1,14 @@
+{
+    "files.exclude": {
+        "Coverage/": true,
+        "*/**/bin/": true,
+        "*/**/obj/": true,
+        ".vs": true
+    },
+    "search.exclude": {
+        "Coverage/": true,
+        "*/**/bin/": true,
+        "*/**/obj/": true,
+        ".vs": true
+    }
+}

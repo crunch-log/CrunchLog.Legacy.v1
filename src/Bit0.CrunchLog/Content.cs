@@ -109,11 +109,9 @@ namespace Bit0.CrunchLog
 
         [JsonProperty("permaLink")]
         public String Permalink { get; set; }
-
+        
         [JsonProperty("author")]
-        public String AuthorKey { get; set; }
-
-        [JsonIgnore]
+        [JsonConverter(typeof(AuthorConverter))]
         public Author Author { get; set; }
 
         [JsonIgnore]
@@ -123,7 +121,7 @@ namespace Bit0.CrunchLog
         public FileInfo ContentFile => MetaFile?.Directory?.CombineFilePath(MarkdownFile);
 
         [JsonIgnore]
-        public String Text
+        public String Html
         {
             get
             {
@@ -132,21 +130,12 @@ namespace Bit0.CrunchLog
             }
         }
 
-        [JsonIgnore]
-        public Content Parent => null;
-
-        [JsonIgnore]
-        public IEnumerable<Content> Children => null;
-
-        [JsonIgnore]
-        public PostTemplateModel Post { get; private set; }
-
         public override String ToString()
         {
             return Permalink;
         }
 
-        public void UpdateProperties(CrunchConfig config)
+        public void UpdateProperties()
         {
             // fix permalink
             Permalink = Permalink
@@ -154,22 +143,6 @@ namespace Bit0.CrunchLog
                 .Replace(":month", Date.ToString("MM"))
                 .Replace(":day", Date.ToString("dd"))
                 .Replace(":slug", Slug);
-
-            // fix author
-            if (!String.IsNullOrWhiteSpace(AuthorKey)
-                && config.Authors.ContainsKey(AuthorKey))
-            {
-                Author = config.Authors[AuthorKey];
-            }
-            else
-            {
-                var author = config.Authors.FirstOrDefault();
-
-                AuthorKey = author.Key;
-                Author = author.Value;
-            }
-
-            Post = new PostTemplateModel(config, this);
         }
     }
 }

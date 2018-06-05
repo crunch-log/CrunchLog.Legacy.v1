@@ -8,6 +8,8 @@ namespace Bit0.CrunchLog.Config
     {
         [JsonProperty("name")]
         public String Name { get; set; }
+        [JsonProperty("alias")]
+        public String Alias { get; set; }
         [JsonProperty("email")]
         public String Email { get; set; }
         [JsonProperty("homepage")]
@@ -17,7 +19,7 @@ namespace Bit0.CrunchLog.Config
 
         public override String ToString()
         {
-            return Name;
+            return $"{Name} ({Alias})";
         }
     }
 }

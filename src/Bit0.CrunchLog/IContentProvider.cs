@@ -9,6 +9,7 @@ namespace Bit0.CrunchLog
         IEnumerable<Content> PublishedContent { get; }
         IEnumerable<Content> Posts { get; }
         IEnumerable<Content> Pages { get; }
+        ContentListItem Home { get; }
         IEnumerable<ContentListItem> PostTags { get; }
         IEnumerable<ContentListItem> PostCategories { get; }
         IEnumerable<ContentListItem> PostArchives { get; }

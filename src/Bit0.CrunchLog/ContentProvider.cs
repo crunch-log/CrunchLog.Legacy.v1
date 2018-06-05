@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class ContentProvider : IContentProvider
     {
         private readonly CrunchConfig _config;
@@ -41,7 +40,7 @@ namespace Bit0.CrunchLog
                     var content = new Content(metaFile, _config.Permalink);
 
                     _jsonSerializer.Populate(metaFile.OpenText(), content);
-                    content.UpdateProperties(_config);
+                    content.UpdateProperties();
                     allContent.Add(content);
                 }
 
@@ -163,7 +162,7 @@ namespace Bit0.CrunchLog
             }
         }
 
-        private ContentListItem Home => new ContentListItem
+        public ContentListItem Home => new ContentListItem
         {
             Layout = Layouts.Home,
             Permalink = "/",

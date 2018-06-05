@@ -7,7 +7,7 @@
         void PublishArchive();
         void PublishCategories();
         void PublishContent();
-        void PublishHome();
+        void PublisHome();
         void PublishTags();
         void PublishImages();
     }

@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.ThemeHandler;
+using Bit0.CrunchLog.TemplateModels;
 using Microsoft.Extensions.Logging;
 
 namespace Bit0.CrunchLog
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class ContentGenerator : IContentGenerator
     {
         private readonly IContentProvider _contentProvider;
@@ -38,14 +39,14 @@ namespace Bit0.CrunchLog
 
         public void PublishCategories()
         {
-        //    var pages = _contentProvider.PostCategories.SelectMany(a => a.Pages).ToList();
+            //    var pages = _contentProvider.PostCategories.SelectMany(a => a.Pages).ToList();
 
-        //    foreach (var page in pages)
-        //    {
-        //        //category.WriteFile(_config.Paths.OutputPath);
-        //    }
+            //    foreach (var page in pages)
+            //    {
+            //        //category.WriteFile(_config.Paths.OutputPath);
+            //    }
 
-        //    _logger.LogInformation($"Categories published in {pages.Count} pages");
+            //    _logger.LogInformation($"Categories published in {pages.Count} pages");
         }
 
         public void PublishTags()
@@ -72,16 +73,18 @@ namespace Bit0.CrunchLog
             //_logger.LogInformation($"Archives published in {pages.Count} pages");
         }
 
-        public void PublishHome()
+        public void PublisHome()
         {
+            var pages = _contentProvider.Home.GetPages(_config).ToList();
+
             //var pages = _contentProvider.Home.Pages.ToList();
 
-            //foreach (var page in pages)
-            //{
-            //    _themeHandler.WriteFile(page);
-            //}
+            foreach (var page in pages)
+            {
+                _themeHandler.WriteFile(page);
+            }
 
-            //_logger.LogInformation($"Home published in {pages.Count} pages");
+            _logger.LogInformation($"Home published in {pages.Count} pages");
         }
 
         public void PublishContent()
@@ -90,7 +93,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                _themeHandler.WriteFile(content.Post);
+                _themeHandler.WriteFile(content.GetModel(_config));
             }
 
             _logger.LogInformation($"Published {published.Count} posts/pages");
@@ -103,8 +106,8 @@ namespace Bit0.CrunchLog
 
         public void Publish()
         {
-            // [x] create posts pages
-            // [x] create main index
+            // [ ] create posts pages
+            // [ ] create main index
             // [ ] create archive pages
             // [ ] create tag pages
             // [ ] create category pages
@@ -114,10 +117,12 @@ namespace Bit0.CrunchLog
             // [ ] create a tree
             // [ ] generate permalink from tree
 
+            // [ ] replace config with crunchlog->site
+
             _themeHandler.InitOutput();
-                    
+
             PublishImages();
-            PublishHome();
+            PublisHome();
             PublishContent();
             PublishArchive();
             PublishCategories();

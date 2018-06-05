@@ -1,16 +1,18 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.ThemeHandler;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using Bit0.CrunchLog.Logging;
-using Bit0.CrunchLog.ThemeHandler;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bit0.CrunchLog
 {
     public static class ServiceProviderFactory
     {
+        public static IServiceProvider Current { get; private set; }
+
         public static IServiceProvider Build(Arguments args)
         {
             var services = new ServiceCollection();
@@ -34,7 +36,9 @@ namespace Bit0.CrunchLog
             // inject timesamp in log, in future replace with another logger
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
 
-            return services.BuildServiceProvider();
+            Current = services.BuildServiceProvider();
+
+            return Current;
         }
     }
 }

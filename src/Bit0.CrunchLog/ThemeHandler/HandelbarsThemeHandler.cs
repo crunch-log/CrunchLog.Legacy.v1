@@ -69,6 +69,130 @@ namespace Bit0.CrunchLog.ThemeHandler
                 options.Inverse(output, context);
             });
 
+            _handlebars.RegisterHelper("ifCond", (writer, options, context, args) =>
+            {
+                if (args.Length != 3)
+                {
+                    writer.Write("ifCond:Wrong number of arguments");
+                    return;
+                }
+                if (args[0] == null || args[0].GetType().Name == "UndefinedBindingResult")
+                {
+                    writer.Write("ifCond:args[0] undefined");
+                    return;
+                }
+                if (args[1] == null || args[1].GetType().Name == "UndefinedBindingResult")
+                {
+                    writer.Write("ifCond:args[1] undefined");
+                    return;
+                }
+                if (args[2] == null || args[2].GetType().Name == "UndefinedBindingResult")
+                {
+                    writer.Write("ifCond:args[2] undefined");
+                    return;
+                }
+                if (args[0].GetType().Name == "String")
+                {
+                    var val1 = args[0].ToString();
+                    var val2 = args[2].ToString();
+
+                    if (args[1].ToString() == ">")
+                    {
+                        if (val1.Length > val2.Length)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "=" || args[1].ToString() == "==")
+                    {
+                        if (val1 == val2)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "<")
+                    {
+                        if (val1.Length < val2.Length)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "!=" || args[1].ToString() == "<>")
+                    {
+                        if (val1 != val2)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                }
+                else
+                {
+                    var val1 = Single.Parse(args[0].ToString());
+                    var val2 = Single.Parse(args[2].ToString());
+
+                    if (args[1].ToString() == ">")
+                    {
+                        if (val1 > val2)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "=" || args[1].ToString() == "==")
+                    {
+                        if (Math.Abs(val1 - val2) < 1)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "<")
+                    {
+                        if (val1 < val2)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                    else if (args[1].ToString() == "!=" || args[1].ToString() == "<>")
+                    {
+                        if (Math.Abs(val1 - val2) > 0)
+                        {
+                            options.Template(writer, (Object)context);
+                        }
+                        else
+                        {
+                            options.Inverse(writer, (Object)context);
+                        }
+                    }
+                }
+            });
+
             _handlebars.RegisterHelper("partial-helper", (output, options, context, args) =>
             {
                 options.Template(output, context);
@@ -103,7 +227,7 @@ namespace Bit0.CrunchLog.ThemeHandler
                 //    .Replace("\\layouts", "")
                 //    .Replace("\\_layouts", "layouts");
 
-                var dir = partial.DirectoryName.Replace(dirPath.FullName, "");
+                var dir = partial.DirectoryName?.Replace(dirPath.FullName, "") ?? "";
 
                 if (dir.StartsWith(@"\"))
                 {

@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.ThemeHandler
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class HandelbarsThemeHandler : ThemeHandlerBase
     {
         private readonly IHandlebars _handlebars;

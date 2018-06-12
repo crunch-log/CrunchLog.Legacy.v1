@@ -5,7 +5,6 @@ using System.IO;
 
 namespace Bit0.CrunchLog
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class CrunchLog
     {
         public CrunchConfig Config { get; }

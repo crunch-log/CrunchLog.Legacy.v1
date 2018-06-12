@@ -144,7 +144,6 @@ namespace Bit0.CrunchLog
                         .Select(x => x[2])
                         .Distinct();
 
-                    // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (var month in months)
                     {
                         var mSlug = $"/{year}/{month}/";

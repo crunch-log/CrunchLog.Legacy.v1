@@ -23,10 +23,8 @@ namespace Bit0.CrunchLog.Cli.Extensions
         }
 
         public static Arguments BuildArguments(
-            // ReSharper disable once UnusedParameter.Global
             this CommandLineApplication app,
             String basePath = null,
-            // ReSharper disable once RedundantAssignment
             LogLevel verboseLevel = LogLevel.Information,
             String url = Arguments.UrlDefault)
         {
@@ -71,7 +69,6 @@ namespace Bit0.CrunchLog.Cli.Extensions
             };
         }
 
-        // ReSharper disable once UnusedParameter.Global
         public static void OpenBrowser(this CommandLineApplication app, String url)
         {
             try
@@ -147,7 +144,6 @@ namespace Bit0.CrunchLog.Cli.Extensions
             return app.Execute(args, (provider, logger, config) => executeFunc(provider, logger));
         }
 
-        // ReSharper disable once UnusedParameter.Global
         public static String GetVersion<TObject>(this CommandLineApplication app) where TObject : class
             => typeof(TObject).Assembly.GetName().Version.ToString();
     }

@@ -4,7 +4,6 @@ using System.Threading;
 
 namespace Bit0.CrunchLog.Cli
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class Program
     {
         static void Main(string[] args)

@@ -4,7 +4,7 @@ using Bit0.CrunchLog.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace Bit0.CrunchLog
+namespace Bit0.CrunchLog.JsonConverters
 {
     public class AuthorConverter : JsonConverter
     {

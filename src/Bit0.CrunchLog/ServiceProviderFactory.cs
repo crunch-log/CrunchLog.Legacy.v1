@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using Bit0.CrunchLog.Logging;
+using System.IO;
 
 namespace Bit0.CrunchLog
 {
@@ -26,6 +27,7 @@ namespace Bit0.CrunchLog
             services.AddSingleton(new JsonSerializer()); // so that we can add global json config
             services.AddSingleton(args);
 
+            services.AddSingleton<ConfigFile>();
             services.AddSingleton<CrunchLog>();
             services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().Config);
 

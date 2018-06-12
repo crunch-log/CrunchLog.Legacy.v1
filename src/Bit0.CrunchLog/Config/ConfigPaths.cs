@@ -1,42 +1,45 @@
-﻿using System;
-using System.IO;
-using Bit0.CrunchLog.Extensions;
+﻿using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.JsonConverters;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Bit0.CrunchLog.Config
 {
     public class ConfigPaths
     {
-        
-        private readonly FileInfo _configFile;
-
-        public ConfigPaths(FileInfo configFile)
+        public ConfigPaths()
         {
-            _configFile = configFile;
+            BasePath = ServiceProviderFactory.Current.GetService<ConfigFile>().File.Directory;
+            
+            ContentPath = BasePath.CombineDirPath(StaticPaths.Content.NormalizePath());
+            ThemesPath = BasePath.CombineDirPath(StaticPaths.Themes.NormalizePath());
+            PluginsPath = BasePath.CombineDirPath(StaticPaths.Plugins.NormalizePath());
+            OutputPath = BasePath.CombineDirPath(StaticPaths.Output.NormalizePath());
+            ImagesPath = BasePath.CombineDirPath(StaticPaths.Images.NormalizePath());
         }
 
-        [JsonProperty("content")] public String ContentPathKey { get; set; } = StaticPaths.Content;
-        [JsonProperty("themes")] public String ThemesPathKey { get; set; } = StaticPaths.Themes;
-        [JsonProperty("plugins")] public String PluginsPathKey { get; set; } = StaticPaths.Plugins;
-        [JsonProperty("output")] public String OutputPathKey { get; set; } = StaticPaths.Output;
-        [JsonProperty("images")] public String ImagesPathKey { get; set; } = StaticPaths.Images;
+        [JsonIgnore]
+        public DirectoryInfo BasePath { get; }
+                
+        [JsonProperty("content")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Content)]
+        public DirectoryInfo ContentPath { get; set; }
 
-        [JsonIgnore]
-        public DirectoryInfo BasePath => _configFile.Directory;
+        [JsonProperty("themes")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Themes)]
+        public DirectoryInfo ThemesPath { get; set; } 
 
-        [JsonIgnore]
-        public DirectoryInfo OutputPath => BasePath.CombineDirPath(OutputPathKey.NormalizePath());
+        [JsonProperty("plugins")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Plugins)]
+        public DirectoryInfo PluginsPath { get; set; }
 
-        [JsonIgnore]
-        public DirectoryInfo ContentPath => BasePath.CombineDirPath(ContentPathKey.NormalizePath());
-    
-        [JsonIgnore]
-        public DirectoryInfo ThemesPath => BasePath.CombineDirPath(ThemesPathKey.NormalizePath());
-    
-        [JsonIgnore]
-        public DirectoryInfo PluginsPath => BasePath.CombineDirPath(PluginsPathKey.NormalizePath());
+        [JsonProperty("output")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Output)]
+        public DirectoryInfo OutputPath { get; set; }
 
-        [JsonIgnore]
-        public DirectoryInfo ImagesPath => BasePath.CombineDirPath(ImagesPathKey.NormalizePath());
+        [JsonProperty("images")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Images)]
+        public DirectoryInfo ImagesPath { get; set; }
     }
 }

@@ -2,50 +2,32 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.IO;
-using System.Linq;
-using Bit0.CrunchLog.Extensions;
 
 namespace Bit0.CrunchLog
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class CrunchLog
     {
-        private readonly DirectoryInfo _basePath;
-        private readonly JsonSerializer _jsonSerializer;
-        private readonly ILogger<CrunchLog> _logger;
-        
         public CrunchConfig Config { get; }
 
-        public CrunchLog(Arguments arguments,JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
+        public CrunchLog(Arguments arguments, ConfigFile configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
         {
-            _jsonSerializer = jsonSerializer;
-            _logger = logger;
+            var basePath = new DirectoryInfo(arguments.BasePath);
+            logger.LogInformation($"Base path: {basePath}");
 
-            _basePath = new DirectoryInfo(arguments.BasePath);
-            _logger.LogInformation($"Base path: {_basePath}");
-
-            Config = ReadConfigFile();
+            Config = ReadConfigFile(configFile.File, jsonSerializer, logger);
         }
 
-        private CrunchConfig ReadConfigFile()
+        private CrunchConfig ReadConfigFile(FileInfo configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
         {
-            var configFile = _basePath.GetFiles(StaticPaths.ConfigFile, SearchOption.TopDirectoryOnly).SingleOrDefault();
+            logger.LogDebug($"Read configuration from: {configFile}");
 
-            if (configFile == null)
-            {
-                var errorMsg = $"Cannot find {_basePath.CombineDirPath(StaticPaths.ConfigFile)}";
-                throw new FileNotFoundException(errorMsg);
-            }
+            var config = new CrunchConfig();
+            jsonSerializer.Populate(configFile.OpenText(), config);
 
-            _logger.LogDebug($"Read configuration from: {configFile}");
+            logger.LogDebug("Configration read");
+            logger.LogInformation($"Output path: {config.Paths.OutputPath}");
 
-            var config = new CrunchConfig(configFile);
-            _jsonSerializer.Populate(configFile.OpenText(), config);
-            config.Fix();
-
-            _logger.LogDebug("Configration read");
-            _logger.LogInformation($"Output path: {config.Paths.OutputPath}");
-            
             return config;
         }
     }

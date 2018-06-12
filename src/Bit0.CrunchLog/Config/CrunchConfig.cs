@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Bit0.CrunchLog.Extensions;
+﻿using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -30,17 +30,13 @@ namespace Bit0.CrunchLog.Config
         public IDictionary<String, IEnumerable<MenuItem>> Menu { get; set; }
 
         [JsonProperty("paths")]
-        public ConfigPaths Paths { get; set; }
-        
+        public ConfigPaths Paths { get; set; } = new ConfigPaths();
+
         [JsonProperty("pagination")]
         public Pagination Pagination { get; set; } = new Pagination();
 
-        public CrunchConfig(FileInfo configFile)
-        {
-            Paths = new ConfigPaths(configFile);
-        }
-
-        public void Fix()
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
         {
             // load themes directory
             Site.Theme = Paths.ThemesPath.CombineDirPath(Site.ThemeKey);

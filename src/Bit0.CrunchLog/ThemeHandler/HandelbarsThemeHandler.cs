@@ -30,8 +30,14 @@ namespace Bit0.CrunchLog.ThemeHandler
         {
             _handlebars.RegisterHelper("alt", (output, context, args) =>
             {
-                var i = (Int32)args[0];
-                output.WriteSafeString(i % 2 == 0 ? args[1] : args[2]);
+                if (args[0] is Int32 i)
+                {
+                    output.WriteSafeString(i % 2 == 0 ? args[1] : args[2]);
+                }
+                else if (args[0] is Boolean b)
+                {
+                    output.WriteSafeString(b ? args[1] : args[2]);
+                }
             });
 
             _handlebars.RegisterHelper("format", (output, context, args) =>
@@ -258,6 +264,11 @@ namespace Bit0.CrunchLog.ThemeHandler
             }
 
             var file = outputDir.CombineFilePath(".html", "index");
+
+            if (!_handlebars.Configuration.RegisteredTemplates.ContainsKey(template))
+            {
+                throw new Exception($"Cannot find templte for \"{template}\".");
+            }
 
             var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[template];
 

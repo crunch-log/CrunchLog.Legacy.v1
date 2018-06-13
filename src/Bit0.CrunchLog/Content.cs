@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.JsonConverters;
@@ -15,13 +16,17 @@ namespace Bit0.CrunchLog
         private String _mdFile;
         private String _slug;
 
+        private readonly CrunchConfig _config;
+
         public Content()
         { }
 
-        public Content(FileInfo metaFile, String permalink)
+        public Content(FileInfo metaFile, CrunchConfig config)
         {
+            _config = config;
+
             MetaFile = metaFile;
-            Permalink = permalink;
+            Permalink = _config.Permalink;
         }
 
         [JsonProperty("content")]
@@ -74,7 +79,7 @@ namespace Bit0.CrunchLog
         public String Title { get; set; }
 
         [JsonProperty("layout")]
-        public String Layout { get; set; } = Layouts.Post;
+        public Layouts Layout { get; set; } = Layouts.Post;
 
         [JsonProperty("slug")]
         public String Slug
@@ -96,10 +101,12 @@ namespace Bit0.CrunchLog
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
         [JsonProperty("tags")]
-        public IEnumerable<String> Tags { get; set; }
+        [JsonConverter(typeof(ListConverter), Layouts.Tag)]
+        public IDictionary<String, String> Tags { get; set; }
 
         [JsonProperty("categories")]
-        public IEnumerable<String> Categories { get; set; }
+        [JsonConverter(typeof(ListConverter), Layouts.Category)]
+        public IDictionary<String, String> Categories { get; set; }
 
         [JsonProperty("published")]
         public Boolean Published { get; set; }
@@ -135,7 +142,8 @@ namespace Bit0.CrunchLog
             return Permalink;
         }
 
-        public void UpdateProperties()
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
         {
             // fix permalink
             Permalink = Permalink
@@ -143,6 +151,11 @@ namespace Bit0.CrunchLog
                 .Replace(":month", Date.ToString("MM"))
                 .Replace(":day", Date.ToString("dd"))
                 .Replace(":slug", Slug);
+
+            if (Author == null)
+            {
+                Author = _config.Authors.FirstOrDefault().Value;
+            }
         }
     }
 }

@@ -39,45 +39,43 @@ namespace Bit0.CrunchLog
 
         public void PublishCategories()
         {
-            //    var pages = _contentProvider.PostCategories.SelectMany(a => a.Pages).ToList();
+            var pages = _contentProvider.PostCategories.SelectMany(archive => archive.GetPages(_config)).ToList();
 
-            //    foreach (var page in pages)
-            //    {
-            //        //category.WriteFile(_config.Paths.OutputPath);
-            //    }
+            foreach (var page in pages)
+            {
+                _themeHandler.WriteFile(page);
+            }
 
-            //    _logger.LogInformation($"Categories published in {pages.Count} pages");
+            _logger.LogInformation($"Categories published in {pages.Count} pages");
         }
 
         public void PublishTags()
         {
-            //var pages = _contentProvider.PostTags.SelectMany(a => a.Pages).ToList();
+            var pages = _contentProvider.PostTags.SelectMany(archive => archive.GetPages(_config)).ToList();
 
-            //foreach (var page in pages)
-            //{
-            //    //tag.WriteFile(_config.Paths.OutputPath);
-            //}
+            foreach (var page in pages)
+            {
+                _themeHandler.WriteFile(page);
+            }
 
-            //_logger.LogInformation($"Tags published in {pages.Count} pages");
+            _logger.LogInformation($"Tags published in {pages.Count} pages");
         }
 
         public void PublishArchive()
         {
-            //var pages = _contentProvider.PostArchives.SelectMany(a => a.Pages).ToList();
+            var pages = _contentProvider.PostArchives.SelectMany(archive => archive.GetPages(_config)).ToList();
 
-            //foreach (var page in pages)
-            //{
-            //    //_themeHandler.WriteFile(archive);
-            //}
+            foreach (var page in pages)
+            {
+                _themeHandler.WriteFile(page);
+            }
 
-            //_logger.LogInformation($"Archives published in {pages.Count} pages");
+            _logger.LogInformation($"Archives published in {pages.Count} pages");
         }
 
         public void PublisHome()
         {
             var pages = _contentProvider.Home.GetPages(_config).ToList();
-
-            //var pages = _contentProvider.Home.Pages.ToList();
 
             foreach (var page in pages)
             {

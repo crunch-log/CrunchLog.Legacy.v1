@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 
 namespace Bit0.CrunchLog.TemplateModels
 {
@@ -14,18 +14,18 @@ namespace Bit0.CrunchLog.TemplateModels
             Description = content.Intro;
             Author = content.Author;
             Date = content.Date;
-            Keywords = config.Tags.Concat(content.Tags);
+            Keywords = content.Tags;
             Permalink = content.Permalink;
-            Layout = content.Layout;
+            Layout = content.Layout.GetValue();
             Categories = content.Categories;
 
             Config = config;
         }
 
         public String Layout { get; }
-        public IEnumerable<String> Categories { get; }
+        public IDictionary<String, String> Categories { get; }
         public String Title { get; }
-        public IEnumerable<String> Keywords { get; }
+        public IDictionary<String, String> Keywords { get; }
         public String Description { get; }
         public String Content { get; }
         public String Permalink { get; set; }

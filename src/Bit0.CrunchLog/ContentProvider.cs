@@ -37,10 +37,9 @@ namespace Bit0.CrunchLog
                 var metaFiles = _config.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
                 foreach (var metaFile in metaFiles)
                 {
-                    var content = new Content(metaFile, _config.Permalink);
+                    var content = new Content(metaFile, _config);
 
                     _jsonSerializer.Populate(metaFile.OpenText(), content);
-                    content.UpdateProperties();
                     allContent.Add(content);
                 }
 
@@ -88,9 +87,9 @@ namespace Bit0.CrunchLog
                     .Distinct()
                     .Select(t => new ContentListItem
                     {
-                        Title = t,
-                        Permalink = $"/tag/{t}",
-                        Layout = Layouts.Tags,
+                        Title = t.Key,
+                        Permalink = t.Value,
+                        Layout = Layouts.Tag,
                         Children = Posts.Where(p => p.Tags.Contains(t))
                     });
             }
@@ -106,8 +105,8 @@ namespace Bit0.CrunchLog
                     .Distinct()
                     .Select(c => new ContentListItem
                     {
-                        Title = c,
-                        Permalink = $"/category/{c}",
+                        Title = c.Key,
+                        Permalink = c.Value,
                         Layout = Layouts.Category,
                         Children = Posts.Where(p => p.Categories.Contains(c))
                     });

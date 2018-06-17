@@ -5,7 +5,7 @@ namespace Bit0.CrunchLog.TemplateModels
 {
     public interface ITemplateModel
     {
-        CrunchConfig Config { get; set; }
+        SiteTemplateModel Site { get; set; }
         String Permalink { get; set; }
         String Layout { get; }
         String Title { get; }

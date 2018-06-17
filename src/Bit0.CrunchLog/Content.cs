@@ -16,17 +16,17 @@ namespace Bit0.CrunchLog
         private String _mdFile;
         private String _slug;
 
-        private readonly CrunchConfig _config;
+        private readonly CrunchSite _siteConfig;
 
         public Content()
         { }
 
-        public Content(FileInfo metaFile, CrunchConfig config)
+        public Content(FileInfo metaFile, CrunchSite siteConfig)
         {
-            _config = config;
+            _siteConfig = siteConfig;
 
             MetaFile = metaFile;
-            Permalink = _config.Permalink;
+            Permalink = _siteConfig.Permalink;
         }
 
         [JsonProperty("content")]
@@ -154,7 +154,7 @@ namespace Bit0.CrunchLog
 
             if (Author == null)
             {
-                Author = _config.Authors.FirstOrDefault().Value;
+                Author = _siteConfig.Authors.FirstOrDefault().Value;
             }
         }
     }

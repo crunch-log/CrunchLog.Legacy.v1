@@ -2,14 +2,33 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace Bit0.CrunchLog.Config
 {
-    public class CrunchConfig
+    public class CrunchSite
     {
-        [JsonProperty("site")]
-        public Site Site { get; set; } = new Site();
+        [JsonProperty("baseUrl")]
+        public String BaseUrl { get; set; } = "";
+
+        [JsonProperty("languageCode")]
+        public String LanguageCode { get; set; } = "en-US";
+
+        [JsonProperty("title")]
+        public String Title { get; set; } = "CrunchLog";
+
+        [JsonProperty("subtitle")]
+        public String SubTitle { get; set; } = "Static blog generator";
+
+        [JsonProperty("theme")]
+        public String ThemeKey { get; set; } = "default";
+
+        [JsonIgnore]
+        public DirectoryInfo Theme { get; set; }
+
+        [JsonProperty("favicon")]
+        public String FavIcon { get; set; } = "favicon.ico";
 
         [JsonProperty("copyright")]
         public Copyright Copyright { get; set; } = new Copyright();
@@ -39,7 +58,7 @@ namespace Bit0.CrunchLog.Config
         internal void OnDeserializedMethod(StreamingContext context)
         {
             // load themes directory
-            Site.Theme = Paths.ThemesPath.CombineDirPath(Site.ThemeKey);
+            Theme = Paths.ThemesPath.CombineDirPath(ThemeKey);
         }
     }
 }

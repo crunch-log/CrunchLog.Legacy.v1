@@ -101,7 +101,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
         public static Int32 Execute(
             this CommandLineApplication app,
             Arguments args,
-            Action<IServiceProvider, ILogger<CliOptions>, CrunchConfig> executeFunc)
+            Action<IServiceProvider, ILogger<CliOptions>, CrunchSite> executeFunc)
         {
             ILogger<CliOptions> logger = null;
 
@@ -114,7 +114,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
                 var provider = ServiceProviderFactory.Build(args);
 
                 logger = provider.GetService<ILogger<CliOptions>>();
-                var config = provider.GetService<CrunchConfig>();
+                var config = provider.GetService<CrunchSite>();
 
                 executeFunc(provider, logger, config);
             }

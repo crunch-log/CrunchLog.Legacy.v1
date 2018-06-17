@@ -8,7 +8,7 @@ namespace Bit0.CrunchLog.TemplateModels
 {
     public class PostListTemplateModel : ITemplateModel
     {
-        public CrunchConfig Config { get; set; }
+        public SiteTemplateModel Site { get; set; }
         public String Permalink { get; set; }
         public String Layout { get; private set; }
         public String Title { get; private set; }
@@ -21,7 +21,7 @@ namespace Bit0.CrunchLog.TemplateModels
         public Boolean IsHomeLayout => Layout.Equals(Layouts.Home);
 
         public PostListTemplateModel(
-            ContentListItem contentListItem, CrunchConfig config,
+            ContentListItem contentListItem, CrunchSite config,
             Int32 page, Int32 totalPages)
         {
             TotalPages = totalPages;
@@ -38,7 +38,7 @@ namespace Bit0.CrunchLog.TemplateModels
             Layout = contentListItem.Layout.GetValue();
             Permalink = Pagination[page].Url;
             Title = contentListItem.Title;
-            Config = config;
+            Site = config.GetModel();
 
             var pageSize = config.Pagination.PageSize;
 

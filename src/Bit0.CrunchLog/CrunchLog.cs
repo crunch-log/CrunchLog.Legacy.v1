@@ -7,27 +7,27 @@ namespace Bit0.CrunchLog
 {
     public class CrunchLog
     {
-        public CrunchConfig Config { get; }
+        public CrunchSite SiteConfig { get; }
 
         public CrunchLog(Arguments arguments, ConfigFile configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
         {
             var basePath = new DirectoryInfo(arguments.BasePath);
             logger.LogInformation($"Base path: {basePath}");
 
-            Config = ReadConfigFile(configFile.File, jsonSerializer, logger);
+            SiteConfig = ReadConfigFile(configFile.File, jsonSerializer, logger);
         }
 
-        private CrunchConfig ReadConfigFile(FileInfo configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
+        private CrunchSite ReadConfigFile(FileInfo configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger)
         {
             logger.LogDebug($"Read configuration from: {configFile}");
 
-            var config = new CrunchConfig();
-            jsonSerializer.Populate(configFile.OpenText(), config);
+            var siteConfig = new CrunchSite();
+            jsonSerializer.Populate(configFile.OpenText(), siteConfig);
 
             logger.LogDebug("Configration read");
-            logger.LogInformation($"Output path: {config.Paths.OutputPath}");
+            logger.LogInformation($"Output path: {siteConfig.Paths.OutputPath}");
 
-            return config;
+            return siteConfig;
         }
     }
 }

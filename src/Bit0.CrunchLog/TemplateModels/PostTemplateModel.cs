@@ -7,7 +7,7 @@ namespace Bit0.CrunchLog.TemplateModels
 {
     public class PostTemplateModel : ITemplateModel
     {
-        public PostTemplateModel(Content content, CrunchConfig config)
+        public PostTemplateModel(Content content, CrunchSite siteConfig)
         {
             Title = content.Title;
             Content = content.Html;
@@ -19,7 +19,7 @@ namespace Bit0.CrunchLog.TemplateModels
             Layout = content.Layout.GetValue();
             Categories = content.Categories;
 
-            Config = config;
+            Site = siteConfig.GetModel();
         }
 
         public String Layout { get; }
@@ -31,7 +31,7 @@ namespace Bit0.CrunchLog.TemplateModels
         public String Permalink { get; set; }
         public Author Author { get; }
         public DateTime Date { get; }
-        public CrunchConfig Config { get; set; }
+        public SiteTemplateModel Site { get; set; }
 
         public override String ToString()
         {

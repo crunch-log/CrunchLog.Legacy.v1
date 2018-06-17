@@ -10,16 +10,16 @@ namespace Bit0.CrunchLog
 {
     public class ContentProvider : IContentProvider
     {
-        private readonly CrunchConfig _config;
+        private readonly CrunchSite _siteConfig;
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILogger<ContentProvider> _logger;
 
         private IEnumerable<Content> _allContent;
 
-        public ContentProvider(JsonSerializer jsonSerializer, CrunchConfig config, ILogger<ContentProvider> logger)
+        public ContentProvider(JsonSerializer jsonSerializer, CrunchSite sietConfig, ILogger<ContentProvider> logger)
         {
             _logger = logger;
-            _config = config;
+            _siteConfig = sietConfig;
             _jsonSerializer = jsonSerializer;
         }
 
@@ -34,10 +34,10 @@ namespace Bit0.CrunchLog
 
                 var allContent = new List<Content>();
 
-                var metaFiles = _config.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
+                var metaFiles = _siteConfig.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
                 foreach (var metaFile in metaFiles)
                 {
-                    var content = new Content(metaFile, _config);
+                    var content = new Content(metaFile, _siteConfig);
 
                     _jsonSerializer.Populate(metaFile.OpenText(), content);
                     allContent.Add(content);

@@ -9,35 +9,35 @@ namespace Bit0.CrunchLog.ThemeHandler
 {
     public abstract class ThemeHandlerBase : IThemeHandler
     {
-        protected ThemeHandlerBase(CrunchConfig config, JsonSerializer jsonSerializer)
+        protected ThemeHandlerBase(CrunchSite siteConfig, JsonSerializer jsonSerializer)
         {
-            Config = config;
+            SiteConfig = siteConfig;
 
-            var themeMeta = Config.Site.Theme.CombineFilePath(".json", "theme");
+            var themeMeta = SiteConfig.Theme.CombineFilePath(".json", "theme");
             var theme = new Theme(themeMeta);
             jsonSerializer.Populate(themeMeta.OpenText(), theme);
 
             Theme = theme;
         }
 
-        protected CrunchConfig Config { get; }
+        protected CrunchSite SiteConfig { get; }
         protected Theme Theme { get; } 
 
         public void InitOutput()
         {
-            if (!Config.Paths.OutputPath.Exists)
+            if (!SiteConfig.Paths.OutputPath.Exists)
             {
-                Config.Paths.OutputPath.Create();
+                SiteConfig.Paths.OutputPath.Create();
             }
 
             foreach (var dir in Theme.Assets.Directories.Select(d => Theme.Directory.CombineDirPath(d)))
             {
-                dir.Copy(Config.Paths.OutputPath.CombineDirPath(dir.Name));
+                dir.Copy(SiteConfig.Paths.OutputPath.CombineDirPath(dir.Name));
             }
 
             foreach (var file in Theme.Assets.Files.Select(f => Theme.Directory.CombineFilePath(f)))
             {
-                file.CopyTo(Config.Paths.OutputPath.CombineDirPath(file.Name).FullName, true);
+                file.CopyTo(SiteConfig.Paths.OutputPath.CombineDirPath(file.Name).FullName, true);
             }
         }
 

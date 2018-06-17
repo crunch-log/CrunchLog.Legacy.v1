@@ -12,34 +12,34 @@ namespace Bit0.CrunchLog
     {
         private readonly IContentProvider _contentProvider;
         private readonly IThemeHandler _themeHandler;
-        private readonly CrunchConfig _config;
+        private readonly CrunchSite _siteConfig;
         private readonly ILogger<ContentGenerator> _logger;
 
         public ContentGenerator(IContentProvider contentProvider,
             IThemeHandler themeHandler,
-            CrunchConfig config,
+            CrunchSite siteConfig,
             ILogger<ContentGenerator> logger)
         {
             _themeHandler = themeHandler;
             _logger = logger;
-            _config = config;
+            _siteConfig = siteConfig;
             _contentProvider = contentProvider;
         }
 
         public void CleanOutput()
         {
-            if (_config.Paths.OutputPath.Exists)
+            if (_siteConfig.Paths.OutputPath.Exists)
             {
-                _config.Paths.OutputPath.Delete(true);
+                _siteConfig.Paths.OutputPath.Delete(true);
             }
 
-            _logger.LogInformation($"Cleaned output folder {_config.Paths.OutputPath.FullName}");
+            _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
 
         }
 
         public void PublishCategories()
         {
-            var pages = _contentProvider.PostCategories.SelectMany(archive => archive.GetPages(_config)).ToList();
+            var pages = _contentProvider.PostCategories.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
             foreach (var page in pages)
             {
@@ -51,7 +51,7 @@ namespace Bit0.CrunchLog
 
         public void PublishTags()
         {
-            var pages = _contentProvider.PostTags.SelectMany(archive => archive.GetPages(_config)).ToList();
+            var pages = _contentProvider.PostTags.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
             foreach (var page in pages)
             {
@@ -63,7 +63,7 @@ namespace Bit0.CrunchLog
 
         public void PublishArchive()
         {
-            var pages = _contentProvider.PostArchives.SelectMany(archive => archive.GetPages(_config)).ToList();
+            var pages = _contentProvider.PostArchives.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
             foreach (var page in pages)
             {
@@ -75,7 +75,7 @@ namespace Bit0.CrunchLog
 
         public void PublisHome()
         {
-            var pages = _contentProvider.Home.GetPages(_config).ToList();
+            var pages = _contentProvider.Home.GetPages(_siteConfig).ToList();
 
             foreach (var page in pages)
             {
@@ -91,7 +91,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                _themeHandler.WriteFile(content.GetModel(_config));
+                _themeHandler.WriteFile(content.GetModel(_siteConfig));
             }
 
             _logger.LogInformation($"Published {published.Count} posts/pages");
@@ -99,7 +99,7 @@ namespace Bit0.CrunchLog
 
         public void PublishImages()
         {
-            _config.Paths.ImagesPath.Copy(_config.Paths.OutputPath.CombineDirPath("images"));
+            _siteConfig.Paths.ImagesPath.Copy(_siteConfig.Paths.OutputPath.CombineDirPath("images"));
         }
 
         public void Publish()

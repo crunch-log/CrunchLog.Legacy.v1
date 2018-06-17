@@ -13,7 +13,7 @@ namespace Bit0.CrunchLog.ThemeHandler
     {
         private readonly IHandlebars _handlebars;
 
-        public HandelbarsThemeHandler(CrunchConfig config, JsonSerializer jsonSerializer) : base(config, jsonSerializer)
+        public HandelbarsThemeHandler(CrunchSite config, JsonSerializer jsonSerializer) : base(config, jsonSerializer)
         {
             var handlebars = Handlebars.Create(new HandlebarsConfiguration
             {
@@ -257,7 +257,7 @@ namespace Bit0.CrunchLog.ThemeHandler
 
         public override void WriteFile(String template, ITemplateModel model)
         {
-            var outputDir = Config.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+            var outputDir = SiteConfig.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
             if (!outputDir.Exists)
             {
                 outputDir.Create();

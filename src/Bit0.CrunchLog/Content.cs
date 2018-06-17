@@ -116,10 +116,14 @@ namespace Bit0.CrunchLog
 
         [JsonProperty("permaLink")]
         public String Permalink { get; set; }
-        
+
         [JsonProperty("author")]
         [JsonConverter(typeof(AuthorConverter))]
         public Author Author { get; set; }
+
+        [JsonProperty("bannerImage")]
+        [JsonConverter(typeof(BannerImageConverter))]
+        public FileInfo BannerImage { get; set; }
 
         [JsonIgnore]
         public FileInfo MetaFile { get; set; }

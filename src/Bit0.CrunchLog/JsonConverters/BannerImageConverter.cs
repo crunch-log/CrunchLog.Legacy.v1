@@ -7,35 +7,32 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.JsonConverters
 {
-    public class PathConverter : JsonConverter
+    public class BannerImageConverter : JsonConverter
     {
-        private readonly String _pathKey;
+        private readonly CrunchSite _siteConfig;
 
-        public PathConverter(String pathKey) : base()
+        public BannerImageConverter()
         {
-            _pathKey = pathKey;
+            _siteConfig = ServiceProviderFactory.Current.GetService<CrunchSite>();
         }
 
         public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
         {
-            var dir = (DirectoryInfo)value;
+            var file = (FileInfo)value;
 
-            writer.WriteValue(dir.Name);
+            writer.WriteValue(file.FullName.Replace(_siteConfig.Paths.BasePath.FullName, "").NormalizePath());
         }
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            var configFile = ServiceProviderFactory.Current.GetService<ConfigFile>();
-            var basePath = configFile.File.Directory;
-            
-            var pathKey = (String)reader.Value;
+            var fileKey = (String)reader.Value;
 
-            if (String.IsNullOrWhiteSpace(pathKey))
+            if (String.IsNullOrWhiteSpace(fileKey))
             {
-                pathKey = _pathKey;
+                // return defualt
             }
 
-            return basePath.CombineDirPath(pathKey.NormalizePath());
+            return null; // get fileInfo from key
         }
 
         public override Boolean CanConvert(Type objectType)

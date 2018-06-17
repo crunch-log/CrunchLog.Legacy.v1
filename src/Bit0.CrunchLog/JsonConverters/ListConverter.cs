@@ -51,7 +51,7 @@ namespace Bit0.CrunchLog.JsonConverters
 
         public override Boolean CanConvert(Type objectType)
         {
-            return objectType == typeof(Author);
+            return objectType == typeof(IDictionary<String, String>);
         }
     }
 }

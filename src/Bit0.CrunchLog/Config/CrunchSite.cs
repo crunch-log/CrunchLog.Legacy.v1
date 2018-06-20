@@ -1,4 +1,5 @@
 ﻿using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -54,11 +55,18 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("pagination")]
         public Pagination Pagination { get; set; } = new Pagination();
 
+        [JsonProperty("defaultBanner")]
+        public String DefaultBannerKey { get; internal set; }
+
+        [JsonIgnore]
+        public FileInfo DefaultBanner { get; internal set; }
+
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
             // load themes directory
             Theme = Paths.ThemesPath.CombineDirPath(ThemeKey);
+            DefaultBanner = ImageHelpers.GetImagePath(DefaultBannerKey, Paths.BasePath, Paths.ImagesPath, null);
         }
     }
 }

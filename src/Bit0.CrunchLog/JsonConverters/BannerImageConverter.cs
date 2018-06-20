@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -20,19 +22,17 @@ namespace Bit0.CrunchLog.JsonConverters
         {
             var file = (FileInfo)value;
 
-            writer.WriteValue(file.FullName.Replace(_siteConfig.Paths.BasePath.FullName, "").NormalizePath());
+            writer.WriteValue(file.ToRelative(_siteConfig.Paths.ContentPath));
         }
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            var fileKey = (String)reader.Value;
-
-            if (String.IsNullOrWhiteSpace(fileKey))
+            if (reader.Value is String fileKey && !String.IsNullOrWhiteSpace(fileKey))
             {
-                // return defualt
+                return ImageHelpers.GetImagePath(fileKey, _siteConfig.Paths.BasePath, _siteConfig.Paths.ImagesPath, _siteConfig.DefaultBanner);
             }
 
-            return null; // get fileInfo from key
+            return _siteConfig.DefaultBanner;
         }
 
         public override Boolean CanConvert(Type objectType)

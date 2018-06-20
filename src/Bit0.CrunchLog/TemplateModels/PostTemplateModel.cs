@@ -18,6 +18,7 @@ namespace Bit0.CrunchLog.TemplateModels
             Permalink = content.Permalink;
             Layout = content.Layout.GetValue();
             Categories = content.Categories;
+            BannerImage = content.BannerImage.ToRelative(siteConfig.Paths.ContentPath);
 
             Site = siteConfig.GetModel();
         }
@@ -32,6 +33,7 @@ namespace Bit0.CrunchLog.TemplateModels
         public Author Author { get; }
         public DateTime Date { get; }
         public SiteTemplateModel Site { get; set; }
+        public String BannerImage { get; set; }
 
         public override String ToString()
         {

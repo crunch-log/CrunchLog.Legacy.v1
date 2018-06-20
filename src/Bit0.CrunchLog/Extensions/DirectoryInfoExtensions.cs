@@ -29,7 +29,29 @@ namespace Bit0.CrunchLog.Extensions
 
         public static String NormalizePath(this String path)
         {
-            return path.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar);
+            return path.NormalizePath(Path.DirectorySeparatorChar);
+        }
+
+        public static String NormalizePath(this String path, Char separatorChar)
+        {
+            return path.Replace('\\', '/').Replace('/', separatorChar);
+        }
+        
+        public static String NormalizeRelativePath(this String path)
+        {
+            return path.NormalizeRelativePath(Path.DirectorySeparatorChar);
+        }
+
+        public static String NormalizeRelativePath(this String path, Char separatorChar)
+        {
+            path = path.NormalizePath(separatorChar);
+
+            if (!path.StartsWith("/"))
+            {
+                path = $"/{path}";
+            }
+
+            return path;
         }
 
 

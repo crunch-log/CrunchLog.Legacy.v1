@@ -160,6 +160,11 @@ namespace Bit0.CrunchLog
             {
                 Author = _siteConfig.Authors.FirstOrDefault().Value;
             }
+
+            if (BannerImage == null)
+            {
+                BannerImage = _siteConfig.DefaultBanner;
+            }
         }
     }
 }

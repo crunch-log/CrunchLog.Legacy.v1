@@ -66,7 +66,7 @@ namespace Bit0.CrunchLog.Config
         {
             // load themes directory
             Theme = Paths.ThemesPath.CombineDirPath(ThemeKey);
-            DefaultBanner = ImageHelpers.GetImagePath(DefaultBannerKey, Paths.BasePath, Paths.ImagesPath, null);
+            DefaultBanner = ImageHelpers.GetImagePath(DefaultBannerKey, Paths.ContentPath, Paths.ImagesPath, null);
         }
     }
 }

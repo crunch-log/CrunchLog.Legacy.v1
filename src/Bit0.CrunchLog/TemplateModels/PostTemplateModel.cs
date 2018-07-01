@@ -34,6 +34,7 @@ namespace Bit0.CrunchLog.TemplateModels
         public DateTime Date { get; }
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
+        public Boolean IsContentLayout => true;
 
         public override String ToString()
         {

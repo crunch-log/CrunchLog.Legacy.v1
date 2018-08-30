@@ -18,6 +18,9 @@ namespace Bit0.CrunchLog.Config
 
         [JsonIgnore]
         public DirectoryInfo Directory { get; }
+
+        [JsonProperty("type")]
+        public ThemeType Type { get; set; } = ThemeType.Static;
         
         [JsonProperty("name")]
         public String Name { get; set; }

@@ -137,6 +137,7 @@ namespace Bit0.CrunchLog
             PublishArchive();
             PublishCategories();
             PublishTags();
+            PublishAuthors();
         }
     }
 }

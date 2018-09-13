@@ -14,5 +14,6 @@ namespace Bit0.CrunchLog
         IEnumerable<ContentListItem> PostCategories { get; }
         IEnumerable<ContentListItem> PostArchives { get; }
         IDictionary<String, IContent> Links { get; }
+        IEnumerable<ContentListItem> Authors { get; }
     }
 }

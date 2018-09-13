@@ -113,6 +113,24 @@ namespace Bit0.CrunchLog
             }
         }
 
+        public IEnumerable<ContentListItem> Authors
+        {
+            get
+            {
+                return Posts
+                    .Where(p => p.Author != null)
+                    .Select(p => p.Author)
+                    .Distinct()
+                    .Select(a => new ContentListItem
+                    {
+                        Title = a.Name,
+                        Permalink = a.Permalink,
+                        Layout = Layouts.Author,
+                        Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))
+                    });
+            }
+        }
+
         public IEnumerable<ContentListItem> PostArchives
         {
             get
@@ -195,6 +213,11 @@ namespace Bit0.CrunchLog
                 foreach (var category in PostCategories)
                 {
                     dict.Add(category.Permalink, category);
+                }
+
+                foreach (var author in Authors)
+                {
+                    dict.Add(author.Permalink, author);
                 }
 
                 return dict.OrderBy(l => l.Key).ToDictionary(k => k.Key, v => v.Value);

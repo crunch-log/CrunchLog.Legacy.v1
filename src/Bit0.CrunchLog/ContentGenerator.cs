@@ -102,6 +102,18 @@ namespace Bit0.CrunchLog
             _siteConfig.Paths.ImagesPath.Copy(_siteConfig.Paths.OutputPath.CombineDirPath("images"));
         }
 
+        public void PublishAuthors()
+        {
+            var authors = _contentProvider.Authors.SelectMany(author => author.GetPages(_siteConfig)).ToList();
+
+            foreach (var author in authors)
+            {
+                _themeHandler.WriteFile(author);
+            }
+
+            _logger.LogInformation($"Authors published in {authors.Count} pages");
+        }
+
         public void Publish()
         {
             // [ ] create posts pages

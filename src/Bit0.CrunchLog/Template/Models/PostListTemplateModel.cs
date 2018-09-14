@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bit0.CrunchLog.Extensions;
 
-namespace Bit0.CrunchLog.TemplateModels
+namespace Bit0.CrunchLog.Template.Models
 {
     public class PostListTemplateModel : ITemplateModel
     {

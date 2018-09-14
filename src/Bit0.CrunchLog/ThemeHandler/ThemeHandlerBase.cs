@@ -1,6 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.TemplateModels;
+using Bit0.CrunchLog.Template.Models;
 using Newtonsoft.Json;
 using System;
 using System.Linq;

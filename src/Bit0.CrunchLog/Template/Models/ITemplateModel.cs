@@ -1,7 +1,6 @@
 ﻿using System;
-using Bit0.CrunchLog.Config;
 
-namespace Bit0.CrunchLog.TemplateModels
+namespace Bit0.CrunchLog.Template.Models
 {
     public interface ITemplateModel
     {

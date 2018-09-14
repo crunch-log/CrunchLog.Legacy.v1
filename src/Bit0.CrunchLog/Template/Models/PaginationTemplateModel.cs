@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Bit0.CrunchLog.TemplateModels
+namespace Bit0.CrunchLog.Template.Models
 {
     public class PaginationTemplateModel
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 
-namespace Bit0.CrunchLog.TemplateModels
+namespace Bit0.CrunchLog.Template.Models
 {
     public class PostTemplateModel : ITemplateModel
     {

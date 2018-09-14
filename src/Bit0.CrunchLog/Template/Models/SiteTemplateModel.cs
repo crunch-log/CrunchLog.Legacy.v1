@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Bit0.CrunchLog.TemplateModels
+namespace Bit0.CrunchLog.Template.Models
 {
     public class SiteTemplateModel
     {

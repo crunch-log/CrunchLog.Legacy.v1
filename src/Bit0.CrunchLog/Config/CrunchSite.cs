@@ -26,7 +26,7 @@ namespace Bit0.CrunchLog.Config
         public String ThemeKey { get; set; } = "default";
 
         [JsonIgnore]
-        public DirectoryInfo Theme { get; set; }
+        public Theme Theme { get; set; }
 
         [JsonProperty("favicon")]
         public String FavIcon { get; set; } = "favicon.ico";
@@ -65,7 +65,7 @@ namespace Bit0.CrunchLog.Config
         internal void OnDeserializedMethod(StreamingContext context)
         {
             // load themes directory
-            Theme = Paths.ThemesPath.CombineDirPath(ThemeKey);
+            Theme = Theme.Get(Paths.ThemesPath.CombineDirPath(ThemeKey));
             DefaultBanner = ImageHelpers.GetImagePath(DefaultBannerKey, Paths.ContentPath, Paths.ImagesPath, null);
         }
     }

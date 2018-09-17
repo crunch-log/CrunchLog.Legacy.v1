@@ -2,6 +2,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -75,7 +76,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
             {
                 Process.Start(url);
             }
-            catch
+            catch (Exception )
             {
                 // hack because of this: https://github.com/dotnet/corefx/issues/10361
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -109,8 +110,19 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
             app.WriteBanner();
 
+            if (executeFunc == null)
+            {
+                throw new Exception("Cannot find Logger function.");
+            }
+
             try
             {
+                JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore,
+                };
+
                 var provider = ServiceProviderFactory.Build(args);
 
                 logger = provider.GetService<ILogger<CliOptions>>();
@@ -141,6 +153,11 @@ namespace Bit0.CrunchLog.Cli.Extensions
             Arguments args,
             Action<IServiceProvider, ILogger<CliOptions>> executeFunc)
         {
+            if (executeFunc == null)
+            {
+                throw new Exception("Cannot find Logger function.");
+            }
+
             return app.Execute(args, (provider, logger, config) => executeFunc(provider, logger));
         }
 

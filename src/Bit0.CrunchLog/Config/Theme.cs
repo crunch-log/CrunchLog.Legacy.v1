@@ -48,11 +48,11 @@ namespace Bit0.CrunchLog.Config
         public License License { get; set; }
 
 
-        public static Theme Get(CrunchSite config, JsonSerializer jsonSerializer)
+        public static Theme Get(DirectoryInfo themeDir)
         {
-            var themeMeta = config.Theme.CombineFilePath(".json", "theme");
-            var theme = new Theme(themeMeta);
-            jsonSerializer.Populate(themeMeta.OpenText(), theme);
+            var configFile = themeDir.CombineFilePath(".json", "theme");
+            var theme = new Theme(configFile);
+            JsonConvert.PopulateObject(configFile.OpenText().ReadToEnd(), theme);
 
             return theme;
         }

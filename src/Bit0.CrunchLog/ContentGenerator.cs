@@ -1,6 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.ThemeHandler;
+using Bit0.CrunchLog.Template.Factory;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -9,16 +9,16 @@ namespace Bit0.CrunchLog
     public class ContentGenerator : IContentGenerator
     {
         private readonly IContentProvider _contentProvider;
-        private readonly IThemeHandler _themeHandler;
+        private readonly ITemplateFactory _templateFactory;
         private readonly CrunchSite _siteConfig;
         private readonly ILogger<ContentGenerator> _logger;
 
         public ContentGenerator(IContentProvider contentProvider,
-            IThemeHandler themeHandler,
+            ITemplateFactory templateFactory,
             CrunchSite siteConfig,
             ILogger<ContentGenerator> logger)
         {
-            _themeHandler = themeHandler;
+            _templateFactory = templateFactory;
             _logger = logger;
             _siteConfig = siteConfig;
             _contentProvider = contentProvider;
@@ -41,7 +41,7 @@ namespace Bit0.CrunchLog
 
             foreach (var page in pages)
             {
-                _themeHandler.WriteFile(page);
+                _templateFactory.Render(page);
             }
 
             _logger.LogInformation($"Categories published in {pages.Count} pages");
@@ -53,7 +53,7 @@ namespace Bit0.CrunchLog
 
             foreach (var page in pages)
             {
-                _themeHandler.WriteFile(page);
+                _templateFactory.Render(page);
             }
 
             _logger.LogInformation($"Tags published in {pages.Count} pages");
@@ -65,7 +65,7 @@ namespace Bit0.CrunchLog
 
             foreach (var page in pages)
             {
-                _themeHandler.WriteFile(page);
+                _templateFactory.Render(page);
             }
 
             _logger.LogInformation($"Archives published in {pages.Count} pages");
@@ -77,7 +77,7 @@ namespace Bit0.CrunchLog
 
             foreach (var page in pages)
             {
-                _themeHandler.WriteFile(page);
+                _templateFactory.Render(page);
             }
 
             _logger.LogInformation($"Home published in {pages.Count} pages");
@@ -89,7 +89,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                _themeHandler.WriteFile(content.GetModel(_siteConfig));
+                _templateFactory.Render(content.GetModel(_siteConfig));
             }
 
             _logger.LogInformation($"Published {published.Count} posts/pages");
@@ -106,7 +106,7 @@ namespace Bit0.CrunchLog
 
             foreach (var author in authors)
             {
-                _themeHandler.WriteFile(author);
+                _templateFactory.Render(author);
             }
 
             _logger.LogInformation($"Authors published in {authors.Count} pages");
@@ -126,8 +126,6 @@ namespace Bit0.CrunchLog
             // [ ] generate permalink from tree
 
             // [ ] replace config with crunchlog->site
-
-            _themeHandler.InitOutput();
 
             PublishImages();
             PublisHome();

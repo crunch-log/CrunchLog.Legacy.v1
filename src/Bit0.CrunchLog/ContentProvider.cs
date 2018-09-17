@@ -11,16 +11,14 @@ namespace Bit0.CrunchLog
     public class ContentProvider : IContentProvider
     {
         private readonly CrunchSite _siteConfig;
-        private readonly JsonSerializer _jsonSerializer;
         private readonly ILogger<ContentProvider> _logger;
 
         private IEnumerable<Content> _allContent;
 
-        public ContentProvider(JsonSerializer jsonSerializer, CrunchSite sietConfig, ILogger<ContentProvider> logger)
+        public ContentProvider(CrunchSite siteConfig, ILogger<ContentProvider> logger)
         {
             _logger = logger;
-            _siteConfig = sietConfig;
-            _jsonSerializer = jsonSerializer;
+            _siteConfig = siteConfig;
         }
 
         public IEnumerable<Content> AllContent
@@ -39,7 +37,7 @@ namespace Bit0.CrunchLog
                 {
                     var content = new Content(metaFile, _siteConfig);
 
-                    _jsonSerializer.Populate(metaFile.OpenText(), content);
+                    JsonConvert.PopulateObject(metaFile.OpenText().ReadToEnd(), content);
                     allContent.Add(content);
                 }
 

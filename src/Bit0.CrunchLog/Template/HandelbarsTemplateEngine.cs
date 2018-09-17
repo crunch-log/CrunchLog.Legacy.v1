@@ -1,20 +1,22 @@
-﻿using System;
-using System.IO;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Compiler.Resolvers;
-using Newtonsoft.Json;
+using System;
+using System.IO;
 
-namespace Bit0.CrunchLog.ThemeHandler
+namespace Bit0.CrunchLog.Template
 {
-    public class HandelbarsThemeHandler : ThemeHandlerBase
+    public class HandelbarsTemplateEngine : IHtmlTemplateEngine
     {
         private readonly IHandlebars _handlebars;
+        private readonly CrunchSite _siteConfig;
 
-        public HandelbarsThemeHandler(CrunchSite config, JsonSerializer jsonSerializer) : base(config, jsonSerializer)
+        public HandelbarsTemplateEngine(CrunchSite siteConfig)
         {
+            _siteConfig = siteConfig;
+
             var handlebars = Handlebars.Create(new HandlebarsConfiguration
             {
                 ExpressionNameResolver = new UpperCamelCaseExpressionNameResolver()
@@ -223,7 +225,7 @@ namespace Bit0.CrunchLog.ThemeHandler
 
         private void RegisterTemplates(String subDir)
         {
-            var dirPath = Theme.Directory.CombineDirPath(subDir);
+            var dirPath = _siteConfig.Theme.Directory.CombineDirPath(subDir);
             var templates = dirPath.GetFiles("*.hbs", SearchOption.AllDirectories);
             foreach (var partial in templates)
             {
@@ -255,9 +257,9 @@ namespace Bit0.CrunchLog.ThemeHandler
             }
         }
 
-        public override void WriteFile(String template, ITemplateModel model)
+        public void Render(ITemplateModel model)
         {
-            var outputDir = SiteConfig.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+            var outputDir = _siteConfig.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
             if (!outputDir.Exists)
             {
                 outputDir.Create();
@@ -265,12 +267,12 @@ namespace Bit0.CrunchLog.ThemeHandler
 
             var file = outputDir.CombineFilePath(".html", "index");
 
-            if (!_handlebars.Configuration.RegisteredTemplates.ContainsKey(template))
+            if (!_handlebars.Configuration.RegisteredTemplates.ContainsKey(model.Layout))
             {
-                throw new Exception($"Cannot find templte for \"{template}\".");
+                throw new Exception($"Cannot find template/layout for \"{model.Layout}\".");
             }
 
-            var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[template];
+            var handlebarsTemplate = _handlebars.Configuration.RegisteredTemplates[model.Layout];
 
             using (var write = file.CreateText())
             {

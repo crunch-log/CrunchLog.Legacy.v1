@@ -2,28 +2,31 @@
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
 using Newtonsoft.Json;
-using System;
 using System.Linq;
 
-namespace Bit0.CrunchLog.ThemeHandler
+namespace Bit0.CrunchLog.Template.Factory
 {
-    public abstract class ThemeHandlerBase : IThemeHandler
+    public class TemplateFactory : ITemplateFactory
     {
-        protected ThemeHandlerBase(CrunchSite siteConfig, JsonSerializer jsonSerializer)
+        public CrunchSite SiteConfig { get; }
+
+        public Theme Theme { get; }
+
+        public ITemplateEngine Engine { get; }
+
+        public TemplateFactory(
+            CrunchSite siteConfig,
+            IHtmlTemplateEngine htmlTemplateEngine,
+            IJsonTemplateEngine jsonTemplateEngine
+            )
         {
             SiteConfig = siteConfig;
+            Theme = SiteConfig.Theme;
 
-            var themeMeta = SiteConfig.Theme.CombineFilePath(".json", "theme");
-            var theme = new Theme(themeMeta);
-            jsonSerializer.Populate(themeMeta.OpenText(), theme);
-
-            Theme = theme;
+            Engine = Theme.OutputType == ThemeOutputType.Html ? htmlTemplateEngine : (ITemplateEngine) jsonTemplateEngine;
         }
 
-        protected CrunchSite SiteConfig { get; }
-        protected Theme Theme { get; } 
-
-        public void InitOutput()
+        private void InitOutput ()
         {
             if (!SiteConfig.Paths.OutputPath.Exists)
             {
@@ -41,10 +44,6 @@ namespace Bit0.CrunchLog.ThemeHandler
             }
         }
 
-        public void WriteFile(ITemplateModel model)
-        {
-            WriteFile(model.Layout, model);
-        }
-        public abstract void WriteFile(String template, ITemplateModel model);
+        public void Render(ITemplateModel model) => Engine.Render(model);
     }
 }

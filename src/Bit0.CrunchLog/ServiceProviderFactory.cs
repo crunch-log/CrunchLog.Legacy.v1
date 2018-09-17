@@ -1,6 +1,7 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Logging;
-using Bit0.CrunchLog.ThemeHandler;
+using Bit0.CrunchLog.Template;
+using Bit0.CrunchLog.Template.Factory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,6 @@ namespace Bit0.CrunchLog
                     .SetMinimumLevel(args.VerboseLevel)
                     .AddConsole();
             });
-            services.AddSingleton(new JsonSerializer()); // so that we can add global json config
             services.AddSingleton(args);
 
             services.AddSingleton<ConfigFile>();
@@ -32,10 +32,16 @@ namespace Bit0.CrunchLog
 
             services.AddTransient<IContentProvider, ContentProvider>();
             services.AddTransient<IContentGenerator, ContentGenerator>();
-            services.AddTransient<IThemeHandler, HandelbarsThemeHandler>();
+            services.AddTransient<ITemplateFactory, TemplateFactory>();
 
             // inject timestamps in log, in future replace with another logger
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
+
+            // TODO: Add injection from plugins
+            //  move to plugin
+            services.AddTransient<IHtmlTemplateEngine, HtmlTemplateEngine>();
+            services.AddTransient<IJsonTemplateEngine, JsonTemplateEngine>();
+            services.Replace(ServiceDescriptor.Singleton(typeof(IHtmlTemplateEngine), typeof(HandelbarsTemplateEngine)));
 
             Current = services.BuildServiceProvider();
 

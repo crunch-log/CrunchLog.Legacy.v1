@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
@@ -19,8 +20,8 @@ namespace Bit0.CrunchLog.Config
         [JsonIgnore]
         public DirectoryInfo Directory { get; }
 
-        [JsonProperty("type")]
-        public ThemeType Type { get; set; } = ThemeType.Static;
+        [JsonProperty("outputType")]
+        public ThemeOutputType OutputType { get; set; } = ThemeOutputType.Html;
         
         [JsonProperty("name")]
         public String Name { get; set; }
@@ -45,5 +46,15 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("license")]
         public License License { get; set; }
+
+
+        public static Theme Get(CrunchSite config, JsonSerializer jsonSerializer)
+        {
+            var themeMeta = config.Theme.CombineFilePath(".json", "theme");
+            var theme = new Theme(themeMeta);
+            jsonSerializer.Populate(themeMeta.OpenText(), theme);
+
+            return theme;
+        }
     }
 }

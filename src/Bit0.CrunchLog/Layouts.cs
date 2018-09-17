@@ -23,6 +23,7 @@ namespace Bit0.CrunchLog
         Empty,
         [String("redirect")]
         Redirect,
+        [String("list")]
         Author
     }
 }

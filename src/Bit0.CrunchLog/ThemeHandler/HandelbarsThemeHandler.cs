@@ -2,7 +2,7 @@
 using System.IO;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.TemplateModels;
+using Bit0.CrunchLog.Template.Models;
 using HandlebarsDotNet;
 using HandlebarsDotNet.Compiler.Resolvers;
 using Newtonsoft.Json;

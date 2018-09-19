@@ -1,6 +1,8 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Bit0.CrunchLog.Template
 {
@@ -22,10 +24,9 @@ namespace Bit0.CrunchLog.Template
             }
 
             var file = outputDir.CombineFilePath(".json", "index");
-
-            using (var write = file.CreateText())
+            using (var sw = file.CreateText())
             {
-
+                sw.Write(JsonConvert.SerializeObject(model));
             }
         }
     }

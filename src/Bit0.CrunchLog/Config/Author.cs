@@ -16,8 +16,6 @@ namespace Bit0.CrunchLog.Config
         public String HomePage { get; set; }
         [JsonProperty("social")]
         public IDictionary<String, String> Social { get; set; }
-
-        [JsonIgnore]
         public String Permalink => $"/by/{Alias}";
 
         public override String ToString()

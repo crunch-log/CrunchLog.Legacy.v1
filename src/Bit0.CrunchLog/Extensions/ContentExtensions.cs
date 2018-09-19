@@ -8,9 +8,9 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static PostTemplateModel GetModel(this Content content, CrunchSite siteConfig)
+        public static PostTemplateModel GetModel(this Content content, CrunchSite siteConfig, Boolean inList = false)
         {
-            return new PostTemplateModel(content, siteConfig); 
+            return new PostTemplateModel(content, siteConfig, inList); 
         }
 
         public static String GetPagePermaLink(this ContentListItem contentListItem, Int32 page)
@@ -22,10 +22,10 @@ namespace Bit0.CrunchLog.Extensions
 
             if (contentListItem.Permalink.EndsWith("/"))
             {
-                return $"{contentListItem.Permalink}{page}";
+                return $"{contentListItem.Permalink}page{page:00}";
             }
 
-            return  $"{contentListItem.Permalink}/{page}";
+            return  $"{contentListItem.Permalink}/page{page:00}";
         }
 
         public static IEnumerable<PostListTemplateModel> GetPages(this ContentListItem contentListItem, CrunchSite siteConfig)

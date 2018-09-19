@@ -46,7 +46,7 @@ namespace Bit0.CrunchLog.Template.Models
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Cast<Content>()
-                .Select(c => c.GetModel(config));
+                .Select(c => c.GetModel(config, inList: true));
         }
 
         public override String ToString()

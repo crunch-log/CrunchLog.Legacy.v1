@@ -7,20 +7,23 @@ namespace Bit0.CrunchLog.Template.Models
 {
     public class PostTemplateModel : ITemplateModel
     {
-        public PostTemplateModel(Content content, CrunchSite siteConfig)
+        public PostTemplateModel(Content content, CrunchSite siteConfig, Boolean inList = false)
         {
             Title = content.Title;
-            Content = content.Html;
             Description = content.Intro;
             Author = content.Author;
             Date = content.Date;
             Keywords = content.Tags;
             Permalink = content.Permalink;
-            Layout = content.Layout.GetValue();
             Categories = content.Categories;
             BannerImage = content.BannerImage.ToRelative(siteConfig.Paths.ContentPath);
 
-            Site = siteConfig.GetModel();
+            if (!inList)
+            {
+                Layout = content.Layout.GetValue();
+                Content = content.Html;
+                Site = siteConfig.GetModel();
+            }
         }
 
         public String Layout { get; }

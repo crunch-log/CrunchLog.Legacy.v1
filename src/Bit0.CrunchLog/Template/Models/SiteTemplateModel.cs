@@ -9,6 +9,9 @@ namespace Bit0.CrunchLog.Template.Models
         public String Title { get; set; }
         public String SubTitle { get; set; }
         public String Owner { get; set; }
+        public Int32 CopyrightYear { get; set; }
         public IDictionary<String, IEnumerable<MenuItem>> Menu { get; set; }
+        public IEnumerable<MenuItem> Categories { get; internal set; }
+        public IEnumerable<MenuItem> Tags { get; internal set; }
     }
 }

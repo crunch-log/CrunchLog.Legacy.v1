@@ -112,6 +112,14 @@ namespace Bit0.CrunchLog
             _logger.LogInformation($"Authors published in {authors.Count} pages");
         }
 
+        public void PublishSiteInfo()
+        {
+            var info = _siteConfig.GetModel(_contentProvider);
+            _templateFactory.Render(info);
+
+            _logger.LogInformation($"Site information published");
+        }
+
         public void Publish()
         {
             // [ ] create posts pages
@@ -127,6 +135,7 @@ namespace Bit0.CrunchLog
 
             // [ ] replace config with crunchlog->site
 
+            PublishSiteInfo();
             PublishImages();
             PublisHome();
             PublishContent();

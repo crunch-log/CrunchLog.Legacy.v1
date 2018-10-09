@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 
@@ -38,6 +39,7 @@ namespace Bit0.CrunchLog.Template.Models
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
         public Boolean IsContentLayout => true;
+        public String DefaultCategory => Categories.FirstOrDefault().Key;
 
         public override String ToString()
         {

@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Bit0.CrunchLog.Template
 {
-    public class HandelbarsTemplateEngine : IHtmlTemplateEngine
+    public class HandelbarsTemplateEngine : ITemplateEngine
     {
         private readonly IHandlebars _handlebars;
         private readonly CrunchSite _siteConfig;
@@ -278,6 +278,11 @@ namespace Bit0.CrunchLog.Template
             {
                 handlebarsTemplate(write, model);
             }
+        }
+
+        public void Render(SiteTemplateModel model)
+        {
+            // no need
         }
     }
 }

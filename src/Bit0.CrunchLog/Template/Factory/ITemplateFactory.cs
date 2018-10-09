@@ -12,5 +12,7 @@ namespace Bit0.CrunchLog.Template.Factory
         ITemplateEngine Engine { get; }
         
         void Render(ITemplateModel model);
+
+        void Render(SiteTemplateModel model);
     }
 }

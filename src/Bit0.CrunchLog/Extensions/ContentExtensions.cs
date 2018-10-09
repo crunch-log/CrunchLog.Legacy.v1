@@ -45,7 +45,21 @@ namespace Bit0.CrunchLog.Extensions
                 Title = siteConfig.Title,
                 SubTitle = siteConfig.SubTitle,
                 Menu = siteConfig.Menu,
-                Owner = siteConfig.Copyright.Owner
+                Owner = siteConfig.Copyright.Owner,
+                CopyrightYear = siteConfig.Copyright.StartYear
+            };
+        }
+        public static SiteTemplateModel GetModel(this CrunchSite siteConfig, IContentProvider contentProvider)
+        {
+            return new SiteTemplateModel
+            {
+                Title = siteConfig.Title,
+                SubTitle = siteConfig.SubTitle,
+                Menu = siteConfig.Menu,
+                Categories = contentProvider.PostCategories.OrderBy(c => c.Title).Select(c => new MenuItem { Title = c.Title, Url = c.Permalink }),
+                Tags = contentProvider.PostTags.OrderBy(t => t.Title).Select(t => new MenuItem { Title = t.Title, Url = t.Permalink }),
+                Owner = siteConfig.Copyright.Owner,
+                CopyrightYear = siteConfig.Copyright.StartYear
             };
         }
     }

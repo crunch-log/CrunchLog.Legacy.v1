@@ -10,6 +10,7 @@
         void PublisHome();
         void PublishTags();
         void PublishImages();
+        void PublishSiteInfo();
 
         void PublishAuthors();
     }

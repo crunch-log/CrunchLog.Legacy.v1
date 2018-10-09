@@ -16,14 +16,12 @@ namespace Bit0.CrunchLog.Template.Factory
 
         public TemplateFactory(
             CrunchSite siteConfig,
-            IHtmlTemplateEngine htmlTemplateEngine,
-            IJsonTemplateEngine jsonTemplateEngine
+            ITemplateEngine templateEngine
             )
         {
             SiteConfig = siteConfig;
             Theme = SiteConfig.Theme;
-
-            Engine = Theme.OutputType == ThemeOutputType.Html ? htmlTemplateEngine : (ITemplateEngine) jsonTemplateEngine;
+            Engine = templateEngine;
         }
 
         private void InitOutput ()
@@ -45,5 +43,7 @@ namespace Bit0.CrunchLog.Template.Factory
         }
 
         public void Render(ITemplateModel model) => Engine.Render(model);
+
+        public void Render(SiteTemplateModel model) => Engine.Render(model);
     }
 }

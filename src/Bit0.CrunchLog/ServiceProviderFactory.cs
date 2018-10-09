@@ -5,7 +5,6 @@ using Bit0.CrunchLog.Template.Factory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 
 namespace Bit0.CrunchLog
@@ -37,11 +36,10 @@ namespace Bit0.CrunchLog
             // inject timestamps in log, in future replace with another logger
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
 
+            services.AddTransient<ITemplateEngine, JsonTemplateEngine>();
             // TODO: Add injection from plugins
-            //  move to plugin
-            services.AddTransient<IHtmlTemplateEngine, HtmlTemplateEngine>();
-            services.AddTransient<IJsonTemplateEngine, JsonTemplateEngine>();
-            services.Replace(ServiceDescriptor.Singleton(typeof(IHtmlTemplateEngine), typeof(HandelbarsTemplateEngine)));
+            // move to plugin
+            //services.Replace(ServiceDescriptor.Singleton(typeof(IHtmlTemplateEngine), typeof(HandelbarsTemplateEngine)));
 
             Current = services.BuildServiceProvider();
 

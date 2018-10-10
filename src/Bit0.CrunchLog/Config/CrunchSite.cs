@@ -49,6 +49,9 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("menu")]
         public IDictionary<String, IEnumerable<MenuItem>> Menu { get; set; }
 
+        [JsonProperty("categories")]
+        public IDictionary<String, String> Categories { get; set; }
+
         [JsonProperty("paths")]
         public ConfigPaths Paths { get; set; } = new ConfigPaths();
 

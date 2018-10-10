@@ -18,7 +18,7 @@ namespace Bit0.CrunchLog.Template.Models
         public String PreviousPageUrl { get; set; }
         public String NextPageUrl { get; set; }
         public Int32 PostsCount => Posts.Count();
-        public Boolean IsHomeLayout => Layout.Equals(Layouts.Home);
+        public Boolean IsHomeLayout { get; }
 
         public PostListTemplateModel(
             ContentListItem contentListItem, CrunchSite config,
@@ -36,6 +36,7 @@ namespace Bit0.CrunchLog.Template.Models
             NextPageUrl = page < totalPages ? contentListItem.GetPagePermaLink(page + 1) : String.Empty;
 
             Layout = contentListItem.Layout.GetValue();
+            IsHomeLayout = contentListItem.Layout == Layouts.Home;
             Permalink = Pagination[page].Url;
             Title = contentListItem.Title;
             Site = config.GetModel();

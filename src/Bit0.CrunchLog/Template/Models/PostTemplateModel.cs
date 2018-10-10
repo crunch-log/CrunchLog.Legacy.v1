@@ -19,6 +19,13 @@ namespace Bit0.CrunchLog.Template.Models
             Categories = content.Categories;
             BannerImage = content.BannerImage.ToRelative(siteConfig.Paths.ContentPath);
 
+            var categoryName = Categories.FirstOrDefault().Key;
+
+            DefaultCategory = new {
+                Title = categoryName,
+                Color = siteConfig.Categories[siteConfig.Categories.ContainsKey(categoryName) ? categoryName : "Default"]
+            };
+
             if (!inList)
             {
                 Layout = content.Layout.GetValue();
@@ -39,7 +46,7 @@ namespace Bit0.CrunchLog.Template.Models
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
         public Boolean IsContentLayout => true;
-        public String DefaultCategory => Categories.FirstOrDefault().Key;
+        public dynamic DefaultCategory { get; }
 
         public override String ToString()
         {

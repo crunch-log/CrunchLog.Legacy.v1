@@ -14,17 +14,22 @@ namespace Bit0.CrunchLog.Template.Models
             Description = content.Intro;
             Author = content.Author;
             Date = content.Date;
-            Keywords = content.Tags;
+            Keywords = content.Tags.Select(t => new CategoryInfo
+            {
+                Title = t.Key,
+                Permalink = t.Value,
+                Color = ""
+            });
             Permalink = content.Permalink;
-            Categories = content.Categories;
+            Categories = content.Categories.Select(c => new CategoryInfo
+            {
+                Title = c.Key,
+                Permalink = c.Value,
+                Color = siteConfig.Categories[siteConfig.Categories.ContainsKey(c.Key) ? c.Key : "Default"]
+            });
             BannerImage = content.BannerImage.ToRelative(siteConfig.Paths.ContentPath);
 
-            var categoryName = Categories.FirstOrDefault().Key;
-
-            DefaultCategory = new {
-                Title = categoryName,
-                Color = siteConfig.Categories[siteConfig.Categories.ContainsKey(categoryName) ? categoryName : "Default"]
-            };
+            DefaultCategory = Categories.FirstOrDefault();
 
             if (!inList)
             {
@@ -35,9 +40,9 @@ namespace Bit0.CrunchLog.Template.Models
         }
 
         public String Layout { get; }
-        public IDictionary<String, String> Categories { get; }
+        public IEnumerable<CategoryInfo> Categories { get; }
         public String Title { get; }
-        public IDictionary<String, String> Keywords { get; }
+        public IEnumerable<CategoryInfo> Keywords { get; }
         public String Description { get; }
         public String Content { get; }
         public String Permalink { get; set; }
@@ -46,7 +51,7 @@ namespace Bit0.CrunchLog.Template.Models
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
         public Boolean IsContentLayout => true;
-        public dynamic DefaultCategory { get; }
+        public CategoryInfo DefaultCategory { get; }
 
         public override String ToString()
         {

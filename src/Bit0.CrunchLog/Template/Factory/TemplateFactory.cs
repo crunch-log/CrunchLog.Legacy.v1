@@ -22,6 +22,8 @@ namespace Bit0.CrunchLog.Template.Factory
             SiteConfig = siteConfig;
             Theme = SiteConfig.Theme;
             Engine = templateEngine;
+
+            InitOutput();
         }
 
         private void InitOutput ()

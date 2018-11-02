@@ -1,9 +1,10 @@
-﻿using System;
-using System.Threading;
-using Bit0.CrunchLog.Cli.Extensions;
+﻿using Bit0.CrunchLog.Cli.Extensions;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Unosquare.Labs.EmbedIO;
 using Unosquare.Swan;
 
@@ -73,6 +74,14 @@ namespace Bit0.CrunchLog.Cli
                     .EnableCors()
                     .WithLocalSession()
                     .WithStaticFolderAt(config.Paths.OutputPath.FullName);
+
+                server.OnNotFound = (c) =>
+                {
+                    logger.Log(LogLevel.Error, new EventId(2002, "Not Found"), $"Cannot find {c.Request.Url}");
+
+                    return Task.FromResult(true);
+                };
+
                 var cts = new CancellationTokenSource();
                 var task = server.RunAsync(cts.Token);
 
@@ -85,11 +94,16 @@ namespace Bit0.CrunchLog.Cli
                 try
                 {
                     task.Wait(cts.Token);
-                } catch (AggregateException)
+                }
+                catch (AggregateException)
                 {
                     // We'd also actually verify the exception cause was that the task
-                    // was cancelled.
+                    // was canceled.
                     server.Dispose();
+                }
+                finally
+                {
+                    cts.Dispose();
                 }
             });
         }

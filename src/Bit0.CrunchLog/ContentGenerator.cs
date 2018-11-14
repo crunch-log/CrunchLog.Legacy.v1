@@ -28,11 +28,10 @@ namespace Bit0.CrunchLog
         {
             if (_siteConfig.Paths.OutputPath.Exists)
             {
-                _siteConfig.Paths.OutputPath.Delete(true);
+                _siteConfig.Paths.OutputPath.ClearFolder();
             }
 
             _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
-
         }
 
         public void PublishCategories()

@@ -1,11 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Bit0.CrunchLog.Extensions
 {
     public static class DirectoryInfoExtensions
     {
+        public static void ClearFolder(this DirectoryInfo dir)
+        {
+            dir.GetFiles().ToList().ForEach(f =>
+            {
+                f.Delete();
+            });
+
+            dir.GetDirectories().ToList().ForEach(d =>
+            {
+                d.ClearFolder();
+                d.Delete();
+            });
+        }
+
         public static DirectoryInfo CombineDirPath(this DirectoryInfo dir, params String[] paths)
         {
             var pathList = new List<String>(new[] { dir.FullName });

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Bit0.CrunchLog.Helpers;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
@@ -16,7 +17,7 @@ namespace Bit0.CrunchLog.Config
         public String HomePage { get; set; }
         [JsonProperty("social")]
         public IDictionary<String, String> Social { get; set; }
-        public String Permalink => $"/by/{Alias}";
+        public String Permalink => String.Format(StaticKeys.ByPathFormat, Alias);
 
         public override String ToString()
         {

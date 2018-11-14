@@ -2,7 +2,7 @@
   "profiles": {
     "Bit0.CrunchLog.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "generate",
+      "commandLineArgs": "run",
       "environmentVariables": {
         "dir": "U:\\Projects\\CrunchLog\\Samples\\Site1"
       }

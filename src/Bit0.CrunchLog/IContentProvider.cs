@@ -5,7 +5,7 @@ namespace Bit0.CrunchLog
 {
     public interface IContentProvider
     {
-        IEnumerable<Content> AllContent { get; }
+        IDictionary<String, Content> AllContent { get; }
         IEnumerable<Content> PublishedContent { get; }
         IEnumerable<Content> Posts { get; }
         IEnumerable<Content> Pages { get; }

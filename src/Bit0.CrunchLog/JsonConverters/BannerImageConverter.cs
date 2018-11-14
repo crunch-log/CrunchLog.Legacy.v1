@@ -27,10 +27,10 @@ namespace Bit0.CrunchLog.JsonConverters
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            if (reader.Value is String fileKey && !String.IsNullOrWhiteSpace(fileKey))
-            {
-                return ImageHelpers.GetImagePath(fileKey, _siteConfig.Paths.BasePath, _siteConfig.Paths.ImagesPath, _siteConfig.DefaultBanner);
-            }
+            //if (reader.Value is String fileKey && !String.IsNullOrWhiteSpace(fileKey))
+            //{
+            //    return ImageHelpers.GetImagePath(fileKey, _siteConfig.Paths.BasePath, _siteConfig.Paths.ImagesPath, _siteConfig.DefaultBanner);
+            //}
 
             return _siteConfig.DefaultBanner;
         }

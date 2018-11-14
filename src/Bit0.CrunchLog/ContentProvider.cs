@@ -1,10 +1,16 @@
-﻿using System;
+﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
+using Markdig;
+using Markdig.Extensions.Yaml;
+using Markdig.Syntax;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Bit0.CrunchLog.Config;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Bit0.CrunchLog
 {
@@ -13,7 +19,7 @@ namespace Bit0.CrunchLog
         private readonly CrunchSite _siteConfig;
         private readonly ILogger<ContentProvider> _logger;
 
-        private IEnumerable<Content> _allContent;
+        private IDictionary<String, Content> _allContent;
 
         public ContentProvider(CrunchSite siteConfig, ILogger<ContentProvider> logger)
         {
@@ -21,7 +27,7 @@ namespace Bit0.CrunchLog
             _siteConfig = siteConfig;
         }
 
-        public IEnumerable<Content> AllContent
+        public IDictionary<String, Content> AllContent
         {
             get
             {
@@ -31,91 +37,82 @@ namespace Bit0.CrunchLog
                 }
 
                 var allContent = new List<Content>();
+                var files = _siteConfig.Paths.ContentPath.GetFiles("*.md", SearchOption.AllDirectories);
 
-                var metaFiles = _siteConfig.Paths.ContentPath.GetFiles("*.json", SearchOption.AllDirectories);
-                foreach (var metaFile in metaFiles)
+                foreach (var file in files)
                 {
-                    var content = new Content(metaFile, _siteConfig);
+                    var pipeline = new MarkdownPipelineBuilder()
+                        .UseYamlFrontMatter()
+                        .Build();
+                    var md = Markdown.Parse(file.GetText(), pipeline);
+                    if (md[0] is YamlFrontMatterBlock)
+                    {
+                        var frontMatter = (md[0] as LeafBlock).Lines.ToString();
 
-                    JsonConvert.PopulateObject(metaFile.OpenText().ReadToEnd(), content);
-                    allContent.Add(content);
+                        var deserializer = new DeserializerBuilder()
+                            .WithNamingConvention(new CamelCaseNamingConvention())
+                            .Build();
+                        var yaml = deserializer.Deserialize(new StringReader(frontMatter));
+
+                        var serializer = new SerializerBuilder()
+                            .JsonCompatible()
+                            .Build();
+
+                        var json = serializer.Serialize(yaml);
+                        var content = new Content(file, _siteConfig);
+
+                        JsonConvert.PopulateObject(json, content);
+                        allContent.Add(content);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Skipping: {file}. Could not find front matter.");
+                    }
                 }
 
-                _logger.LogDebug($"Fount {allContent.Count} documents");
+
+                _logger.LogDebug($"Found {allContent.Count} documents");
 
                 _allContent = allContent
-                    .OrderByDescending(x => x.Date)
-                    .ThenByDescending(x => x.Slug);
+                    .OrderByDescending(x => x.DatePublished)
+                    .ThenByDescending(x => x.Slug)
+                    .ToDictionary(k => k.Id, v => v);
 
                 return _allContent;
             }
         }
 
-        public IEnumerable<Content> PublishedContent
-        {
-            get
-            {
-                return AllContent.Where(p => p.Published);
-            }
-        }
+        public IEnumerable<Content> PublishedContent => AllContent.Where(p => p.Value.Published).Select(p => p.Value);
 
-        public IEnumerable<Content> Posts
-        {
-            get
-            {
-                return PublishedContent.Where(p => p.Layout == Layouts.Post);
-            }
-        }
+        public IEnumerable<Content> Posts => PublishedContent.Where(p => p.Layout == Layouts.Post);
 
-        public IEnumerable<Content> Pages
-        {
-            get
-            {
-                return PublishedContent.Where(p => p.Layout == Layouts.Page);
-            }
-        }
+        public IEnumerable<Content> Pages => PublishedContent.Where(p => p.Layout == Layouts.Page);
 
-        public IEnumerable<ContentListItem> PostTags
-        {
-            get
-            {
-                return Posts
+        public IEnumerable<ContentListItem> PostTags => Posts
                     .Where(p => p.Tags != null && p.Tags.Any())
                     .SelectMany(p => p.Tags)
                     .Distinct()
                     .Select(t => new ContentListItem
                     {
                         Title = t.Key,
-                        Permalink = t.Value,
+                        Permalink = t.Value.Permalink,
                         Layout = Layouts.Tag,
                         Children = Posts.Where(p => p.Tags.Contains(t))
                     });
-            }
-        }
 
-        public IEnumerable<ContentListItem> PostCategories
-        {
-            get
-            {
-                return Posts
+        public IEnumerable<ContentListItem> PostCategories => Posts
                     .Where(p => p.Categories != null && p.Categories.Any())
                     .SelectMany(p => p.Categories)
                     .Distinct()
                     .Select(c => new ContentListItem
                     {
                         Title = c.Key,
-                        Permalink = c.Value,
+                        Permalink = c.Value.Permalink,
                         Layout = Layouts.Category,
                         Children = Posts.Where(p => p.Categories.Contains(c))
                     });
-            }
-        }
 
-        public IEnumerable<ContentListItem> Authors
-        {
-            get
-            {
-                return Posts
+        public IEnumerable<ContentListItem> Authors => Posts
                     .Where(p => p.Author != null)
                     .Select(p => p.Author)
                     .Distinct()
@@ -126,8 +123,6 @@ namespace Bit0.CrunchLog
                         Layout = Layouts.Author,
                         Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))
                     });
-            }
-        }
 
         public IEnumerable<ContentListItem> PostArchives
         {

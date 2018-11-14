@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Helpers;
+using Bit0.CrunchLog.Template.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Bit0.CrunchLog.JsonConverters
 {
@@ -39,19 +41,29 @@ namespace Bit0.CrunchLog.JsonConverters
             switch (_layoutKey)
             {
                 case Layouts.Tag:
-                    return config.Tags.Concat(array.ToObject<IList<String>>()).ToDictionary(k => k, v => $"/tag/{v}/");
+                    var postTags = array.ToObject<IList<String>>()
+                        .ToDictionary(k => k, v => new CategoryInfo
+                        {
+                            Title = v,
+                            Permalink = String.Format(StaticKeys.TagPathFormat, v),
+                        });
+
+                    return config.Tags
+                        .Concat(postTags)
+                        .GroupBy(k => k.Key)
+                        .ToDictionary(k => k.Key, v => v.First().Value);
                 case Layouts.Category:
-                    return array.ToObject<IList<String>>().ToDictionary(k => k, v => $"/category/{v}/");
+                    return array.ToObject<IList<String>>().ToDictionary(k => k, v =>
+                    {
+                        return config.Categories[config.Categories.ContainsKey(v) ? v : "Default"];
+                    });
                 default:
                     break;
             }
-            
+
             return null;
         }
 
-        public override Boolean CanConvert(Type objectType)
-        {
-            return objectType == typeof(IDictionary<String, String>);
-        }
+        public override Boolean CanConvert(Type objectType) => objectType == typeof(IDictionary<String, String>);
     }
 }

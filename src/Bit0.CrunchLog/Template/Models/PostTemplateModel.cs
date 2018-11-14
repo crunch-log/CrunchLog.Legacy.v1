@@ -13,21 +13,18 @@ namespace Bit0.CrunchLog.Template.Models
             Title = content.Title;
             Description = content.Intro;
             Author = content.Author;
-            Date = content.Date;
+            Published = content.DatePublished;
+            Updated = content.DateUpdated;
             Keywords = content.Tags.Select(t => new CategoryInfo
             {
                 Title = t.Key,
-                Permalink = t.Value,
-                Color = ""
+                Permalink = t.Value.Permalink,
+                Color = "",
+                Image = ""
             });
             Permalink = content.Permalink;
-            Categories = content.Categories.Select(c => new CategoryInfo
-            {
-                Title = c.Key,
-                Permalink = c.Value,
-                Color = siteConfig.Categories[siteConfig.Categories.ContainsKey(c.Key) ? c.Key : "Default"]
-            });
-            BannerImage = content.BannerImage.ToRelative(siteConfig.Paths.ContentPath);
+            Categories = content.Categories.Select(c => c.Value);
+            BannerImage = content.BannerImage;
 
             DefaultCategory = Categories.FirstOrDefault();
 
@@ -47,7 +44,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String Content { get; }
         public String Permalink { get; set; }
         public Author Author { get; }
-        public DateTime Date { get; }
+        public DateTime Published { get; }
+        public DateTime Updated { get; }
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
         public Boolean IsContentLayout => true;

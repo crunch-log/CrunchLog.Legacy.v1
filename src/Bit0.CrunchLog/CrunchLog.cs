@@ -17,14 +17,14 @@ namespace Bit0.CrunchLog
             SiteConfig = ReadConfigFile(configFile.File, logger);
         }
 
-        private CrunchSite ReadConfigFile(FileInfo configFile, ILogger<CrunchLog> logger)
+        private static CrunchSite ReadConfigFile(FileInfo configFile, ILogger<CrunchLog> logger)
         {
             logger.LogDebug($"Read configuration from: {configFile}");
 
             var siteConfig = new CrunchSite();
             JsonConvert.PopulateObject(configFile.OpenText().ReadToEnd(), siteConfig);
 
-            logger.LogDebug("Configration read");
+            logger.LogDebug("Configuration read");
             logger.LogInformation($"Output path: {siteConfig.Paths.OutputPath}");
 
             return siteConfig;

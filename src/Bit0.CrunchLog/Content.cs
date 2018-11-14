@@ -1,79 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.JsonConverters;
 using Markdig;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Bit0.CrunchLog
 {
     public class Content : IContent
     {
-        private String _mdFile;
-        private String _slug;
-
+        private const String _regex = @"(^[0-9]{1,4})-(.*)\.md$";
         private readonly CrunchSite _siteConfig;
 
         public Content()
         { }
 
-        public Content(FileInfo metaFile, CrunchSite siteConfig)
+        public Content(FileInfo contentFile, CrunchSite siteConfig)
         {
             _siteConfig = siteConfig;
 
-            MetaFile = metaFile;
+            ContentFile = contentFile;
             Permalink = _siteConfig.Permalink;
         }
 
-        [JsonProperty("content")]
-        public String MarkdownFile
-        {
-            get
-            {
-                // if content file is not defined
-                if (String.IsNullOrWhiteSpace(_mdFile))
-                {
-                    var dir = MetaFile?.Directory;
-
-                    // find post.md
-                    if (dir?.GetFiles("post.md", SearchOption.TopDirectoryOnly)
-                            .SingleOrDefault() != null)
-                    {
-                        return "post.md";
-                    }
-
-                    // find md
-                    if (dir?.GetFiles("md", SearchOption.TopDirectoryOnly)
-                            .SingleOrDefault() != null)
-                    {
-                        return "md";
-                    }
-
-                    // find <dirName>.md
-                    if (dir?.GetFiles($"{dir.Name}.md", SearchOption.TopDirectoryOnly)
-                            .SingleOrDefault() != null)
-                    {
-                        return $"{dir.Name}.md";
-                    }
-
-                    // fnd <jsonFileName>.md
-                    if (dir?.GetFiles($"{MetaFile.Name.Replace(".json", "")}.md", SearchOption.TopDirectoryOnly)
-                            .SingleOrDefault() != null)
-                    {
-                        return $"{MetaFile.Name.Replace(".json", "")}.md";
-                    }
-
-                    throw new FileNotFoundException($"Could not find file for {MetaFile?.Name}");
-                }
-
-                return _mdFile;
-            }
-            set => _mdFile = value;
-        }
+        [JsonProperty("id")]
+        public String Id { get; set; }
 
         [JsonProperty("title")]
         public String Title { get; set; }
@@ -82,31 +38,24 @@ namespace Bit0.CrunchLog
         public Layouts Layout { get; set; } = Layouts.Post;
 
         [JsonProperty("slug")]
-        public String Slug
-        {
-            get
-            {
-                if (String.IsNullOrWhiteSpace(_slug))
-                {
-                    return MetaFile?.Directory?.Name;
-                }
+        public String Slug { get; set; }
 
-                return _slug;
-            }
+        [JsonProperty("datePublished")]
+        public DateTime DatePublished { get; set; } = DateTime.UtcNow;
 
-            set => _slug = value;
-        }
-
-        [JsonProperty("date")]
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        [JsonProperty("dateUpdated")]
+        public DateTime DateUpdated { get; set; } = DateTime.MinValue;
 
         [JsonProperty("tags")]
         [JsonConverter(typeof(ListConverter), Layouts.Tag)]
-        public IDictionary<String, String> Tags { get; set; }
+        public IDictionary<String, CategoryInfo> Tags { get; set; }
 
         [JsonProperty("categories")]
         [JsonConverter(typeof(ListConverter), Layouts.Category)]
-        public IDictionary<String, String> Categories { get; set; }
+        public IDictionary<String, CategoryInfo> Categories { get; set; }
+
+        [JsonIgnore]
+        public CategoryInfo DefaultCategory { get; set; }
 
         [JsonProperty("published")]
         public Boolean Published { get; set; }
@@ -122,38 +71,56 @@ namespace Bit0.CrunchLog
         public Author Author { get; set; }
 
         [JsonProperty("bannerImage")]
-        [JsonConverter(typeof(BannerImageConverter))]
-        public FileInfo BannerImage { get; set; }
+        public String BannerImage { get; set; }
 
         [JsonIgnore]
-        public FileInfo MetaFile { get; set; }
-
-        [JsonIgnore]
-        public FileInfo ContentFile => MetaFile?.Directory?.CombineFilePath(MarkdownFile);
+        public FileInfo ContentFile { get; }
 
         [JsonIgnore]
         public String Html
         {
             get
             {
-                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseAdvancedExtensions()
+                    .UseAutoIdentifiers()
+                    .UseAutoLinks()
+                    .UseTaskLists()
+                    .UsePipeTables()
+                    .UseGridTables()
+                    .UseEmphasisExtras()
+                    .UseGenericAttributes()
+                    .UseFootnotes()
+                    .UseAbbreviations()
+                    .UseEmojiAndSmiley()
+                    .UsePreciseSourceLocation()
+                    .Build();
                 return Markdown.ToHtml(ContentFile.GetText(), pipeline);
             }
         }
 
-        public override String ToString()
-        {
-            return Permalink;
-        }
+        public override String ToString() => $"{Id:00000} {Permalink}";
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
+            var match = Regex.Match(ContentFile.Name, _regex);
+
+            if (String.IsNullOrWhiteSpace(Id) && match.Success)
+            {
+                Id = match.Groups[1].Value;
+            }
+
+            if (String.IsNullOrWhiteSpace(Slug) && match.Success)
+            {
+                Slug = match.Groups[2].Value;
+            }
+
             // fix permalink
             Permalink = Permalink
-                .Replace(":year", Date.ToString("yyyy"))
-                .Replace(":month", Date.ToString("MM"))
-                .Replace(":day", Date.ToString("dd"))
+                .Replace(":year", DatePublished.ToString("yyyy"))
+                .Replace(":month", DatePublished.ToString("MM"))
+                .Replace(":day", DatePublished.ToString("dd"))
                 .Replace(":slug", Slug);
 
             if (Author == null)
@@ -161,9 +128,17 @@ namespace Bit0.CrunchLog
                 Author = _siteConfig.Authors.FirstOrDefault().Value;
             }
 
-            if (BannerImage == null)
+            DefaultCategory = Categories.FirstOrDefault().Value;
+            if (String.IsNullOrWhiteSpace(BannerImage))
             {
-                BannerImage = _siteConfig.DefaultBanner;
+                BannerImage = !String.IsNullOrWhiteSpace(DefaultCategory.Image)
+                    ? DefaultCategory.Image
+                    : _siteConfig.DefaultBanner;
+            }
+
+            if (DateUpdated == DateTime.MinValue)
+            {
+                DateUpdated = DatePublished;
             }
         }
     }

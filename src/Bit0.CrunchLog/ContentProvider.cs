@@ -47,22 +47,32 @@ namespace Bit0.CrunchLog
                     var md = Markdown.Parse(file.GetText(), pipeline);
                     if (md[0] is YamlFrontMatterBlock)
                     {
-                        var frontMatter = (md[0] as LeafBlock).Lines.ToString();
+                        try
+                        {
+                            var frontMatter = (md[0] as LeafBlock).Lines.ToString();
 
-                        var deserializer = new DeserializerBuilder()
-                            .WithNamingConvention(new CamelCaseNamingConvention())
-                            .Build();
-                        var yaml = deserializer.Deserialize(new StringReader(frontMatter));
+                            var deserializer = new DeserializerBuilder()
+                                .WithNamingConvention(new CamelCaseNamingConvention())
+                                .Build();
+                            using (var stringReader = new StringReader(frontMatter))
+                            {
+                                var yaml = deserializer.Deserialize(stringReader);
 
-                        var serializer = new SerializerBuilder()
-                            .JsonCompatible()
-                            .Build();
+                                var serializer = new SerializerBuilder()
+                                    .JsonCompatible()
+                                    .Build();
 
-                        var json = serializer.Serialize(yaml);
-                        var content = new Content(file, _siteConfig);
+                                var json = serializer.Serialize(yaml);
+                                var content = new Content(file, _siteConfig);
 
-                        JsonConvert.PopulateObject(json, content);
-                        allContent.Add(content);
+                                JsonConvert.PopulateObject(json, content);
+                                allContent.Add(content);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e, $"Error reading front matter from: {file.FullName}");
+                        }
                     }
                     else
                     {
@@ -91,25 +101,27 @@ namespace Bit0.CrunchLog
         public IEnumerable<ContentListItem> PostTags => Posts
                     .Where(p => p.Tags != null && p.Tags.Any())
                     .SelectMany(p => p.Tags)
-                    .Distinct()
+                    .GroupBy(t => t.Key)
+                    .Select(t => t.First().Value)
                     .Select(t => new ContentListItem
                     {
-                        Title = t.Key,
-                        Permalink = t.Value.Permalink,
+                        Title = t.Title,
+                        Permalink = t.Permalink,
                         Layout = Layouts.Tag,
-                        Children = Posts.Where(p => p.Tags.Contains(t))
+                        Children = Posts.Where(p => p.Tags.Keys.Contains(t.Title))
                     });
 
         public IEnumerable<ContentListItem> PostCategories => Posts
                     .Where(p => p.Categories != null && p.Categories.Any())
                     .SelectMany(p => p.Categories)
-                    .Distinct()
+                    .GroupBy(c => c.Key)
+                    .Select(c => c.First().Value)
                     .Select(c => new ContentListItem
                     {
-                        Title = c.Key,
-                        Permalink = c.Value.Permalink,
+                        Title = c.Title,
+                        Permalink = c.Permalink,
                         Layout = Layouts.Category,
-                        Children = Posts.Where(p => p.Categories.Contains(c))
+                        Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
                     });
 
         public IEnumerable<ContentListItem> Authors => Posts

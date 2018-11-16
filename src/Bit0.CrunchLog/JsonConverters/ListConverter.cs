@@ -55,7 +55,17 @@ namespace Bit0.CrunchLog.JsonConverters
                 case Layouts.Category:
                     return array.ToObject<IList<String>>().ToDictionary(k => k, v =>
                     {
-                        return config.Categories[config.Categories.ContainsKey(v) ? v : "Default"];
+                        var defCat = config.Categories[config.DefaultCategory];
+
+                        return config.Categories.ContainsKey(v) 
+                        ? config.Categories[v]
+                        : new CategoryInfo
+                        {
+                            Title = v,
+                            Permalink = String.Format(StaticKeys.CategoryPathFormat, v),
+                            Color = defCat.Color,
+                            Image = defCat.Color
+                        };
                     });
                 default:
                     break;

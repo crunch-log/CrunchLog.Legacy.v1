@@ -15,13 +15,7 @@ namespace Bit0.CrunchLog.Template.Models
             Author = content.Author;
             Published = content.DatePublished;
             Updated = content.DateUpdated;
-            Keywords = content.Tags.Select(t => new CategoryInfo
-            {
-                Title = t.Key,
-                Permalink = t.Value.Permalink,
-                Color = "",
-                Image = ""
-            });
+            Keywords = content.Tags.Select(t => t.Value);
             Permalink = content.Permalink;
             Categories = content.Categories.Select(c => c.Value);
             BannerImage = content.BannerImage;

@@ -50,6 +50,9 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("categories")]
         public IDictionary<String, CategoryInfo> Categories { get; set; }
 
+        [JsonProperty("defaultCategory")]
+        public String DefaultCategory { get; set; }
+
         [JsonIgnore]
         public IDictionary<String, CategoryInfo> Tags { get; set; }
 
@@ -60,17 +63,19 @@ namespace Bit0.CrunchLog.Config
         public Pagination Pagination { get; set; } = new Pagination();
 
         [JsonProperty("defaultBanner")]
-        public String DefaultBanner { get; internal set; }
+        public String DefaultBanner { get; set; }
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            Categories = Categories.ToDictionary(k => k.Key, v => new CategoryInfo
+            Categories = Categories.ToDictionary(k => k.Key, v =>
             {
-                Title = v.Key,
-                Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key),
-                Color = v.Value.Color,
-                Image = v.Value.Image,
+                var cat = v.Value;
+
+                cat.Title = v.Key;
+                cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
+
+                return cat;
             });
 
             var tags = _additionalData["tags"];

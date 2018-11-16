@@ -94,6 +94,7 @@ namespace Bit0.CrunchLog
                     .UseAbbreviations()
                     .UseEmojiAndSmiley()
                     .UsePreciseSourceLocation()
+                    .UseYamlFrontMatter()
                     .Build();
                 return Markdown.ToHtml(ContentFile.GetText(), pipeline);
             }

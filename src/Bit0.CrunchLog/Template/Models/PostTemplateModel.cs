@@ -10,6 +10,7 @@ namespace Bit0.CrunchLog.Template.Models
     {
         public PostTemplateModel(Content content, CrunchSite siteConfig, Boolean inList = false)
         {
+            Id = content.Id;
             Title = content.Title;
             Description = content.Intro;
             Author = content.Author;
@@ -32,6 +33,7 @@ namespace Bit0.CrunchLog.Template.Models
 
         public String Layout { get; }
         public IEnumerable<CategoryInfo> Categories { get; }
+        public String Id { get; set; }
         public String Title { get; }
         public IEnumerable<CategoryInfo> Keywords { get; }
         public String Description { get; }
@@ -45,9 +47,6 @@ namespace Bit0.CrunchLog.Template.Models
         public Boolean IsContentLayout => true;
         public CategoryInfo DefaultCategory { get; }
 
-        public override String ToString()
-        {
-            return Permalink;
-        }
+        public override String ToString() => Permalink;
     }
 }

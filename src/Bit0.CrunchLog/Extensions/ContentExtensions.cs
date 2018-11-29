@@ -56,8 +56,8 @@ namespace Bit0.CrunchLog.Extensions
                 Title = siteConfig.Title,
                 SubTitle = siteConfig.SubTitle,
                 Menu = siteConfig.Menu,
-                Categories = contentProvider.PostCategories.OrderBy(c => c.Title).Select(c => new MenuItem { Title = c.Title, Url = c.Permalink }),
-                Tags = contentProvider.PostTags.OrderBy(t => t.Title).Select(t => new MenuItem { Title = t.Title, Url = t.Permalink }),
+                Categories = contentProvider.PostCategories.Select(c => new CategoryItem { Title = c.Title, Url = c.Permalink, Count = c.Children.Count() }).OrderBy(c => c.Title),
+                Tags = contentProvider.PostTags.Select(t => new CategoryItem { Title = t.Title, Url = t.Permalink, Count = t.Children.Count() }).OrderByDescending(t => t.Count),
                 Owner = siteConfig.Copyright.Owner,
                 CopyrightYear = siteConfig.Copyright.StartYear
             };

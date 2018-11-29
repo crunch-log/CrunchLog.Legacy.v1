@@ -41,17 +41,12 @@ namespace Bit0.CrunchLog.JsonConverters
             switch (_layoutKey)
             {
                 case Layouts.Tag:
-                    var postTags = array.ToObject<IList<String>>()
+                    return array.ToObject<IList<String>>()
                         .ToDictionary(k => k, v => new CategoryInfo
                         {
                             Title = v,
                             Permalink = String.Format(StaticKeys.TagPathFormat, v),
                         });
-
-                    return config.Tags
-                        .Concat(postTags)
-                        .GroupBy(k => k.Key)
-                        .ToDictionary(k => k.Key, v => v.First().Value);
                 case Layouts.Category:
                     return array.ToObject<IList<String>>().ToDictionary(k => k, v =>
                     {

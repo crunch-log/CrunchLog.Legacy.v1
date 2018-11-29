@@ -291,3 +291,6 @@ __pycache__/
 # CrunchLog
 /Samples/Site1/_site
 /src/Bit0.CrunchLog.Cli/a
+
+**/GlobalSuppressions.cs
+**/launchSettings.json

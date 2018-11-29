@@ -29,9 +29,14 @@ namespace Bit0.CrunchLog
             if (_siteConfig.Paths.OutputPath.Exists)
             {
                 _siteConfig.Paths.OutputPath.ClearFolder();
+                _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
             }
 
-            _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
+            //if (_siteConfig.Paths.ThemesPath.Exists)
+            //{
+            //    _siteConfig.Paths.ThemesPath.ClearFolder();
+            //    _logger.LogInformation($"Cleaned theme folder {_siteConfig.Paths.ThemesPath.FullName}");
+            //}
         }
 
         public void PublishCategories()

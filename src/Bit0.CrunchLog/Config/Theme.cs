@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Bit0.CrunchLog.Extensions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Bit0.CrunchLog.Extensions;
-using Newtonsoft.Json;
+using System.IO.Compression;
+using System.Net;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -22,9 +24,12 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("outputType")]
         public ThemeOutputType OutputType { get; set; } = ThemeOutputType.Html;
-        
+
         [JsonProperty("name")]
         public String Name { get; set; }
+
+        [JsonProperty("version")]
+        public String Version { get; set; }
 
         [JsonProperty("description")]
         public String Description { get; set; }
@@ -36,8 +41,8 @@ namespace Bit0.CrunchLog.Config
         public String Homepage { get; set; }
 
         [JsonProperty("assets")]
-        public Assets Assets { get; set; }
-        
+        public Output Output { get; set; }
+
         [JsonProperty("tags")]
         public IEnumerable<String> Tags { get; set; }
 
@@ -55,6 +60,22 @@ namespace Bit0.CrunchLog.Config
             JsonConvert.PopulateObject(configFile.OpenText().ReadToEnd(), theme);
 
             return theme;
+        }
+
+        public static Theme Get(String zipUrl, DirectoryInfo themeDir)
+        {
+            using (var wc = new WebClient())
+            {
+                var zipFile = new FileInfo("theme.zip");
+                wc.DownloadFile(zipUrl, zipFile.FullName);
+
+                if (zipFile.Exists && !themeDir.CombineFilePath("theme.json").Exists)
+                {
+                    ZipFile.ExtractToDirectory(zipFile.FullName, themeDir.FullName);
+                }
+            }
+
+            return Theme.Get(themeDir);
         }
     }
 }

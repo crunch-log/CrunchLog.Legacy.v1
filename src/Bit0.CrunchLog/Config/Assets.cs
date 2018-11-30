@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
 {
-    public class Assets
+    public class Output
     {
-        [JsonProperty("dirs")]
-        public IEnumerable<String> Directories { get; set; }
+        [JsonProperty("content")]
+        public FileInfo Content { get; set; }
 
-        [JsonProperty("files")]
-        public IEnumerable<String> Files { get; set; }
+        [JsonProperty("copy")]
+        public IDictionary<String, IEnumerable<String>> Copy { get; set; }
+
+        [JsonProperty("process")]
+        public IDictionary<String, String> Process { get; set; }
     }
 }

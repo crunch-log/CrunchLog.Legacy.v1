@@ -8,5 +8,6 @@ namespace Bit0.CrunchLog.Config
         public String Color { get; set; }
         public String Permalink { get; set; }
         public String Image { get; set; }
+        public String Thumbnail { get; set; }
     }
 }

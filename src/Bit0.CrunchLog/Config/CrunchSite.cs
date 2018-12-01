@@ -65,6 +65,9 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("defaultBanner")]
         public String DefaultBanner { get; set; }
 
+        [JsonProperty("defaultThumbnail")]
+        public String DefaultThumbnail { get; set; }
+
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {

@@ -20,6 +20,7 @@ namespace Bit0.CrunchLog.Template.Models
             Permalink = content.Permalink;
             Categories = content.Categories.Select(c => c.Value);
             BannerImage = content.BannerImage;
+            Thumbnail = content.Thumbnail;
 
             DefaultCategory = Categories.FirstOrDefault();
 
@@ -44,6 +45,7 @@ namespace Bit0.CrunchLog.Template.Models
         public DateTime Updated { get; }
         public SiteTemplateModel Site { get; set; }
         public String BannerImage { get; set; }
+        public String Thumbnail { get; set; }
         public Boolean IsContentLayout => true;
         public CategoryInfo DefaultCategory { get; }
 

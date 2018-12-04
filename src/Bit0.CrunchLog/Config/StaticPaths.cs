@@ -9,6 +9,7 @@ namespace Bit0.CrunchLog.Config
         public const String Themes = "Themes";
         public const String Plugins = "Plugins";
         public const String Images = "Content/Images";
+        public const String Assets = "Content/Assets";
         public const String Output = "_site";
     }
 }

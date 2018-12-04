@@ -17,6 +17,7 @@ namespace Bit0.CrunchLog.Config
             PluginsPath = BasePath.CombineDirPath(StaticPaths.Plugins.NormalizePath());
             OutputPath = BasePath.CombineDirPath(StaticPaths.Output.NormalizePath());
             ImagesPath = BasePath.CombineDirPath(StaticPaths.Images.NormalizePath());
+            AssetsPath = BasePath.CombineDirPath(StaticPaths.Assets.NormalizePath());
         }
 
         [JsonIgnore]
@@ -41,5 +42,9 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("images")]
         [JsonConverter(typeof(PathConverter), StaticPaths.Images)]
         public DirectoryInfo ImagesPath { get; set; }
+
+        [JsonProperty("assets")]
+        [JsonConverter(typeof(PathConverter), StaticPaths.Assets)]
+        public DirectoryInfo AssetsPath { get; set; }
     }
 }

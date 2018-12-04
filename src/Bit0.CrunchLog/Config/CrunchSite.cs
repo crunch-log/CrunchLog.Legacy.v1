@@ -93,7 +93,7 @@ namespace Bit0.CrunchLog.Config
                 });
 
             var themeKey = (String)_additionalData["theme"];
-            Theme = Theme.Get(themeKey, Paths.ThemesPath);
+            Theme = Theme.Get(themeKey, Paths.ThemesPath, Paths.OutputPath);
         }
     }
 }

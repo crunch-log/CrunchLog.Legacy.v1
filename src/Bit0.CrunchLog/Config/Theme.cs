@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -40,8 +41,8 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("homepage")]
         public String Homepage { get; set; }
 
-        [JsonProperty("assets")]
-        public Output Output { get; set; }
+        [JsonProperty("output")]
+        public ThemeOutput Output { get; set; }
 
         [JsonProperty("tags")]
         public IEnumerable<String> Tags { get; set; }
@@ -53,29 +54,42 @@ namespace Bit0.CrunchLog.Config
         public License License { get; set; }
 
 
-        public static Theme Get(DirectoryInfo themeDir)
+        public static Theme Get(DirectoryInfo themeDir, DirectoryInfo outputDir)
         {
             var configFile = themeDir.CombineFilePath(".json", "theme");
             var theme = new Theme(configFile);
-            JsonConvert.PopulateObject(configFile.OpenText().ReadToEnd(), theme);
+
+            using (var streamReader = configFile.OpenText())
+            {
+                JsonConvert.PopulateObject(streamReader.ReadToEnd(), theme);
+            }
+            
+            theme.Output.Data = outputDir.CombineDirPath(theme.Output.Data.Name);
 
             return theme;
         }
 
-        public static Theme Get(String zipUrl, DirectoryInfo themeDir)
+        public static Theme Get(String zipUrl, DirectoryInfo themeDir, DirectoryInfo outputDir)
         {
+            if (themeDir.Exists && themeDir.CombineFilePath("theme.json").Exists)
+            {
+                Task.Run(() => { themeDir.ClearFolder(); });
+            }
+
             using (var wc = new WebClient())
             {
-                var zipFile = new FileInfo("theme.zip");
+                var zipFile = new FileInfo($"theme{DateTime.Now.ToBinary().ToString()}.zip");
                 wc.DownloadFile(zipUrl, zipFile.FullName);
 
-                if (zipFile.Exists && !themeDir.CombineFilePath("theme.json").Exists)
+                if (zipFile.Exists)
                 {
                     ZipFile.ExtractToDirectory(zipFile.FullName, themeDir.FullName);
                 }
+
+                zipFile.Delete();
             }
 
-            return Theme.Get(themeDir);
+            return Theme.Get(themeDir, outputDir);
         }
     }
 }

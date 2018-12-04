@@ -31,12 +31,6 @@ namespace Bit0.CrunchLog
                 _siteConfig.Paths.OutputPath.ClearFolder();
                 _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
             }
-
-            //if (_siteConfig.Paths.ThemesPath.Exists)
-            //{
-            //    _siteConfig.Paths.ThemesPath.ClearFolder();
-            //    _logger.LogInformation($"Cleaned theme folder {_siteConfig.Paths.ThemesPath.FullName}");
-            //}
         }
 
         public void PublishCategories()
@@ -124,6 +118,11 @@ namespace Bit0.CrunchLog
             _logger.LogInformation($"Site information published");
         }
 
+        public void PublishAssets()
+        {
+            _siteConfig.Paths.AssetsPath.Copy(_siteConfig.Paths.OutputPath);
+        }
+
         public void Publish()
         {
             // [ ] create posts pages
@@ -139,14 +138,19 @@ namespace Bit0.CrunchLog
 
             // [ ] replace config with crunchlog->site
 
+            _templateFactory.PreProcess();
+
             PublishSiteInfo();
             PublishImages();
+            PublishAssets();
             PublisHome();
             PublishContent();
             PublishArchive();
             PublishCategories();
             PublishTags();
             PublishAuthors();
+
+            _templateFactory.PostProcess();
         }
     }
 }

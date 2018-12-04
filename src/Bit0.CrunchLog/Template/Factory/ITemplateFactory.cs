@@ -10,6 +10,10 @@ namespace Bit0.CrunchLog.Template.Factory
         Theme Theme { get; }
 
         ITemplateEngine Engine { get; }
+
+        void PreProcess();
+
+        void PostProcess();
         
         void Render(ITemplateModel model);
 

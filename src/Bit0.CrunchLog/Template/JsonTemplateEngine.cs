@@ -19,14 +19,26 @@ namespace Bit0.CrunchLog.Template
 
         public void Render(ITemplateModel model)
         {
-            var outputDir = _siteConfig.Paths.OutputPath.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+            var outputDir = GetOutputDir().CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
             Render(model, outputDir, "index");
         }
 
         public void Render(SiteTemplateModel model)
         {
-            var outputDir = _siteConfig.Paths.OutputPath;
+            var outputDir = GetOutputDir();
             Render(model, outputDir, "siteInfo");
+        }
+
+        private DirectoryInfo GetOutputDir()
+        {
+
+            var outputDir = _siteConfig.Paths.OutputPath;
+            if (_siteConfig.Theme.OutputType == ThemeOutputType.Json)
+            {
+                outputDir = _siteConfig.Theme.Output.Data;
+            }
+
+            return outputDir;
         }
 
         private static void Render<T>(T model, DirectoryInfo outputDir, String name) where T : class

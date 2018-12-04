@@ -11,7 +11,7 @@
         void PublishTags();
         void PublishImages();
         void PublishSiteInfo();
-
+        void PublishAssets();
         void PublishAuthors();
     }
 }

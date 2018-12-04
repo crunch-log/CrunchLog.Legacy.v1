@@ -99,7 +99,7 @@ namespace Bit0.CrunchLog
                     .UsePreciseSourceLocation()
                     .UseYamlFrontMatter()
                     .Build();
-                return Markdown.ToHtml(ContentFile.GetText(), pipeline);
+                return Markdown.ToHtml(ContentFile.ReadText(), pipeline);
             }
         }
 

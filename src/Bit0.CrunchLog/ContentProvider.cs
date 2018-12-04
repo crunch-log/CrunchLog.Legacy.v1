@@ -44,7 +44,7 @@ namespace Bit0.CrunchLog
                     var pipeline = new MarkdownPipelineBuilder()
                         .UseYamlFrontMatter()
                         .Build();
-                    var md = Markdown.Parse(file.GetText(), pipeline);
+                    var md = Markdown.Parse(file.ReadText(), pipeline);
                     if (md[0] is YamlFrontMatterBlock)
                     {
                         try

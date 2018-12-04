@@ -60,11 +60,17 @@ namespace Bit0.CrunchLog.Template.Factory
 
         public void PostProcess()
         {
+            ProcessPreCache();
+        }
+
+        private void ProcessPreCache()
+        {
             var precache = SiteConfig.Paths.ThemesPath
                 .GetFiles(Theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
+            var to = SiteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
 
-            precache.CopyTo(SiteConfig.Paths.OutputPath.CombineFilePath(precache.Name).FullName);
+            precache.CopyTo(to.FullName);
         }
 
         public void Render(ITemplateModel model) => Engine.Render(model);

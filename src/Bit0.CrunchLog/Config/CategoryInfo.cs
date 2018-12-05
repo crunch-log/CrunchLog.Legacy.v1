@@ -11,7 +11,7 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("color")]
         public String Color { get; set; }
 
-        [JsonProperty("permalink")]
+        [JsonProperty("url")]
         public String Permalink { get; set; }
 
         [JsonProperty("image")]
@@ -19,6 +19,9 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("thumb")]
         public String Thumbnail { get; set; }
+
+        [JsonProperty("thumbSmall")]
+        public String ThumbnailSmall { get; set; }
 
         [JsonProperty("showInMainMenu")]
         public Boolean ShowInMainMenu { get; set; }

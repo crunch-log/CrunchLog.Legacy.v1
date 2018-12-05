@@ -6,6 +6,5 @@ namespace Bit0.CrunchLog.Template
     public interface ITemplateEngine
     {
         void Render(ITemplateModel model);
-        void Render(SiteTemplateModel model);
     }
 }

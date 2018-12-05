@@ -8,9 +8,9 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static PostTemplateModel GetModel(this Content content, CrunchSite siteConfig, Boolean inList = false)
+        public static PostTemplateModel GetModel(this Content content, Boolean inList = false)
         {
-            return new PostTemplateModel(content, siteConfig, inList); 
+            return new PostTemplateModel(content, inList); 
         }
 
         public static String GetPagePermaLink(this ContentListItem contentListItem, Int32 page)
@@ -56,12 +56,13 @@ namespace Bit0.CrunchLog.Extensions
                 Title = siteConfig.Title,
                 SubTitle = siteConfig.SubTitle,
                 Menu = siteConfig.Menu,
+                Authors = siteConfig.Authors,
                 Categories = contentProvider.PostCategories
-                    .Where(c => siteConfig.Categories[c.Title].ShowInMainMenu)
-                    .Select(c => new CategoryItem { Title = c.Title, Url = c.Permalink, Count = c.Children.Count() })
-                    .OrderBy(c => c.Title),
+                    .Select(c => siteConfig.Categories[c.Title.Split(':')[1].Trim()])
+                    .OrderBy(c => c.Title)
+                    .ToDictionary(k => k.Title, v => v),
                 Tags = contentProvider.PostTags
-                    .Select(t => new CategoryItem { Title = t.Title, Url = t.Permalink, Count = t.Children.Count() })
+                    .Select(t => new TagMenuItem { Title = t.Title, Url = t.Permalink, Count = t.Children.Count() })
                     .OrderByDescending(t => t.Count)
                     .Take(20),
                 Owner = siteConfig.Copyright.Owner,

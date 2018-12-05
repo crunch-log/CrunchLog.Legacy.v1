@@ -1,5 +1,4 @@
-﻿using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.Helpers;
+﻿using Bit0.CrunchLog.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,9 +13,6 @@ namespace Bit0.CrunchLog.Config
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
 
-        [JsonProperty("baseUrl")]
-        public String BaseUrl { get; set; } = "";
-
         [JsonProperty("languageCode")]
         public String LanguageCode { get; set; } = "en-US";
 
@@ -29,17 +25,11 @@ namespace Bit0.CrunchLog.Config
         [JsonIgnore]
         public Theme Theme { get; set; }
 
-        [JsonProperty("favicon")]
-        public String FavIcon { get; set; } = "favicon.ico";
-
         [JsonProperty("copyright")]
         public Copyright Copyright { get; set; } = new Copyright();
 
         [JsonProperty("permalink")]
         public String Permalink { get; set; } = @"/:year/:month/:slug";
-
-        [JsonProperty("dateformat")]
-        public String DateFormat { get; set; } = "yyyy-MM-dd hh:mm";
 
         [JsonProperty("authors")]
         public IDictionary<String, Author> Authors { get; set; }
@@ -67,6 +57,9 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("defaultThumbnail")]
         public String DefaultThumbnail { get; set; }
+
+        [JsonProperty("defaultThumbnailSmall")]
+        public String DefaultThumbnailSmall { get; set; }
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)

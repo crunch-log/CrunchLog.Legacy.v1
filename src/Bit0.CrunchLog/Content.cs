@@ -76,6 +76,9 @@ namespace Bit0.CrunchLog
         [JsonProperty("thumb")]
         public String Thumbnail { get; set; }
 
+        [JsonProperty("thumbSmall")]
+        public String ThumbnailSmall { get; set; }
+
         [JsonIgnore]
         public FileInfo ContentFile { get; }
 
@@ -145,6 +148,13 @@ namespace Bit0.CrunchLog
                 Thumbnail = !String.IsNullOrWhiteSpace(DefaultCategory.Thumbnail)
                     ? DefaultCategory.Thumbnail
                     : _siteConfig.DefaultThumbnail;
+            }
+
+            if (String.IsNullOrWhiteSpace(ThumbnailSmall))
+            {
+                ThumbnailSmall = !String.IsNullOrWhiteSpace(DefaultCategory.ThumbnailSmall)
+                    ? DefaultCategory.ThumbnailSmall
+                    : _siteConfig.DefaultThumbnailSmall;
             }
 
             if (DateUpdated == DateTime.MinValue)

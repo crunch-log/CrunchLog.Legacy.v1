@@ -16,7 +16,5 @@ namespace Bit0.CrunchLog.Template.Factory
         void PostProcess();
         
         void Render(ITemplateModel model);
-
-        void Render(SiteTemplateModel model);
     }
 }

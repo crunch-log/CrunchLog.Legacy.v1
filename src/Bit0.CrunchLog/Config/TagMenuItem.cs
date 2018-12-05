@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
 {
-    public class CategoryItem
+    public class TagMenuItem
     {
         [JsonProperty("title")]
         public String Title { get; set; }

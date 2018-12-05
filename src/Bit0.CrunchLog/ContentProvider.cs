@@ -105,7 +105,7 @@ namespace Bit0.CrunchLog
                     .Select(t => t.First().Value)
                     .Select(t => new ContentListItem
                     {
-                        Title = t.Title,
+                        Title = $"Tag: {t.Title}",
                         Permalink = t.Permalink,
                         Layout = Layouts.Tag,
                         Children = Posts.Where(p => p.Tags.Keys.Contains(t.Title))
@@ -118,7 +118,7 @@ namespace Bit0.CrunchLog
                     .Select(c => c.First().Value)
                     .Select(c => new ContentListItem
                     {
-                        Title = c.Title,
+                        Title = $"Category: {c.Title}",
                         Permalink = c.Permalink,
                         Layout = Layouts.Category,
                         Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
@@ -130,7 +130,7 @@ namespace Bit0.CrunchLog
                     .Distinct()
                     .Select(a => new ContentListItem
                     {
-                        Title = a.Name,
+                        Title = $"Author: {a.Name} ({a.Alias})",
                         Permalink = a.Permalink,
                         Layout = Layouts.Author,
                         Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))
@@ -155,7 +155,7 @@ namespace Bit0.CrunchLog
                     var ySlug = $"/{year}/";
                     archives.Add(new ContentListItem
                     {
-                        Title = ySlug,
+                        Title = $"Archive: {ySlug}",
                         Permalink = ySlug,
                         Layout = Layouts.Archive,
                         Children = Posts.Where(p => p.Permalink.StartsWith(ySlug))
@@ -171,7 +171,7 @@ namespace Bit0.CrunchLog
                         var mSlug = $"/{year}/{month}/";
                         archives.Add(new ContentListItem
                         {
-                            Title = mSlug,
+                            Title = $"Archive: {mSlug}",
                             Permalink = mSlug,
                             Layout = Layouts.Archive,
                             Children = Posts.Where(p => p.Permalink.StartsWith(mSlug))

@@ -3,21 +3,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bit0.CrunchLog.Extensions;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Template.Models
 {
     public class PostListTemplateModel : ITemplateModel
     {
-        public SiteTemplateModel Site { get; set; }
+        [JsonProperty("url")]
         public String Permalink { get; set; }
+        [JsonIgnore]
         public String Layout { get; private set; }
+        [JsonProperty("title")]
         public String Title { get; private set; }
+        [JsonProperty("posts")]
         public IEnumerable<ITemplateModel> Posts { get; set; }
+        [JsonProperty("pagination")]
         public IDictionary<Int32, PaginationTemplateModel> Pagination { get; set; }
+        [JsonProperty("totalPages")]
         public Int32 TotalPages { get; set; }
+        [JsonProperty("prevPageUrl")]
         public String PreviousPageUrl { get; set; }
+        [JsonProperty("nextPageUrl")]
         public String NextPageUrl { get; set; }
+        [JsonProperty("pageCount")]
         public Int32 PostsCount => Posts.Count();
+        [JsonProperty("isHomeLayout")]
         public Boolean IsHomeLayout { get; }
 
         public PostListTemplateModel(
@@ -39,7 +49,6 @@ namespace Bit0.CrunchLog.Template.Models
             IsHomeLayout = contentListItem.Layout == Layouts.Home;
             Permalink = Pagination[page].Url;
             Title = contentListItem.Title;
-            Site = config.GetModel();
 
             var pageSize = config.Pagination.PageSize;
 
@@ -47,7 +56,7 @@ namespace Bit0.CrunchLog.Template.Models
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Cast<Content>()
-                .Select(c => c.GetModel(config, inList: true));
+                .Select(c => c.GetModel(inList: true));
         }
 
         public override String ToString()

@@ -4,7 +4,6 @@ using Bit0.CrunchLog.Template.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace Bit0.CrunchLog.Template
 {
@@ -19,26 +18,22 @@ namespace Bit0.CrunchLog.Template
 
         public void Render(ITemplateModel model)
         {
-            var outputDir = GetOutputDir().CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
-            Render(model, outputDir, "index");
-        }
-
-        public void Render(SiteTemplateModel model)
-        {
-            var outputDir = GetOutputDir();
-            Render(model, outputDir, "siteInfo");
-        }
-
-        private DirectoryInfo GetOutputDir()
-        {
-
             var outputDir = _siteConfig.Paths.OutputPath;
             if (_siteConfig.Theme.OutputType == ThemeOutputType.Json)
             {
                 outputDir = _siteConfig.Theme.Output.Data;
             }
 
-            return outputDir;
+            if (model is SiteTemplateModel)
+            {
+                Render(model, outputDir, "siteInfo");
+            }
+            else
+            {
+                outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+                Render(model, outputDir, "index");
+            }
+
         }
 
         private static void Render<T>(T model, DirectoryInfo outputDir, String name) where T : class

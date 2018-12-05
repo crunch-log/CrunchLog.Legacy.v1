@@ -17,6 +17,7 @@ namespace Bit0.CrunchLog.Config
         public String HomePage { get; set; }
         [JsonProperty("social")]
         public IDictionary<String, String> Social { get; set; }
+        [JsonProperty("url")]
         public String Permalink => String.Format(StaticKeys.ByPathFormat, Alias);
 
         public override String ToString()

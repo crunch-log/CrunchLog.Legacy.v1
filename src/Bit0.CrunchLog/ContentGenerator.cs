@@ -87,7 +87,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                _templateFactory.Render(content.GetModel(_siteConfig));
+                _templateFactory.Render(content.GetModel());
             }
 
             _logger.LogInformation($"Published {published.Count} posts/pages");

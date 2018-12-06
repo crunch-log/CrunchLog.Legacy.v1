@@ -1,6 +1,7 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Factory;
+using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -118,6 +119,14 @@ namespace Bit0.CrunchLog
             _logger.LogInformation($"Site information published");
         }
 
+        public void PublishRedirectsList()
+        {
+            var model = _contentProvider.PublishedContent.GetRedirectModel();
+            _templateFactory.Render(model);
+
+            _logger.LogInformation("Site redirects published");
+        }
+
         public void PublishAssets()
         {
             _siteConfig.Paths.AssetsPath.Copy(_siteConfig.Paths.OutputPath);
@@ -125,22 +134,10 @@ namespace Bit0.CrunchLog
 
         public void Publish()
         {
-            // [ ] create posts pages
-            // [ ] create main index
-            // [ ] create archive pages
-            // [ ] create tag pages
-            // [ ] create category pages
-            // [ ] pagination
-
-            // [ ] get parent for pages
-            // [ ] create a tree
-            // [ ] generate permalink from tree
-
-            // [ ] replace config with crunchlog->site
-
             _templateFactory.PreProcess();
 
             PublishSiteInfo();
+            PublishRedirectsList();
             PublishImages();
             PublishAssets();
             PublisHome();

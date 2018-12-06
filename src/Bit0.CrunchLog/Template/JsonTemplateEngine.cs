@@ -28,6 +28,10 @@ namespace Bit0.CrunchLog.Template
             {
                 Render(model, outputDir, "siteInfo");
             }
+            if (model is RedirectsTemplateModel)
+            {
+                Render(model, outputDir, "redirects");
+            }
             else
             {
                 outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));

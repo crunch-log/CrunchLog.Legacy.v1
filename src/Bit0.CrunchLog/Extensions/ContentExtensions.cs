@@ -13,6 +13,14 @@ namespace Bit0.CrunchLog.Extensions
             return new PostTemplateModel(content, inList); 
         }
 
+        public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<Content> contents)
+        {
+            return new RedirectsTemplateModel
+            {
+                Redirects = contents.ToDictionary(k => k.Id, v => v.Permalink)
+            };
+        }
+
         public static String GetPagePermaLink(this ContentListItem contentListItem, Int32 page)
         {
             if (page == 1)

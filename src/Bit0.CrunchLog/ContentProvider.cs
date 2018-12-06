@@ -93,12 +93,13 @@ namespace Bit0.CrunchLog
         }
 
         public IEnumerable<Content> PublishedContent => AllContent.Where(p => p.Value.Published).Select(p => p.Value);
+        public IEnumerable<Content> DraftContent => AllContent.Where(p => !p.Value.Published).Select(p => p.Value);
 
         public IEnumerable<Content> Posts => PublishedContent.Where(p => p.Layout == Layouts.Post);
 
         public IEnumerable<Content> Pages => PublishedContent.Where(p => p.Layout == Layouts.Page);
 
-        public IEnumerable<ContentListItem> PostTags => Posts
+        public IEnumerable<ContentListItem> Tags => AllContent.Select(p => p.Value)
                     .Where(p => p.Tags != null && p.Tags.Any())
                     .SelectMany(p => p.Tags)
                     .GroupBy(t => t.Key)
@@ -111,7 +112,7 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Tags.Keys.Contains(t.Title))
                     });
 
-        public IEnumerable<ContentListItem> PostCategories => Posts
+        public IEnumerable<ContentListItem> Categories => AllContent.Select(p => p.Value)
                     .Where(p => p.Categories != null && p.Categories.Any())
                     .SelectMany(p => p.Categories)
                     .GroupBy(c => c.Key)
@@ -124,7 +125,7 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
                     });
 
-        public IEnumerable<ContentListItem> Authors => Posts
+        public IEnumerable<ContentListItem> Authors => AllContent.Select(p => p.Value)
                     .Where(p => p.Author != null)
                     .Select(p => p.Author)
                     .Distinct()
@@ -210,12 +211,12 @@ namespace Bit0.CrunchLog
                     dict.Add(archive.Permalink, archive);
                 }
 
-                foreach (var tags in PostTags)
+                foreach (var tags in Tags)
                 {
                     dict.Add(tags.Permalink, tags);
                 }
 
-                foreach (var category in PostCategories)
+                foreach (var category in Categories)
                 {
                     dict.Add(category.Permalink, category);
                 }

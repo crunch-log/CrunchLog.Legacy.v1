@@ -18,6 +18,7 @@ namespace Bit0.CrunchLog.Template.Models
             Published = content.DatePublished;
             Permalink = content.Permalink;
             DefaultCategory = content.Categories.FirstOrDefault().Key;
+            IsDraft = !content.Published;
 
             if (content.Thumbnail != content.DefaultCategory.Thumbnail)
             {
@@ -66,6 +67,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String ThumbnailSmall { get; set; }
         [JsonProperty("defaultCategory")]
         public String DefaultCategory { get; }
+        [JsonIgnore]
+        public Boolean IsDraft { get; }
 
         public override String ToString() => Permalink;
     }

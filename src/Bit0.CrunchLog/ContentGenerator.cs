@@ -36,7 +36,7 @@ namespace Bit0.CrunchLog
 
         public void PublishCategories()
         {
-            var pages = _contentProvider.PostCategories.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
+            var pages = _contentProvider.Categories.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
             foreach (var page in pages)
             {
@@ -48,7 +48,7 @@ namespace Bit0.CrunchLog
 
         public void PublishTags()
         {
-            var pages = _contentProvider.PostTags.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
+            var pages = _contentProvider.Tags.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
             foreach (var page in pages)
             {
@@ -132,6 +132,18 @@ namespace Bit0.CrunchLog
             _siteConfig.Paths.AssetsPath.Copy(_siteConfig.Paths.OutputPath);
         }
 
+        public void PublishDrafts()
+        {
+            var drafts = _contentProvider.DraftContent.ToList();
+
+            foreach (var content in drafts)
+            {
+                _templateFactory.Render(content.GetModel());
+            }
+
+            _logger.LogInformation($"Published {drafts.Count} drafts.");
+        }
+
         public void Publish()
         {
             _templateFactory.PreProcess();
@@ -142,6 +154,7 @@ namespace Bit0.CrunchLog
             PublishAssets();
             PublisHome();
             PublishContent();
+            PublishDrafts();
             PublishArchive();
             PublishCategories();
             PublishTags();

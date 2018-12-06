@@ -65,11 +65,11 @@ namespace Bit0.CrunchLog.Extensions
                 SubTitle = siteConfig.SubTitle,
                 Menu = siteConfig.Menu,
                 Authors = siteConfig.Authors,
-                Categories = contentProvider.PostCategories
+                Categories = contentProvider.Categories
                     .Select(c => siteConfig.Categories[c.Title.Split(':')[1].Trim()])
                     .OrderBy(c => c.Title)
                     .ToDictionary(k => k.Title, v => v),
-                Tags = contentProvider.PostTags
+                Tags = contentProvider.Tags
                     .Select(t => new TagMenuItem { Title = t.Title, Url = t.Permalink, Count = t.Children.Count() })
                     .OrderByDescending(t => t.Count)
                     .Take(20),

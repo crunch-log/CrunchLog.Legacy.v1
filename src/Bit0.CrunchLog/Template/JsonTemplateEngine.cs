@@ -32,6 +32,11 @@ namespace Bit0.CrunchLog.Template
             {
                 Render(model, outputDir, "redirects");
             }
+            if (model is PostTemplateModel m && m.IsDraft)
+            {
+                outputDir = outputDir.CombineDirPath("draft", m.Id);
+                Render(model, outputDir, "index");
+            }
             else
             {
                 outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));

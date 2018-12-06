@@ -4,14 +4,5 @@
     {
         void CleanOutput();
         void Publish();
-        void PublishArchive();
-        void PublishCategories();
-        void PublishContent();
-        void PublisHome();
-        void PublishTags();
-        void PublishImages();
-        void PublishSiteInfo();
-        void PublishAssets();
-        void PublishAuthors();
     }
 }

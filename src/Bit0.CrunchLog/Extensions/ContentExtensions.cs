@@ -15,9 +15,18 @@ namespace Bit0.CrunchLog.Extensions
 
         public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<Content> contents)
         {
+            var redirects = new Dictionary<String, String>();
+            redirects = redirects.Concat(contents.ToDictionary(k => k.Id, v => v.Permalink))
+                .GroupBy(k => k.Key)
+                .ToDictionary(k => k.Key, v => v.First().Value);
+
+            redirects = redirects.Concat(contents.ToDictionary(k => k.Slug, v => v.Permalink))
+                .GroupBy(k => k.Key)
+                .ToDictionary(k => k.Key, v => v.First().Value);
+
             return new RedirectsTemplateModel
             {
-                Redirects = contents.ToDictionary(k => k.Id, v => v.Permalink)
+                Redirects = redirects
             };
         }
 

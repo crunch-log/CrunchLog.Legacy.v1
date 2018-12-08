@@ -19,13 +19,8 @@ namespace Bit0.CrunchLog.Template.Models
             Permalink = content.Permalink;
             DefaultCategory = content.Categories.FirstOrDefault().Key;
             IsDraft = !content.Published;
-
-            if (content.Thumbnail != content.DefaultCategory.Thumbnail)
-            {
-                BannerImage = content.BannerImage;
-                Thumbnail = content.Thumbnail;
-                ThumbnailSmall = content.ThumbnailSmall;
-            }
+            Image = content.Image;
+            ImagePlaceholder = content.ImagePlaceholder;
 
             if (!inList)
             {
@@ -60,11 +55,9 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonProperty("updated")]
         public DateTime Updated { get; }
         [JsonProperty("image")]
-        public String BannerImage { get; set; }
-        [JsonProperty("thumb")]
-        public String Thumbnail { get; set; }
-        [JsonProperty("thumbSmall")]
-        public String ThumbnailSmall { get; set; }
+        public String Image { get; set; }
+        [JsonProperty("imagePlaceholder")]
+        public String ImagePlaceholder { get; set; }
         [JsonProperty("defaultCategory")]
         public String DefaultCategory { get; }
         [JsonIgnore]

@@ -70,14 +70,11 @@ namespace Bit0.CrunchLog
         [JsonConverter(typeof(AuthorConverter))]
         public Author Author { get; set; }
 
-        [JsonProperty("bannerImage")]
-        public String BannerImage { get; set; }
+        [JsonProperty("image")]
+        public String Image { get; set; }
 
-        [JsonProperty("thumb")]
-        public String Thumbnail { get; set; }
-
-        [JsonProperty("thumbSmall")]
-        public String ThumbnailSmall { get; set; }
+        [JsonProperty("imagePlaceholder")]
+        public String ImagePlaceholder { get; internal set; }
 
         [JsonIgnore]
         public FileInfo ContentFile { get; }
@@ -136,25 +133,18 @@ namespace Bit0.CrunchLog
             }
 
             DefaultCategory = Categories.FirstOrDefault().Value;
-            if (String.IsNullOrWhiteSpace(BannerImage))
+            if (String.IsNullOrWhiteSpace(Image))
             {
-                BannerImage = !String.IsNullOrWhiteSpace(DefaultCategory.Image)
+                Image = !String.IsNullOrWhiteSpace(DefaultCategory.Image)
                     ? DefaultCategory.Image
                     : _siteConfig.DefaultBanner;
             }
-
-            if (String.IsNullOrWhiteSpace(Thumbnail))
+            
+            if (String.IsNullOrWhiteSpace(ImagePlaceholder))
             {
-                Thumbnail = !String.IsNullOrWhiteSpace(DefaultCategory.Thumbnail)
-                    ? DefaultCategory.Thumbnail
-                    : _siteConfig.DefaultThumbnail;
-            }
-
-            if (String.IsNullOrWhiteSpace(ThumbnailSmall))
-            {
-                ThumbnailSmall = !String.IsNullOrWhiteSpace(DefaultCategory.ThumbnailSmall)
-                    ? DefaultCategory.ThumbnailSmall
-                    : _siteConfig.DefaultThumbnailSmall;
+                ImagePlaceholder = !String.IsNullOrWhiteSpace(DefaultCategory.ImagePlaceholder)
+                    ? DefaultCategory.ImagePlaceholder
+                    : _siteConfig.DefaultImagePlaceholder;
             }
 
             if (DateUpdated == DateTime.MinValue)

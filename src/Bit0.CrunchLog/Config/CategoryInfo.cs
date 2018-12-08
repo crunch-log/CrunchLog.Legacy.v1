@@ -17,11 +17,14 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("image")]
         public String Image { get; set; }
 
-        [JsonProperty("thumb")]
-        public String Thumbnail { get; set; }
+        [JsonProperty("imageMedium")]
+        public String ImageMedium { get; set; }
 
-        [JsonProperty("thumbSmall")]
-        public String ThumbnailSmall { get; set; }
+        [JsonProperty("imageSmall")]
+        public String ImageSmall { get; set; }
+
+        [JsonProperty("imagePlaceholder")]
+        public String ImagePlaceholder { get; set; }
 
         [JsonProperty("showInMainMenu")]
         public Boolean ShowInMainMenu { get; set; }

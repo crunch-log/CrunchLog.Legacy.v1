@@ -52,14 +52,11 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("pagination")]
         public Pagination Pagination { get; set; } = new Pagination();
 
-        [JsonProperty("defaultBanner")]
+        [JsonProperty("defaultImage")]
         public String DefaultBanner { get; set; }
 
-        [JsonProperty("defaultThumbnail")]
-        public String DefaultThumbnail { get; set; }
-
-        [JsonProperty("defaultThumbnailSmall")]
-        public String DefaultThumbnailSmall { get; set; }
+        [JsonProperty("defaultImagePlaceholder")]
+        public String DefaultImagePlaceholder { get; internal set; }
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)

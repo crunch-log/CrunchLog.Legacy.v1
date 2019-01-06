@@ -28,6 +28,7 @@ namespace Bit0.CrunchLog
             services.AddSingleton<ConfigFile>();
             services.AddSingleton<CrunchLog>();
             services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().SiteConfig);
+            services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().Packages);
 
             services.AddTransient<IContentProvider, ContentProvider>();
             services.AddTransient<IContentGenerator, ContentGenerator>();

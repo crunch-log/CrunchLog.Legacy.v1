@@ -1,4 +1,6 @@
 ﻿using Bit0.CrunchLog.Helpers;
+using Bit0.Registry.Core;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,8 +12,17 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchSite
     {
+        public CrunchSite(ILogger<CrunchSite> logger, ILogger<PackageFeed> feedLogger)
+        {
+            _logger = logger;
+            _feedLogger = feedLogger;
+        }
+
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
+
+        private readonly ILogger<CrunchSite> _logger;
+        private readonly ILogger<PackageFeed> _feedLogger;
 
         [JsonProperty("languageCode")]
         public String LanguageCode { get; set; } = "en-US";
@@ -58,19 +69,34 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("defaultImagePlaceholder")]
         public String DefaultImagePlaceholder { get; internal set; }
 
+        [JsonProperty("packageSources")]
+        public IDictionary<String, String> PackageSources { get; private set; } 
+
+        [JsonIgnore]
+        public IEnumerable<Package> Plugins { get; set; }
+
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            Categories = Categories.ToDictionary(k => k.Key, v =>
-            {
-                var cat = v.Value;
+            SetupCategories();
+            SetupTags();
+            SetupPackageFeeds();
+            SetupTheme();
 
-                cat.Title = v.Key;
-                cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
+            //Plugins
+        }
 
-                return cat;
-            });
+        private void SetupTheme()
+        {
+            var themeKey = (String)_additionalData["theme"];
+            Theme = Theme.Get(themeKey, Paths.ThemesPath, Paths.OutputPath);
 
+            // TODO: Get theme name
+            _logger.LogInformation($"Loaded theme({Theme.ConfigFile.Name}) from {themeKey}.");
+        }
+
+        private void SetupTags()
+        {
             var tags = _additionalData["tags"];
             Tags = tags.ToObject<IEnumerable<String>>()
                 .ToDictionary(k => k, v =>
@@ -82,8 +108,33 @@ namespace Bit0.CrunchLog.Config
                     };
                 });
 
-            var themeKey = (String)_additionalData["theme"];
-            Theme = Theme.Get(themeKey, Paths.ThemesPath, Paths.OutputPath);
+            _logger.LogInformation($"Read Tags.");
+        }
+
+        private void SetupCategories()
+        {
+            Categories = Categories.ToDictionary(k => k.Key, v =>
+                {
+                    var cat = v.Value;
+
+                    cat.Title = v.Key;
+                    cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
+
+                    return cat;
+                });
+
+            _logger.LogInformation($"Read Categories.");
+        }
+
+        private void SetupPackageFeeds()
+        {
+            var defaultSources = new Dictionary<String, String>
+            {
+                { "default", "https://packages.0labs.se/crunchlog/index.json" }
+            };
+            PackageSources = defaultSources.Concat(PackageSources).ToDictionary(k => k.Key, v => v.Value);
+
+            _logger.LogInformation($"Read package feeds.");
         }
     }
 }

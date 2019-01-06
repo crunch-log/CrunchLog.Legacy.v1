@@ -14,45 +14,19 @@ namespace Bit0.CrunchLog.Config
         public Theme(FileInfo themeConfig)
         {
             ConfigFile = themeConfig;
-            Directory = themeConfig.Directory;
         }
 
         [JsonIgnore]
         public FileInfo ConfigFile { get; }
 
         [JsonIgnore]
-        public DirectoryInfo Directory { get; }
+        public DirectoryInfo Directory => ConfigFile.Directory;
 
         [JsonProperty("outputType")]
         public ThemeOutputType OutputType { get; set; } = ThemeOutputType.Html;
 
-        [JsonProperty("name")]
-        public String Name { get; set; }
-
-        [JsonProperty("version")]
-        public String Version { get; set; }
-
-        [JsonProperty("description")]
-        public String Description { get; set; }
-
-        [JsonProperty("author")]
-        public Author Author { get; set; }
-
-        [JsonProperty("homepage")]
-        public String Homepage { get; set; }
-
         [JsonProperty("output")]
         public ThemeOutput Output { get; set; }
-
-        [JsonProperty("tags")]
-        public IEnumerable<String> Tags { get; set; }
-
-        [JsonProperty("features")]
-        public IEnumerable<String> Features { get; set; }
-
-        [JsonProperty("license")]
-        public License License { get; set; }
-
 
         public static Theme Get(DirectoryInfo themeDir, DirectoryInfo outputDir)
         {

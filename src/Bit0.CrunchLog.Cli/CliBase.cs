@@ -1,5 +1,5 @@
-﻿using System;
-using McMaster.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
+using System;
 
 namespace Bit0.CrunchLog.Cli
 {

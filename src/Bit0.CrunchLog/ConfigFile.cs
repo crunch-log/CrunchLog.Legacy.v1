@@ -1,7 +1,7 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 using System.IO;
 using System.Linq;
-using Bit0.CrunchLog.Extensions;
 
 namespace Bit0.CrunchLog
 {

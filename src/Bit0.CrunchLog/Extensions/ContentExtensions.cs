@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Template.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Template.Models;
 
 namespace Bit0.CrunchLog.Extensions
 {

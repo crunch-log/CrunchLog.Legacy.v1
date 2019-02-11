@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Bit0.CrunchLog.Helpers;
+﻿using Bit0.CrunchLog.Helpers;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace Bit0.CrunchLog.Config
 {

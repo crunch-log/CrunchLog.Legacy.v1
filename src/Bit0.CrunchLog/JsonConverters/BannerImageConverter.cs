@@ -1,11 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace Bit0.CrunchLog.JsonConverters
 {

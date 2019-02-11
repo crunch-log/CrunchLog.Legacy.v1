@@ -12,17 +12,15 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchSite
     {
-        public CrunchSite(ILogger<CrunchSite> logger, ILogger<PackageFeed> feedLogger)
+        public CrunchSite(ILogger<CrunchSite> logger)
         {
             _logger = logger;
-            _feedLogger = feedLogger;
         }
 
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
 
         private readonly ILogger<CrunchSite> _logger;
-        private readonly ILogger<PackageFeed> _feedLogger;
 
         [JsonProperty("languageCode")]
         public String LanguageCode { get; set; } = "en-US";

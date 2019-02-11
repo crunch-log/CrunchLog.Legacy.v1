@@ -1,9 +1,9 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bit0.CrunchLog.Extensions;
-using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Template.Models
 {

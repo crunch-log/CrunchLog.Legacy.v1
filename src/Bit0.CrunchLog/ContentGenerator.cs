@@ -1,7 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Factory;
-using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 

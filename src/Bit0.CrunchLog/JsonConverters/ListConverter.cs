@@ -1,6 +1,5 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Helpers;
-using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

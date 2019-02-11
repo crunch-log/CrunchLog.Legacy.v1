@@ -1,5 +1,4 @@
 ﻿using Bit0.CrunchLog.Template.Models;
-using System;
 
 namespace Bit0.CrunchLog.Template
 {

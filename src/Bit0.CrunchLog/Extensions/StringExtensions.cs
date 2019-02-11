@@ -1,5 +1,5 @@
-﻿using System;
-using Bit0.CrunchLog.Attributes;
+﻿using Bit0.CrunchLog.Attributes;
+using System;
 
 namespace Bit0.CrunchLog.Extensions
 {

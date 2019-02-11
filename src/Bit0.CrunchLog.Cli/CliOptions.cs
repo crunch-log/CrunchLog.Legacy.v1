@@ -5,9 +5,9 @@ using System;
 namespace Bit0.CrunchLog.Cli
 {
     [Command("crunch")]
-    [Subcommand(CliOptionKeys.GenerateCommand, typeof(GenerateCommand))]
-    [Subcommand(CliOptionKeys.CleanCommand, typeof(CleanCommand))]
-    [Subcommand(CliOptionKeys.RunCommand, typeof(RunCommand))]
+    [Subcommand(typeof(GenerateCommand))]
+    [Subcommand(typeof(CleanCommand))]
+    [Subcommand(typeof(RunCommand))]
     public class CliOptions : CliBase
     {
         [Option(CliOptionKeys.VersionTemplate, Description = CliOptionKeys.VersionDescription)]

@@ -1,12 +1,12 @@
-﻿using System;
-using Bit0.CrunchLog.Cli.Extensions;
+﻿using Bit0.CrunchLog.Cli.Extensions;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Bit0.CrunchLog.Cli
 {
-    [Command(Description = CliOptionKeys.GenerateCommandDescription)]
+    [Command(CliOptionKeys.GenerateCommand, Description = CliOptionKeys.GenerateCommandDescription)]
     public class GenerateCommand : CliBase
     {
         [Argument(0, Description = CliOptionKeys.BasePathDescription)]

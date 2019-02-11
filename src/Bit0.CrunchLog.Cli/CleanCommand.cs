@@ -1,12 +1,12 @@
-﻿using System;
-using Bit0.CrunchLog.Cli.Extensions;
+﻿using Bit0.CrunchLog.Cli.Extensions;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Bit0.CrunchLog.Cli
 {
-    [Command(Description = CliOptionKeys.CleanCommandDescription)]
+    [Command(CliOptionKeys.CleanCommand, Description = CliOptionKeys.CleanCommandDescription)]
     public class CleanCommand : CliBase
     {
         [Option(CliOptionKeys.VerboseTemplate, Description = CliOptionKeys.VerboseDescription)]

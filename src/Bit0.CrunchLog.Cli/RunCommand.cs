@@ -10,7 +10,7 @@ using Unosquare.Swan;
 
 namespace Bit0.CrunchLog.Cli
 {
-    [Command(Description = CliOptionKeys.RunCommandDescription)]
+    [Command(CliOptionKeys.RunCommand, Description = CliOptionKeys.RunCommandDescription)]
     public class RunCommand : CliBase
     {
         [Argument(0, Description = CliOptionKeys.BasePathDescription)]

@@ -11,8 +11,9 @@
     <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Bit0.Registry.Core" Version="1.0.0" />
-    <PackageReference Include="Markdig" Version="0.15.5" />
+    <PackageReference Include="Bit0.Plugins.Core" Version="1.0.1" />
+    <PackageReference Include="Bit0.Registry.Core" Version="1.0.1" />
+    <PackageReference Include="Markdig" Version="0.15.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />

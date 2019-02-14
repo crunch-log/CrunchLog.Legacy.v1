@@ -19,7 +19,7 @@ namespace Bit0.CrunchLog
         private readonly CrunchSite _siteConfig;
         private readonly ILogger<ContentProvider> _logger;
 
-        private IDictionary<String, Content> _allContent;
+        private IDictionary<String, IContent> _allContent;
 
         public ContentProvider(CrunchSite siteConfig, ILogger<ContentProvider> logger)
         {
@@ -27,7 +27,7 @@ namespace Bit0.CrunchLog
             _siteConfig = siteConfig;
         }
 
-        public IDictionary<String, Content> AllContent
+        public IDictionary<String, IContent> AllContent
         {
             get
             {
@@ -36,7 +36,7 @@ namespace Bit0.CrunchLog
                     return _allContent;
                 }
 
-                var allContent = new List<Content>();
+                var allContent = new List<IContent>();
                 var files = _siteConfig.Paths.ContentPath.GetFiles("*.md", SearchOption.AllDirectories);
 
                 foreach (var file in files)
@@ -92,14 +92,14 @@ namespace Bit0.CrunchLog
             }
         }
 
-        public IEnumerable<Content> PublishedContent => AllContent.Where(p => p.Value.Published).Select(p => p.Value);
-        public IEnumerable<Content> DraftContent => AllContent.Where(p => !p.Value.Published).Select(p => p.Value);
+        public IEnumerable<IContent> PublishedContent => AllContent.Where(p => p.Value.Published).Select(p => p.Value);
+        public IEnumerable<IContent> DraftContent => AllContent.Where(p => !p.Value.Published).Select(p => p.Value);
 
-        public IEnumerable<Content> Posts => PublishedContent.Where(p => p.Layout == Layouts.Post);
+        public IEnumerable<IContent> Posts => PublishedContent.Where(p => p.Layout == Layouts.Post);
 
-        public IEnumerable<Content> Pages => PublishedContent.Where(p => p.Layout == Layouts.Page);
+        public IEnumerable<IContent> Pages => PublishedContent.Where(p => p.Layout == Layouts.Page);
 
-        public IEnumerable<ContentListItem> Tags => AllContent.Select(p => p.Value)
+        public IEnumerable<IContentListItem> Tags => AllContent.Select(p => p.Value)
                     .Where(p => p.Tags != null && p.Tags.Any())
                     .SelectMany(p => p.Tags)
                     .GroupBy(t => t.Key)
@@ -112,7 +112,7 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Tags.Keys.Contains(t.Title))
                     });
 
-        public IEnumerable<ContentListItem> Categories => AllContent.Select(p => p.Value)
+        public IEnumerable<IContentListItem> Categories => AllContent.Select(p => p.Value)
                     .Where(p => p.Categories != null && p.Categories.Any())
                     .SelectMany(p => p.Categories)
                     .GroupBy(c => c.Key)
@@ -125,7 +125,7 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
                     });
 
-        public IEnumerable<ContentListItem> Authors => AllContent.Select(p => p.Value)
+        public IEnumerable<IContentListItem> Authors => AllContent.Select(p => p.Value)
                     .Where(p => p.Author != null)
                     .Select(p => p.Author)
                     .Distinct()
@@ -137,11 +137,11 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))
                     });
 
-        public IEnumerable<ContentListItem> PostArchives
+        public IEnumerable<IContentListItem> PostArchives
         {
             get
             {
-                var archives = new List<ContentListItem>();
+                var archives = new List<IContentListItem>();
 
                 var permaLinks = Posts
                     .Select(p => p.Permalink.Split('/'))
@@ -184,7 +184,7 @@ namespace Bit0.CrunchLog
             }
         }
 
-        public ContentListItem Home => new ContentListItem
+        public IContentListItem Home => new ContentListItem
         {
             Layout = Layouts.Home,
             Permalink = "/",
@@ -192,11 +192,11 @@ namespace Bit0.CrunchLog
             Children = Posts
         };
 
-        public IDictionary<String, IContent> Links
+        public IDictionary<String, IContentBase> Links
         {
             get
             {
-                var dict = new Dictionary<String, IContent>
+                var dict = new Dictionary<String, IContentBase>
                 {
                     { "/", Home }
                 };

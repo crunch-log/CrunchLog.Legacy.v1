@@ -12,14 +12,15 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchSite
     {
-        public CrunchSite(ILogger<CrunchSite> logger)
+        public CrunchSite(ConfigPaths paths, ILogger<CrunchSite> logger)
         {
+            Paths = paths;
             _logger = logger;
         }
 
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
-
+        
         private readonly ILogger<CrunchSite> _logger;
 
         [JsonProperty("languageCode")]
@@ -55,8 +56,8 @@ namespace Bit0.CrunchLog.Config
         [JsonIgnore]
         public IDictionary<String, CategoryInfo> Tags { get; set; }
 
-        [JsonProperty("paths")]
-        public ConfigPaths Paths { get; set; } = new ConfigPaths();
+        [JsonIgnore]
+        public ConfigPaths Paths { get; set; }
 
         [JsonProperty("pagination")]
         public Pagination Pagination { get; set; } = new Pagination();

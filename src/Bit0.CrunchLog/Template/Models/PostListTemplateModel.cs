@@ -31,7 +31,7 @@ namespace Bit0.CrunchLog.Template.Models
         public Boolean IsHomeLayout { get; }
 
         public PostListTemplateModel(
-            ContentListItem contentListItem, CrunchSite config,
+            IContentListItem contentListItem, CrunchSite config,
             Int32 page, Int32 totalPages)
         {
             TotalPages = totalPages;
@@ -55,7 +55,7 @@ namespace Bit0.CrunchLog.Template.Models
             Posts = contentListItem.Children
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Cast<Content>()
+                .Cast<IContent>()
                 .Select(c => c.GetModel(inList: true));
         }
 

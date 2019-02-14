@@ -24,7 +24,7 @@ namespace Bit0.CrunchLog.JsonConverters
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            var configFile = ServiceProviderFactory.Current.GetService<ConfigFile>();
+            var configFile = ServiceProviderFactory.Current.GetService<IConfigFile>();
             var basePath = configFile.File.Directory;
             
             var pathKey = (String)reader.Value;

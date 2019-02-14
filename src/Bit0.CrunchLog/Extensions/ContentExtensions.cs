@@ -8,12 +8,12 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static PostTemplateModel GetModel(this Content content, Boolean inList = false)
+        public static PostTemplateModel GetModel(this IContent content, Boolean inList = false)
         {
             return new PostTemplateModel(content, inList); 
         }
 
-        public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<Content> contents)
+        public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<IContent> contents)
         {
             var redirects = new Dictionary<String, String>();
             redirects = redirects.Concat(contents.ToDictionary(k => k.Id, v => v.Permalink))
@@ -30,7 +30,7 @@ namespace Bit0.CrunchLog.Extensions
             };
         }
 
-        public static String GetPagePermaLink(this ContentListItem contentListItem, Int32 page)
+        public static String GetPagePermaLink(this IContentListItem contentListItem, Int32 page)
         {
             if (page == 1)
             {
@@ -45,7 +45,7 @@ namespace Bit0.CrunchLog.Extensions
             return  $"{contentListItem.Permalink}/page{page:00}";
         }
 
-        public static IEnumerable<PostListTemplateModel> GetPages(this ContentListItem contentListItem, CrunchSite siteConfig)
+        public static IEnumerable<PostListTemplateModel> GetPages(this IContentListItem contentListItem, CrunchSite siteConfig)
         {
             var totalPages = (Int32) Math.Ceiling(contentListItem.Children.Count() / (Double) siteConfig.Pagination.PageSize);
 

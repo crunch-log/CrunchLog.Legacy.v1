@@ -6,7 +6,7 @@ namespace Bit0.CrunchLog.Cli
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main(String[] args)
         {
             CommandLineApplication.Execute<CliOptions>(args);
             

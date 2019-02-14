@@ -7,19 +7,26 @@ namespace Bit0.CrunchLog.Logging
     {
         private readonly ILogger _logger;
 
-        public TimedLogger(ILogger logger) => _logger = logger;
-
-        public TimedLogger(ILoggerFactory loggerFactory) : this(new Logger<T>(loggerFactory))
+        public TimedLogger(ILogger logger)
         {
+            _logger = logger;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
-            Func<TState, Exception, string> formatter) =>
-            _logger.Log(logLevel, eventId, state, exception,
-                (s, ex) => $"[{DateTime.UtcNow:HH:mm:ss.fff}]: {formatter(s, ex)}");
+        public TimedLogger(ILoggerFactory loggerFactory) : this(new Logger<T>(loggerFactory)) { }
 
-        public bool IsEnabled(LogLevel logLevel) => _logger.IsEnabled(logLevel);
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, String> formatter)
+        {
+            _logger.Log(logLevel, eventId, state, exception, (s, ex) => $"[{DateTime.UtcNow:HH:mm:ss.fff}]: {formatter(state, exception)}");
+        }
 
-        public IDisposable BeginScope<TState>(TState state) => _logger.BeginScope(state);
+        public Boolean IsEnabled(LogLevel logLevel)
+        {
+            return _logger.IsEnabled(logLevel);
+        }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            return _logger.BeginScope(state);
+        }
     }
 }

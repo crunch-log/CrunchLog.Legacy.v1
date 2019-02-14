@@ -2,7 +2,7 @@
 
 namespace Bit0.CrunchLog
 {
-    public interface IContent
+    public interface IContentBase
     {
         Layouts Layout { get; set; }
         String Permalink { get; set; }

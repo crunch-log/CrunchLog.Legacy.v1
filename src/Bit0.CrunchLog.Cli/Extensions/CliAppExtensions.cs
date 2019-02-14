@@ -133,19 +133,19 @@ namespace Bit0.CrunchLog.Cli.Extensions
             catch (OperationCanceledException)
             {
                 logger.LogInformation("Server Closed");
-                return 1;
+                return 0;
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
-                return 0;
+                return 1;
             }
 
             sw.Stop();
 
             logger.LogInformation($"Time elapsed: {sw.Elapsed}");
 
-            return 1;
+            return 0;
         }
 
         public static Int32 Execute(

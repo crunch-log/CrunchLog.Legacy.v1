@@ -1,11 +1,16 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
+using Bit0.Plugins.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace Bit0.CrunchLog
 {
@@ -15,36 +20,34 @@ namespace Bit0.CrunchLog
 
         public static IServiceProvider Build(Arguments args)
         {
-            var services = new ServiceCollection();
+            var jsonSerializer = new JsonSerializer();
+            var configFile = ConfigFile.Load(args, jsonSerializer);
 
+            var services = new ServiceCollection();
             services.AddLogging(builder =>
             {
                 builder
                     .SetMinimumLevel(args.VerboseLevel)
                     .AddConsole();
             });
-            services.AddSingleton(args);
+            services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));  // TODO: replace with another logger
 
-            services.AddSingleton<ConfigFile>();
+            services.AddSingleton(jsonSerializer);
+            services.AddSingleton(configFile);
             services.AddSingleton<CrunchLog>();
-            services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().SiteConfig);
-            //services.AddSingleton(serviceProvider => serviceProvider.GetService<CrunchLog>().Packages);
+            services.AddSingleton(factory => factory.GetService<CrunchLog>().SiteConfig);
 
-            services.AddTransient<IContentProvider, ContentProvider>();
-            services.AddTransient<IContentGenerator, ContentGenerator>();
-            services.AddTransient<ITemplateFactory, TemplateFactory>();
+            services.AddSingleton<IContentProvider, ContentProvider>();
+            services.AddSingleton<IContentGenerator, ContentGenerator>();
+            services.AddSingleton<ITemplateFactory, TemplateFactory>();
+            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
 
-            // inject timestamps in log, in future replace with another logger
-            services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));
+            services.LoadPlugins(new[] {
+                configFile.Paths.PluginsPath,
+                new FileInfo(Assembly.GetExecutingAssembly().Location).Directory
+            }, new LoggerFactory().CreateLogger<IPluginLoader>());
 
-            services.AddTransient<ITemplateEngine, JsonTemplateEngine>();
-            // TODO: Add injection from plugins
-            // move to plugin
-            //services.Replace(ServiceDescriptor.Singleton(typeof(IHtmlTemplateEngine), typeof(HandelbarsTemplateEngine)));
-
-            Current = services.BuildServiceProvider();
-
-            return Current;
+            return Current = services.BuildServiceProvider();
         }
     }
 }

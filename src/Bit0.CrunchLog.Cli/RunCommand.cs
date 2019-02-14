@@ -99,7 +99,6 @@ namespace Bit0.CrunchLog.Cli
                 {
                     // We'd also actually verify the exception cause was that the task
                     // was canceled.
-                    server.Dispose();
                 }
                 finally
                 {

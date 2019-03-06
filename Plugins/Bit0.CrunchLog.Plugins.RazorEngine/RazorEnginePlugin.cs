@@ -1,14 +1,20 @@
-﻿using Bit0.Plugins.Core;
+﻿using Bit0.CrunchLog.Template;
+using Bit0.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bit0.CrunchLog.Plugins.RazorEngine
 {
-    [Plugin(Id = "Bit0.CrunchLog.Plugins.RazorEngine", Name = "Bit0.CrunchLog.Plugins.RazorEngine", Version = "1.0.0")]
+    [Plugin(Name = "Bit0.CrunchLog.Plugins.RazorEngine", Id = "Bit0.CrunchLog.Plugins.RazorEngine", Version = "", Implementing = typeof(ITemplateEngine))]
     public class RazorEnginePlugin : PluginBase
     {
-        public override void Register(IServiceCollection services)
+        public RazorEnginePlugin()
         {
+        }
 
+        public override IServiceCollection Register(IServiceCollection services)
+        {
+            services.AddSingleton<ITemplateEngine, RazorTemplateEngine>();
+            return services;
         }
     }
 }

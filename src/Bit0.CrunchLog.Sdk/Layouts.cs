@@ -24,6 +24,8 @@ namespace Bit0.CrunchLog
         [String("redirect")]
         Redirect,
         [String("list")]
-        Author
+        Author,
+        [String("site")]
+        Site,
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
-using Bit0.Plugins.Core;
+using Bit0.Plugins.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -20,8 +19,6 @@ namespace Bit0.CrunchLog
 
         public static IServiceProvider Build(Arguments args)
         {
-            var jsonSerializer = new JsonSerializer();
-            var configFile = ConfigFile.Load(args, jsonSerializer);
 
             var services = new ServiceCollection();
             services.AddLogging(builder =>
@@ -32,6 +29,10 @@ namespace Bit0.CrunchLog
             });
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));  // TODO: replace with another logger
 
+            var jsonSerializer = new JsonSerializer();
+            var configFile = ConfigFile.Load(args, jsonSerializer);
+
+            services.AddSingleton(args);
             services.AddSingleton(jsonSerializer);
             services.AddSingleton(configFile);
             services.AddSingleton<CrunchLog>();
@@ -40,12 +41,26 @@ namespace Bit0.CrunchLog
             services.AddSingleton<IContentProvider, ContentProvider>();
             services.AddSingleton<IContentGenerator, ContentGenerator>();
             services.AddSingleton<ITemplateFactory, TemplateFactory>();
-            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
+            //services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
 
             services.LoadPlugins(new[] {
                 configFile.Paths.PluginsPath,
-                new FileInfo(Assembly.GetExecutingAssembly().Location).Directory
             }, new LoggerFactory().CreateLogger<IPluginLoader>());
+
+            //services.AddSingleton<IPluginLoader>(factory =>
+            //{
+            //    var logger = factory.GetService<ILogger<IPluginLoader>>();
+            //    var config = factory.GetService<CrunchSite>();
+            //    var paths = new[]
+            //    {
+            //        config.Paths.PluginsPath
+            //    };
+
+            //    //var paths = new[] { new FileInfo(Assembly.GetExecutingAssembly().Location).Directory };
+
+
+            //    return new PluginLoader(paths, logger);
+            //});
 
             return Current = services.BuildServiceProvider();
         }

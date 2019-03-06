@@ -1,4 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Template;
+using Bit0.Plugins.Loader;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -126,6 +128,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
                 var provider = ServiceProviderFactory.Build(args);
 
                 logger = provider.GetService<ILogger<CliOptions>>();
+
                 var config = provider.GetService<CrunchSite>();
 
                 executeFunc(provider, logger, config);

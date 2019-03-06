@@ -1,4 +1,5 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonProperty("title")]
         public String Title { get; set; }
         [JsonIgnore]
-        public String Layout { get; set; } = "site";
+        public String Layout { get; set; } = Layouts.Site.GetValue();
         [JsonProperty("url")]
         public String Permalink { get; set; } = "/";
         [JsonProperty("subTitle")]

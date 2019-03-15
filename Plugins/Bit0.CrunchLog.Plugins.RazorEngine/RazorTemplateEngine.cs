@@ -2,22 +2,9 @@
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Models;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,12 +16,14 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
         public readonly IRazorRenderer _renderer;
         private readonly CrunchSite _siteConfig;
         private readonly ILogger<RazorTemplateEngine> _logger;
+        private readonly ILogger<IRazorRenderer> _razorLogger;
         private readonly AppDomain _domain;
 
-        public RazorTemplateEngine(CrunchSite siteConfig, ILogger<RazorTemplateEngine> logger)
+        public RazorTemplateEngine(CrunchSite siteConfig, ILogger<RazorTemplateEngine> logger, ILogger<IRazorRenderer> razorLogger)
         {
             _siteConfig = siteConfig;
             _logger = logger;
+            _razorLogger = razorLogger;
             _domain = AppDomain.CurrentDomain;
 
             _domain.AssemblyLoad += (sender, args) =>
@@ -62,35 +51,15 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
             }
         }
 
-        private static IServiceProvider Build()
+        private IServiceProvider Build()
         {
-            var application = PlatformServices.Default.Application;
+            _logger.LogInformation("Create ServiceProvider");
+
             var services = new ServiceCollection();
-
-            services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"c:\temp-keys"))
-                .ProtectKeysWithDpapi();
-
-            services.AddSingleton(application);
-
-            services.AddSingleton<IHostingEnvironment>(new HostingEnvironment
-            {
-                ApplicationName = application.ApplicationName
-            });
-
-            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
-
+            services.AddSingleton(_siteConfig);
+            services.AddSingleton(_siteConfig.GetModel());
+            services.AddSingleton(_razorLogger);
             services.AddScoped<IRazorRenderer, RazorRenderer>();
-
-            services.Configure<RazorViewEngineOptions>(options =>
-            {
-                options.FileProviders.Clear();
-                options.FileProviders.Add(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
-            });
-
-            services.AddLogging();
-            services.AddMvc();
 
             return services.BuildServiceProvider();
         }
@@ -103,33 +72,40 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
                 outputDir = _siteConfig.Theme.Output.Data;
             }
 
-            if (model is SiteTemplateModel)
-            {
-                Render(model, "Site", outputDir.CombineFilePath(".json", "siteInfo"));
-            }
-            else if (model is RedirectsTemplateModel)
-            {
-                Render(model, "Redirect", outputDir.CombineFilePath(".json", "redirects"));
-            }
-            else if (model is PostTemplateModel m)
+            //if (model is SiteTemplateModel)
+            //{
+            //    Render(model, "Site", outputDir.CombineFilePath(".json", "siteInfo"));
+            //    return;
+            //}
+            //if (model is RedirectsTemplateModel)
+            //{
+            //    Render(model, "Redirect", outputDir.CombineFilePath(".json", "redirects"));
+            //    return;
+            //}
+            if (model is PostTemplateModel m)
             {
                 outputDir = !m.IsDraft ? outputDir.CombineDirPath(m.Id) : outputDir.CombineDirPath("draft", m.Id);
-                Render(model, "Post", outputDir.CombineFilePath(".json", "index"));
+                Render(model, "Post", outputDir.CombineFilePath(".html", "index"));
+                return;
             }
             if (model is PostListTemplateModel)
             {
                 outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
-                Render(model, "List", outputDir.CombineFilePath(".json", "index"));
+                Render(model, "List", outputDir.CombineFilePath(".html", "index"));
+                return;
             }
 
         }
 
-        private void Render<T>(T model, String viewName, FileInfo outputFile) where T : class
+        private void Render<TModel>(TModel model, String viewName, FileInfo outputFile) where TModel : ITemplateModel
         {
             if (!outputFile.Directory.Exists)
             {
+                _logger.LogInformation($"Create directory: {outputFile.Directory.FullName}");
                 outputFile.Directory.Create();
             }
+
+            _logger.LogInformation($"Render template from view: {viewName}");
 
             using (var sw = outputFile.CreateText())
             {

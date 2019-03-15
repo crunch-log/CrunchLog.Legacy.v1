@@ -5,15 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
     <ProjectReference Include="..\..\src\Bit0.CrunchLog.Utils\Bit0.CrunchLog.Utils.csproj" />
+    <ProjectReference Include="..\..\vendors\RazorLight\src\RazorLight\RazorLight.csproj" />
     <ProjectReference Include="..\Bit0.Plugins.Sdk\Bit0.Plugins.Sdk.csproj" />
   </ItemGroup>
 

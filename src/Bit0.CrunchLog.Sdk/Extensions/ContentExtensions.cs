@@ -10,7 +10,7 @@ namespace Bit0.CrunchLog.Extensions
     {
         public static PostTemplateModel GetModel(this IContent content, Boolean inList = false)
         {
-            return new PostTemplateModel(content, inList); 
+            return new PostTemplateModel(content, inList);
         }
 
         public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<IContent> contents)
@@ -42,12 +42,12 @@ namespace Bit0.CrunchLog.Extensions
                 return $"{contentListItem.Permalink}page{page:00}";
             }
 
-            return  $"{contentListItem.Permalink}/page{page:00}";
+            return $"{contentListItem.Permalink}/page{page:00}";
         }
 
         public static IEnumerable<PostListTemplateModel> GetPages(this IContentListItem contentListItem, CrunchSite siteConfig)
         {
-            var totalPages = (Int32) Math.Ceiling(contentListItem.Children.Count() / (Double) siteConfig.Pagination.PageSize);
+            var totalPages = (Int32)Math.Ceiling(contentListItem.Children.Count() / (Double)siteConfig.Pagination.PageSize);
 
             for (var i = 1; i <= totalPages; i++)
             {
@@ -84,6 +84,52 @@ namespace Bit0.CrunchLog.Extensions
                     .Take(20),
                 Owner = siteConfig.Copyright.Owner,
                 CopyrightYear = siteConfig.Copyright.StartYear
+            };
+        }
+
+        public static PaginationListTemplateModel GetModel(this IDictionary<Int32, PaginationPageTemplateModel> pages, Int32 totalPages)
+        {
+            PaginationPageTemplateModel firstPage = null;
+            PaginationPageTemplateModel lastPage = null;
+            PaginationPageTemplateModel nextPage = null;
+            PaginationPageTemplateModel prevPage = null;
+
+            var currentPage = pages.Values.Where(p => p.IsCurrentPage).Single().Page;
+            var pageSpan = 2;
+            var startPage = 1;
+            var endPage = totalPages;
+
+            if (currentPage - pageSpan > 1)
+            {
+                startPage = currentPage - pageSpan;
+                firstPage = pages[startPage - 1];
+            }
+            if (currentPage + pageSpan < totalPages)
+            {
+                endPage = currentPage + pageSpan;
+                lastPage = pages[endPage + 1];
+            }
+
+            if (pages.ContainsKey(currentPage - 1))
+            {
+                prevPage = pages[currentPage - 1];
+            }
+
+            if (pages.ContainsKey(currentPage + 1))
+            {
+                nextPage = pages[currentPage + 1];
+            }
+
+            return new PaginationListTemplateModel
+            {  // TODO: Fix the logic
+                AllPages = pages,
+                PageSpan = pages.Values.Skip(startPage - 1).Take((pageSpan * 2) + 1),
+                FirstPage = firstPage,
+                LastPage = lastPage,
+                PreviousPage = prevPage,
+                NextPage = nextPage,
+                TotalPages = totalPages,
+                CurrentPage = currentPage
             };
         }
     }

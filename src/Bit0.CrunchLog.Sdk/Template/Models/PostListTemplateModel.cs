@@ -18,13 +18,8 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonProperty("posts")]
         public IEnumerable<ITemplateModel> Posts { get; set; }
         [JsonProperty("pagination")]
-        public IDictionary<Int32, PaginationTemplateModel> Pagination { get; set; }
-        [JsonProperty("totalPages")]
-        public Int32 TotalPages { get; set; }
-        [JsonProperty("prevPageUrl")]
-        public String PreviousPageUrl { get; set; }
-        [JsonProperty("nextPageUrl")]
-        public String NextPageUrl { get; set; }
+        public PaginationListTemplateModel Pagination { get; set; }
+
         [JsonProperty("pageCount")]
         public Int32 PostsCount => Posts.Count();
         [JsonProperty("isHomeLayout")]
@@ -34,20 +29,16 @@ namespace Bit0.CrunchLog.Template.Models
             IContentListItem contentListItem, CrunchSite config,
             Int32 page, Int32 totalPages)
         {
-            TotalPages = totalPages;
-            Pagination = Enumerable.Range(1, totalPages).ToDictionary(k => k, i => new PaginationTemplateModel
+            Pagination = Enumerable.Range(1, totalPages).ToDictionary(k => k, i => new PaginationPageTemplateModel
             {
                 Page = i,
                 Url = contentListItem.GetPagePermaLink(i),
                 IsCurrentPage = page == i
-            });
-
-            PreviousPageUrl = page > 1 ? contentListItem.GetPagePermaLink(page - 1) : String.Empty;
-            NextPageUrl = page < totalPages ? contentListItem.GetPagePermaLink(page + 1) : String.Empty;
+            }).GetModel(totalPages);
 
             Layout = contentListItem.Layout.GetValue();
             IsHomeLayout = contentListItem.Layout == Layouts.Home;
-            Permalink = Pagination[page].Url;
+            Permalink = Pagination.AllPages[page].Url;
             Title = contentListItem.Title;
 
             var pageSize = config.Pagination.PageSize;

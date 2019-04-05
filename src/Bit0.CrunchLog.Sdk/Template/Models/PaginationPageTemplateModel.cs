@@ -3,7 +3,7 @@ using System;
 
 namespace Bit0.CrunchLog.Template.Models
 {
-    public class PaginationTemplateModel
+    public class PaginationPageTemplateModel
     {
         [JsonProperty("page")]
         public Int32 Page {get; set; }
@@ -11,5 +11,7 @@ namespace Bit0.CrunchLog.Template.Models
         public String Url { get; set; }
         [JsonProperty("isCurrentPage")]
         public Boolean IsCurrentPage {get; set;}
+
+        public override String ToString() => Url;
     }
 }

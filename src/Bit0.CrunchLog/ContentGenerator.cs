@@ -29,7 +29,7 @@ namespace Bit0.CrunchLog
             if (_siteConfig.Paths.OutputPath.Exists)
             {
                 _siteConfig.Paths.OutputPath.ClearFolder();
-                _logger.LogInformation($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
+                _logger.LogDebug($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
             }
         }
 
@@ -42,7 +42,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(page);
             }
 
-            _logger.LogInformation($"Categories published in {pages.Count} pages");
+            _logger.LogDebug($"Categories published in {pages.Count} pages");
         }
 
         public void PublishTags()
@@ -54,7 +54,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(page);
             }
 
-            _logger.LogInformation($"Tags published in {pages.Count} pages");
+            _logger.LogDebug($"Tags published in {pages.Count} pages");
         }
 
         public void PublishArchive()
@@ -66,7 +66,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(page);
             }
 
-            _logger.LogInformation($"Archives published in {pages.Count} pages");
+            _logger.LogDebug($"Archives published in {pages.Count} pages");
         }
 
         public void PublisHome()
@@ -78,7 +78,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(page);
             }
 
-            _logger.LogInformation($"Home published in {pages.Count} pages");
+            _logger.LogDebug($"Home published in {pages.Count} pages");
         }
 
         public void PublishContent()
@@ -90,12 +90,13 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(content.GetModel());
             }
 
-            _logger.LogInformation($"Published {published.Count} posts/pages");
+            _logger.LogDebug($"Published {published.Count} posts/pages");
         }
 
         public void PublishImages()
         {
             _siteConfig.Paths.ImagesPath.Copy(_siteConfig.Paths.OutputPath.CombineDirPath("images"));
+            _logger.LogDebug("Site images published");
         }
 
         public void PublishAuthors()
@@ -107,7 +108,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(author);
             }
 
-            _logger.LogInformation($"Authors published in {authors.Count} pages");
+            _logger.LogDebug($"Authors published in {authors.Count} pages");
         }
 
         public void PublishSiteInfo()
@@ -115,7 +116,7 @@ namespace Bit0.CrunchLog
             var info = _siteConfig.GetModel(_contentProvider);
             _templateFactory.Render(info);
 
-            _logger.LogInformation($"Site information published");
+            _logger.LogDebug($"Site information published");
         }
 
         public void PublishRedirectsList()
@@ -123,12 +124,13 @@ namespace Bit0.CrunchLog
             var model = _contentProvider.PublishedContent.GetRedirectModel();
             _templateFactory.Render(model);
 
-            _logger.LogInformation("Site redirects published");
+            _logger.LogDebug("Site redirects published");
         }
 
         public void PublishAssets()
         {
             _siteConfig.Paths.AssetsPath.Copy(_siteConfig.Paths.OutputPath);
+            _logger.LogDebug("Site assets published");
         }
 
         public void PublishDrafts()
@@ -140,7 +142,7 @@ namespace Bit0.CrunchLog
                 _templateFactory.Render(content.GetModel());
             }
 
-            _logger.LogInformation($"Published {drafts.Count} drafts.");
+            _logger.LogDebug($"Published {drafts.Count} drafts.");
         }
 
         public void Publish()

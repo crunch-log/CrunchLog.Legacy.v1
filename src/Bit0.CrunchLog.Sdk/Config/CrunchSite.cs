@@ -91,7 +91,7 @@ namespace Bit0.CrunchLog.Config
             Theme = Theme.Get(themeKey, Paths.ThemesPath, Paths.OutputPath);
 
             // TODO: Get theme name
-            _logger.LogInformation($"Loaded theme({Theme.ConfigFile.Name}) from {themeKey}.");
+            _logger.LogDebug($"Loaded theme({Theme.ConfigFile.Name}) from {themeKey}.");
         }
 
         private void SetupTags()
@@ -107,7 +107,7 @@ namespace Bit0.CrunchLog.Config
                     };
                 });
 
-            _logger.LogInformation($"Read Tags.");
+            _logger.LogDebug($"Read Tags.");
         }
 
         private void SetupCategories()
@@ -122,7 +122,7 @@ namespace Bit0.CrunchLog.Config
                     return cat;
                 });
 
-            _logger.LogInformation($"Read Categories.");
+            _logger.LogDebug($"Read Categories.");
         }
 
         private void SetupPackageFeeds()
@@ -133,7 +133,7 @@ namespace Bit0.CrunchLog.Config
             };
             PackageSources = defaultSources.Concat(PackageSources).ToDictionary(k => k.Key, v => v.Value);
 
-            _logger.LogInformation($"Read package feeds.");
+            _logger.LogDebug($"Read package feeds.");
         }
     }
 }

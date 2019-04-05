@@ -4,6 +4,7 @@ using Bit0.CrunchLog.Template.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Bit0.CrunchLog.Template
 {
@@ -58,6 +59,31 @@ namespace Bit0.CrunchLog.Template
             {
                 sw.Write(JsonConvert.SerializeObject(model));
             }
+        }
+
+
+        public void PreProcess() { }
+
+        public void PostProcess(CrunchSite siteConfig, Theme theme)
+        {
+            ProcessPreCache(siteConfig, theme);
+        }
+
+        private void ProcessPreCache(CrunchSite siteConfig, Theme theme)
+        {
+            var precache = siteConfig.Paths.ThemesPath
+                .GetFiles(theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
+                .FirstOrDefault();
+
+            var to = siteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
+
+            var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
+            var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
+
+            var preContent = precache.ReadText();
+            preContent = preContent.Replace("\n];", $",\r\n{indexH},\r\n{siteInfoH}\r\n];");
+
+            to.WriteText(preContent);
         }
     }
 }

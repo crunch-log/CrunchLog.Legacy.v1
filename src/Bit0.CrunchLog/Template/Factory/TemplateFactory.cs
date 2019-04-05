@@ -2,8 +2,6 @@
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 
 namespace Bit0.CrunchLog.Template.Factory
 {
@@ -61,24 +59,7 @@ namespace Bit0.CrunchLog.Template.Factory
 
         public void PostProcess()
         {
-            ProcessPreCache();
-        }
-
-        private void ProcessPreCache()
-        {
-            var precache = SiteConfig.Paths.ThemesPath
-                .GetFiles(Theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
-                .FirstOrDefault();
-
-            var to = SiteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
-
-            var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
-            var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
-
-            var preContent = precache.ReadText();
-            preContent = preContent.Replace("\n];", $",\r\n{indexH},\r\n{siteInfoH}\r\n];");
-
-            to.WriteText(preContent);
+            Engine.PostProcess(SiteConfig, Theme);
         }
 
         public void Render(ITemplateModel model) => Engine.Render(model);

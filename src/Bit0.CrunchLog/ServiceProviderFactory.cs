@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Bit0.CrunchLog
@@ -19,7 +20,6 @@ namespace Bit0.CrunchLog
 
         public static IServiceProvider Build(Arguments args)
         {
-
             var services = new ServiceCollection();
             services.AddLogging(builder =>
             {
@@ -41,26 +41,11 @@ namespace Bit0.CrunchLog
             services.AddSingleton<IContentProvider, ContentProvider>();
             services.AddSingleton<IContentGenerator, ContentGenerator>();
             services.AddSingleton<ITemplateFactory, TemplateFactory>();
-            //services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
+            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
 
             services.LoadPlugins(new[] {
                 configFile.Paths.PluginsPath,
             }, new LoggerFactory().CreateLogger<IPluginLoader>());
-
-            //services.AddSingleton<IPluginLoader>(factory =>
-            //{
-            //    var logger = factory.GetService<ILogger<IPluginLoader>>();
-            //    var config = factory.GetService<CrunchSite>();
-            //    var paths = new[]
-            //    {
-            //        config.Paths.PluginsPath
-            //    };
-
-            //    //var paths = new[] { new FileInfo(Assembly.GetExecutingAssembly().Location).Directory };
-
-
-            //    return new PluginLoader(paths, logger);
-            //});
 
             return Current = services.BuildServiceProvider();
         }

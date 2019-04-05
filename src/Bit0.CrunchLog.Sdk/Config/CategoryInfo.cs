@@ -3,7 +3,7 @@ using System;
 
 namespace Bit0.CrunchLog.Config
 {
-    public class CategoryInfo
+    public class CategoryInfo : IMenuItem
     {
         [JsonProperty("title")]
         public String Title { get; set; }
@@ -11,7 +11,6 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("color")]
         public String Color { get; set; }
 
-        [JsonProperty("url")]
         public String Permalink { get; set; }
 
         [JsonProperty("image")]
@@ -29,5 +28,7 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("showInMainMenu")]
         public Boolean ShowInMainMenu { get; set; }
 
+        [JsonProperty("url")]
+        public String Url { get => Permalink; set => Permalink = value; }
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace Bit0.CrunchLog.Config
 {
-    public class TagMenuItem
+    public class TagMenuItem : IMenuItem
     {
         [JsonProperty("title")]
         public String Title { get; set; }

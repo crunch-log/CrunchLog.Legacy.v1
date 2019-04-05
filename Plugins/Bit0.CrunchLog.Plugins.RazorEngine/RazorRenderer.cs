@@ -1,6 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RazorLight;
 using System;
@@ -24,7 +24,7 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
             _logger.LogInformation("Initialize RazorEngine");
 
             _razorEngine = new RazorLightEngineBuilder()
-                .UseFileSystemProject(themeDir.FullName)
+                .UseFileSystemProject(themeDir.CombineDirPath("Views").FullName)
                 .UseMemoryCachingProvider()
                 .Build();
         }

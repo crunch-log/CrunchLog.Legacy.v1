@@ -67,16 +67,7 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
         public void Render(ITemplateModel model)
         {
             var outputDir = _siteConfig.Paths.OutputPath;
-            if (_siteConfig.Theme.OutputType == ThemeOutputType.Json)
-            {
-                outputDir = _siteConfig.Theme.Output.Data;
-            }
 
-            //if (model is SiteTemplateModel)
-            //{
-            //    Render(model, "Site", outputDir.CombineFilePath(".json", "siteInfo"));
-            //    return;
-            //}
             //if (model is RedirectsTemplateModel)
             //{
             //    Render(model, "Redirect", outputDir.CombineFilePath(".json", "redirects"));
@@ -112,5 +103,8 @@ namespace Bit0.CrunchLog.Plugins.RazorEngine
                 _renderer.RenderViewAsync($"{viewName}.cshtml", model, sw).GetAwaiter().GetResult();
             }
         }
+
+        public void PreProcess() { }
+        public void PostProcess(CrunchSite siteConfig, Theme theme) { }
     }
 }

@@ -61,11 +61,11 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
         {
             if (!outputFile.Directory.Exists)
             {
-                _logger.LogDebug($"Create directory: {outputFile.Directory.FullName}");
+                _logger.LogTrace($"Create directory: {outputFile.Directory.FullName}");
                 outputFile.Directory.Create();
             }
 
-            _logger.LogDebug($"Render template from view: {viewName}");
+            _logger.LogTrace($"Render template from view: {viewName}");
 
             using (var sw = outputFile.CreateText())
             {

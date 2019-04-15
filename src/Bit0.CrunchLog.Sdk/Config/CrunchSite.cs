@@ -1,4 +1,5 @@
-﻿using Bit0.CrunchLog.Helpers;
+﻿using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
 using Bit0.Registry.Core;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -107,7 +108,7 @@ namespace Bit0.CrunchLog.Config
                     };
                 });
 
-            _logger.LogDebug($"Read Tags.");
+            _logger.LogTrace($"Read Tags.");
         }
 
         private void SetupCategories()
@@ -122,7 +123,7 @@ namespace Bit0.CrunchLog.Config
                     return cat;
                 });
 
-            _logger.LogDebug($"Read Categories.");
+            _logger.LogTrace($"Read Categories.");
         }
 
         private void SetupPackageFeeds()

@@ -1,12 +1,11 @@
 ﻿using Bit0.CrunchLog.Template;
 using Bit0.Plugins;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Bit0.CrunchLog.Plugins.ScribanEngine
 {
 
-    [Plugin(Name = "Bit0.CrunchLog.Plugins.RazorEngine", Id = "Bit0.CrunchLog.Plugins.RazorEngine", Version = "", Implementing = typeof(ITemplateEngine))]
+    [Plugin(Name = "ScribanEngine", Id = "Bit0.CrunchLog.Plugins.ScribanEngine", Version = "1.0.0", Implementing = typeof(ITemplateEngine))]
     public class ScribanEnginePlugin : PluginBase
     {
         public override IServiceCollection Register(IServiceCollection services)

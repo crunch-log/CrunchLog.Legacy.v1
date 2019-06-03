@@ -87,7 +87,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in published)
             {
-                _templateFactory.Render(content.GetModel());
+                _templateFactory.Render(content.GetModel(_siteConfig));
             }
 
             _logger.LogDebug($"Published {published.Count} posts/pages");
@@ -139,7 +139,7 @@ namespace Bit0.CrunchLog
 
             foreach (var content in drafts)
             {
-                _templateFactory.Render(content.GetModel());
+                _templateFactory.Render(content.GetModel(_siteConfig));
             }
 
             _logger.LogDebug($"Published {drafts.Count} drafts.");
@@ -148,6 +148,8 @@ namespace Bit0.CrunchLog
         public void Publish()
         {
             _templateFactory.PreProcess();
+
+            // TODO: Check SHA1 new System.Security.Cryptography.SHA1Managed().ComputeHash()
 
             PublishSiteInfo();
             PublishRedirectsList();

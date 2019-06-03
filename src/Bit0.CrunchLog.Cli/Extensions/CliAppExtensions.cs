@@ -1,6 +1,4 @@
 ﻿using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Template;
-using Bit0.Plugins.Loader;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,7 +20,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
             Console.Write("DEBUG BUILD ");
             Console.ForegroundColor = fc;
 #endif
-            Console.WriteLine(CliOptionKeys.Banner, app.GetVersion<CrunchLog>());
+            Console.WriteLine(CliOptionKeys.Banner, app.GetVersion<CrunchSite>());
         }
 
         public static Arguments BuildArguments(

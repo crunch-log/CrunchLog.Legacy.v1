@@ -1,5 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Template.Models.MetaData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,26 +10,27 @@ namespace Bit0.CrunchLog.Template.Models
 {
     public class PostTemplateModel : ITemplateModel
     {
-        public PostTemplateModel(IContent content, Boolean inList = false)
+        public PostTemplateModel(IContent content, CrunchSite siteConfig, Boolean inList = false)
         {
             Id = content.Id;
             Title = content.Title;
             Description = content.Intro;
             Author = content.Author.Alias;
             Published = content.DatePublished;
+            Updated = content.DateUpdated;
             Permalink = content.Permalink;
             DefaultCategory = content.Categories.FirstOrDefault().Key;
-            IsDraft = !content.Published;
-            Image = content.Image;
-            ImagePlaceholder = content.ImagePlaceholder;
+            IsDraft = !content.IsPublished;
+            Image = content.Image.Url;
+            ImagePlaceholder = content.Image.Placeholder;
 
             if (!inList)
             {
                 Layout = content.Layout.GetValue();
                 Content = content.Html;
                 Categories = content.Categories.Select(c => c.Key);
-                Updated = content.DateUpdated;
                 Keywords = content.Tags.Select(t => t.Value);
+                Meta = content.GetMetaData(siteConfig);
             }
         }
 
@@ -62,6 +64,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String DefaultCategory { get; }
         [JsonIgnore]
         public Boolean IsDraft { get; }
+        [JsonProperty("meta")]
+        public PostMetaData Meta { get; set; }
 
         public override String ToString() => Permalink;
     }

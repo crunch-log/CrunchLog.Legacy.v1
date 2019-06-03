@@ -1,6 +1,5 @@
 ﻿using Bit0.CrunchLog.Cli.Extensions;
 using McMaster.Extensions.CommandLineUtils;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +25,7 @@ namespace Bit0.CrunchLog.Cli
         protected override Int32 OnExecute(CommandLineApplication app)
         {
             var args = app.BuildArguments(BasePath, VerboseLevel, Url);
-            return app.Execute(args, (provider, logger, config) =>
+            return app.Execute(args, (provider, logger, site) =>
             {
                 logger.LogDebug("Run");
                 var generator = provider.GetService<IContentGenerator>();
@@ -35,16 +34,18 @@ namespace Bit0.CrunchLog.Cli
 
                 var host = new WebHostBuilder()
                     .UseKestrel()
-                    .UseWebRoot(config.Paths.OutputPath.FullName)
-                    .Configure(x => x
-                                        .UseFileServer()
-                                        .UseDirectoryBrowser()
-                                        .UseStatusCodePages()
+                    .UseWebRoot(site.Paths.OutputPath.FullName)
+                    .Configure(config => 
+                        config
+                            .UseFileServer()
+                            .UseDirectoryBrowser()
+                            .UseStatusCodePages()
                     )
                     .UseUrls(args.Url)
-                    .ConfigureLogging(logging => logging
-                                                    .ClearProviders()
-                                                    .AddConsole()
+                    .ConfigureLogging(logging => 
+                        logging
+                            .ClearProviders()
+                            .AddConsole()
                     )
                     .Build();
                 var task = host.RunAsync();

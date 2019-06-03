@@ -30,7 +30,7 @@ namespace Bit0.CrunchLog.JsonConverters
             //    return ImageHelpers.GetImagePath(fileKey, _siteConfig.Paths.BasePath, _siteConfig.Paths.ImagesPath, _siteConfig.DefaultBanner);
             //}
 
-            return _siteConfig.DefaultBanner;
+            return _siteConfig.DefaultBannerImage;
         }
 
         public override Boolean CanConvert(Type objectType)

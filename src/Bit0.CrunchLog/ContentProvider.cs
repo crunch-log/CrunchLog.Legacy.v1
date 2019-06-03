@@ -92,8 +92,8 @@ namespace Bit0.CrunchLog
             }
         }
 
-        public IEnumerable<IContent> PublishedContent => AllContent.Where(p => p.Value.Published).Select(p => p.Value);
-        public IEnumerable<IContent> DraftContent => AllContent.Where(p => !p.Value.Published).Select(p => p.Value);
+        public IEnumerable<IContent> PublishedContent => AllContent.Where(p => p.Value.IsPublished).Select(p => p.Value);
+        public IEnumerable<IContent> DraftContent => AllContent.Where(p => !p.Value.IsPublished).Select(p => p.Value);
 
         public IEnumerable<IContent> Posts => PublishedContent.Where(p => p.Layout == Layouts.Post);
 
@@ -107,6 +107,7 @@ namespace Bit0.CrunchLog
                     .Select(t => new ContentListItem
                     {
                         Title = $"Tag: {t.Title}",
+                        Name = t.Title,
                         Permalink = t.Permalink,
                         Layout = Layouts.Tag,
                         Children = Posts.Where(p => p.Tags.Keys.Contains(t.Title))
@@ -120,6 +121,7 @@ namespace Bit0.CrunchLog
                     .Select(c => new ContentListItem
                     {
                         Title = $"Category: {c.Title}",
+                        Name = c.Title,
                         Permalink = c.Permalink,
                         Layout = Layouts.Category,
                         Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
@@ -132,6 +134,7 @@ namespace Bit0.CrunchLog
                     .Select(a => new ContentListItem
                     {
                         Title = $"Author: {a.Name} ({a.Alias})",
+                        Name = a.Name,
                         Permalink = a.Permalink,
                         Layout = Layouts.Author,
                         Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))

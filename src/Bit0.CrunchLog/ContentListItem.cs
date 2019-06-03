@@ -8,6 +8,7 @@ namespace Bit0.CrunchLog
         public Layouts Layout { get; set; }
         public String Permalink { get; set; }
         public String Title { get; set; }
+        public String Name { get; set; }
         public IEnumerable<IContent> Children { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Template.Models.MetaData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,7 @@ namespace Bit0.CrunchLog.Template.Models
         public IEnumerable<TagMenuItem> Tags { get; set; }
         [JsonProperty("authors")]
         public IDictionary<String, Author> Authors { get; set; }
+        [JsonProperty("meta")]
+        public SiteMetaData Meta { get; set; }
     }
 }

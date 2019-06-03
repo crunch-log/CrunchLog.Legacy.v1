@@ -13,7 +13,7 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchSite
     {
-        public CrunchSite(ConfigPaths paths, ILogger<CrunchSite> logger)
+        public CrunchSite(ConfigPaths paths, String baseUrl, ILogger<CrunchSite> logger)
         {
             Paths = paths;
             _logger = logger;
@@ -32,6 +32,12 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("subtitle")]
         public String SubTitle { get; set; } = "Static blog generator";
+
+        [JsonProperty("baseUrl")]
+        public String BaseUrl { get; set; }
+
+        [JsonProperty("description")]
+        public String Description { get; set; }
 
         [JsonIgnore]
         public Theme Theme { get; set; }
@@ -64,16 +70,25 @@ namespace Bit0.CrunchLog.Config
         public Pagination Pagination { get; set; } = new Pagination();
 
         [JsonProperty("defaultImage")]
-        public String DefaultBanner { get; set; }
-
-        [JsonProperty("defaultImagePlaceholder")]
-        public String DefaultImagePlaceholder { get; internal set; }
+        public SiteImage DefaultBannerImage { get; set; }
 
         [JsonProperty("packageSources")]
         public IDictionary<String, String> PackageSources { get; private set; } 
 
+        [JsonProperty("manifest")]
+        public SiteManifest Manifest { get; set; }
+
+        [JsonProperty("icons")]
+        public IDictionary<String, SiteImage> Icons { get; set; }
+
+        [JsonProperty("social")]
+        public IDictionary<String, String> Social { get; set; }
+
         [JsonIgnore]
         public IEnumerable<Package> Plugins { get; set; }
+
+        [JsonProperty("robots")]
+        public IEnumerable<String> Robots { get; set; } = new[] { "index", "follow" };
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
@@ -121,6 +136,8 @@ namespace Bit0.CrunchLog.Config
 
                     return cat;
                 });
+
+
 
             _logger.LogTrace($"Read Categories.");
         }

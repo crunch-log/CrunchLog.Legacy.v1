@@ -1,5 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Template.Models;
+using Bit0.CrunchLog.Template.Models.MetaData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static PostTemplateModel GetModel(this IContent content, Boolean inList = false)
+        public static PostTemplateModel GetModel(this IContent content, CrunchSite siteConfig, Boolean inList = false)
         {
-            return new PostTemplateModel(content, inList);
+            return new PostTemplateModel(content, siteConfig, inList);
         }
 
         public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<IContent> contents)
@@ -55,6 +56,106 @@ namespace Bit0.CrunchLog.Extensions
             }
         }
 
+        public static ListMetaData GetMetaData(this IContentListItem contentListItem, CrunchSite siteConfig, IEnumerable<ITemplateModel> posts)
+        {
+            var image = siteConfig.DefaultBannerImage;
+            var description = siteConfig.Description;
+            var tags = siteConfig.Tags.Keys as IEnumerable<String>;
+
+            if (contentListItem.Layout == Layouts.Category)
+            {
+                var category = siteConfig.Categories[contentListItem.Name];
+                description = category.Description;
+                image = category.Image;
+                tags = new[] { category.Title }.Concat(tags);
+            }
+
+            if (contentListItem.Layout == Layouts.Tag)
+            {
+               tags = new[] { contentListItem.Name }.Concat(tags);
+            }
+
+            image = image ?? siteConfig.DefaultBannerImage;
+
+            var publishedDate = posts.Cast<PostTemplateModel>().Max(p => p.Published);
+            var updatedDate = posts.Cast<PostTemplateModel>().Max(p => p.Updated);
+
+            return new ListMetaData
+            {
+                Title = contentListItem.Title,
+                PublishedDate = publishedDate,
+                UpdatedDate = updatedDate,
+                Category = contentListItem.Title,
+                ShortUrl = contentListItem.Permalink,
+                Archive = new ArchiveMetaData
+                {
+                    Text = contentListItem.Title,
+                    Url = contentListItem.Permalink,
+                },
+                Type = contentListItem.Layout.GetValue(),
+                CanonicalUrl = siteConfig.BaseUrl,
+                Language = siteConfig.LanguageCode,
+                Image = image,
+                Robots = String.Join(", ", siteConfig.Robots),
+                Description = description,
+                Keywords = String.Join(", ", tags)
+            };
+        }
+
+        public static PostMetaData GetMetaData(this IContent content, CrunchSite siteConfig)
+        {
+            var archive = content.DatePublished.ToString(@"\/yyyy\/MM\/");
+
+            return new PostMetaData
+            {
+                Title = content.Title,
+                Description = content.Intro,
+                Keywords = String.Join(", ", content.Tags.Keys),
+                PublishedDate = content.DatePublished,
+                UpdatedDate = content.DateUpdated,
+                Category = content.DefaultCategory.Title,
+                ShortUrl = content.Permalink, // TODO: Fix short url (use id)
+                Archive = new ArchiveMetaData
+                {
+                    Text = archive,
+                    Url = archive
+                },// TODO: Fix Archive
+                Type = content.Layout.GetValue(),
+                CanonicalUrl = content.Permalink,
+                Language = siteConfig.LanguageCode,
+                Image = content.Image,
+                Social = content.Author.Social
+            };
+        }
+
+        public static SiteMetaData GetMetaData(this CrunchSite siteConfig)
+        {
+            return new SiteMetaData
+            {
+                Title = siteConfig.Title,
+                SubTitle = siteConfig.SubTitle,
+                Designer = siteConfig.Theme.Author.ToString(),
+                Copyright = siteConfig.Copyright.ToString(),
+                Description = siteConfig.Description,
+                Manifest = "/manifest.json",
+                ThemeColor = siteConfig.Manifest.ThemeColor,
+                CanonicalUrl = siteConfig.BaseUrl,
+                BaseUrl = siteConfig.BaseUrl,
+                Social = siteConfig.Social,
+                Icon = new IconMetaData
+                {
+                    Favicon = siteConfig.Icons["favicon"].Url,
+                    Favicon16 = siteConfig.Icons["favicon16"].Url,
+                    Favicon32 = siteConfig.Icons["favicon32"].Url,
+                    Favicon144 = siteConfig.Icons["favicon144"].Url,
+                    Favicon152 = siteConfig.Icons["favicon152"].Url,
+                    Favicon192 = siteConfig.Icons["favicon192"].Url,
+                    Favicon512 = siteConfig.Icons["favicon512"].Url,
+                    PinSvg = siteConfig.Icons["pinSvg"].Url
+                },
+            };
+        }
+
         public static SiteTemplateModel GetModel(this CrunchSite siteConfig)
         {
             return new SiteTemplateModel
@@ -75,7 +176,7 @@ namespace Bit0.CrunchLog.Extensions
                 Menu = siteConfig.Menu,
                 Authors = siteConfig.Authors,
                 Categories = contentProvider.Categories
-                    .Select(c => siteConfig.Categories[c.Title.Split(':')[1].Trim()])
+                    .Select(c => siteConfig.Categories[c.Name])
                     .OrderBy(c => c.Title)
                     .ToDictionary(k => k.Title, v => v),
                 Tags = contentProvider.Tags
@@ -83,7 +184,8 @@ namespace Bit0.CrunchLog.Extensions
                     .OrderByDescending(t => t.Count)
                     .Take(20),
                 Owner = siteConfig.Copyright.Owner,
-                CopyrightYear = siteConfig.Copyright.StartYear
+                CopyrightYear = siteConfig.Copyright.StartYear,
+                Meta = siteConfig.GetMetaData()
             };
         }
 

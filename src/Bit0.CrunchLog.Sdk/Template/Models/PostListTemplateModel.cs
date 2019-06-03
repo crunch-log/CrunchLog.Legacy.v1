@@ -1,5 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Template.Models.MetaData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,9 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonProperty("isHomeLayout")]
         public Boolean IsHomeLayout { get; }
 
+        [JsonProperty("meta")]
+        public ListMetaData Meta { get; set; }
+
         public PostListTemplateModel(
             IContentListItem contentListItem, CrunchSite config,
             Int32 page, Int32 totalPages)
@@ -47,7 +51,9 @@ namespace Bit0.CrunchLog.Template.Models
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Cast<IContent>()
-                .Select(c => c.GetModel(inList: true));
+                .Select(c => c.GetModel(config, inList: true));
+
+            Meta = contentListItem.GetMetaData(config, Posts);
         }
 
         public override String ToString()

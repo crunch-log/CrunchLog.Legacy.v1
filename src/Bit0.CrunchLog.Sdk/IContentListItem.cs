@@ -6,5 +6,6 @@ namespace Bit0.CrunchLog
     public interface IContentListItem : IContentBase
     {
         IEnumerable<IContent> Children { get; set; }
+        String Name { get; set; }
     }
 }

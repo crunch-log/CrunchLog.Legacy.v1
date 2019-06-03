@@ -58,7 +58,7 @@ namespace Bit0.CrunchLog.JsonConverters
                             Title = v,
                             Permalink = String.Format(StaticKeys.CategoryPathFormat, v),
                             Color = defCat.Color,
-                            Image = defCat.Color
+                            Image = defCat.Image
                         };
                     });
                 default:

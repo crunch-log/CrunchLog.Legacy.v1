@@ -15,10 +15,9 @@ namespace Bit0.CrunchLog
         IDictionary<String, CategoryInfo> Tags { get; set; }
         IDictionary<String, CategoryInfo> Categories { get; set; }
         CategoryInfo DefaultCategory { get; set; }
-        Boolean Published { get; set; }
+        Boolean IsPublished { get; set; }
         Author Author { get; set; }
-        String Image { get; set; }
-        String ImagePlaceholder { get; }
+        SiteImage Image { get; set; }
         FileInfo ContentFile { get; }
         String Html { get; }
 

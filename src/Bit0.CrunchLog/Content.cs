@@ -58,7 +58,7 @@ namespace Bit0.CrunchLog
         public CategoryInfo DefaultCategory { get; set; }
 
         [JsonProperty("published")]
-        public Boolean Published { get; set; }
+        public Boolean IsPublished { get; set; }
 
         [JsonProperty("intro")]
         public String Intro { get; set; }
@@ -71,10 +71,7 @@ namespace Bit0.CrunchLog
         public Author Author { get; set; }
 
         [JsonProperty("image")]
-        public String Image { get; set; }
-
-        [JsonProperty("imagePlaceholder")]
-        public String ImagePlaceholder { get; internal set; }
+        public SiteImage Image { get; set; }
 
         [JsonIgnore]
         public FileInfo ContentFile { get; }
@@ -133,21 +130,17 @@ namespace Bit0.CrunchLog
             }
 
             DefaultCategory = Categories.FirstOrDefault().Value;
-            if (String.IsNullOrWhiteSpace(Image))
+            if (DefaultCategory.Image == null)
             {
-                Image = !String.IsNullOrWhiteSpace(DefaultCategory.Image)
-                    ? DefaultCategory.Image
-                    : _siteConfig.DefaultBanner;
-            }
-            
-            if (String.IsNullOrWhiteSpace(ImagePlaceholder))
-            {
-                ImagePlaceholder = !String.IsNullOrWhiteSpace(DefaultCategory.ImagePlaceholder)
-                    ? DefaultCategory.ImagePlaceholder
-                    : _siteConfig.DefaultImagePlaceholder;
+                DefaultCategory.Image = _siteConfig.DefaultBannerImage;
             }
 
-            if (DateUpdated == DateTime.MinValue)
+            if (Image == null)
+            {
+                Image = DefaultCategory.Image;
+            }
+
+            if (DateUpdated < DatePublished)
             {
                 DateUpdated = DatePublished;
             }

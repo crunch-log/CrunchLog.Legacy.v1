@@ -1,7 +1,7 @@
 ﻿using Bit0.CrunchLog.Config;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.IO;
+using System;
 
 namespace Bit0.CrunchLog
 {
@@ -9,18 +9,18 @@ namespace Bit0.CrunchLog
     {
         public CrunchSite SiteConfig { get; }
 
-        public CrunchLog(IConfigFile configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
+        public CrunchLog(IConfigFile configFile, Arguments arguments, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
         {
             logger.LogInformation($"Base path: {configFile.Paths.BasePath}");
 
-            SiteConfig = ReadConfigFile(configFile, jsonSerializer, logger, siteLogger);
+            SiteConfig = ReadConfigFile(configFile, arguments.Url, jsonSerializer, logger, siteLogger);
         }
 
-        private static CrunchSite ReadConfigFile(IConfigFile configFile, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
+        private static CrunchSite ReadConfigFile(IConfigFile configFile, String baseUrl, JsonSerializer jsonSerializer, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
         {
             logger.LogDebug($"Read configuration from: {configFile}");
 
-            var siteConfig = new CrunchSite(configFile.Paths, siteLogger);
+            var siteConfig = new CrunchSite(configFile.Paths, baseUrl, siteLogger);
             jsonSerializer.Populate(configFile.JsonObject.CreateReader(), siteConfig);
 
             logger.LogDebug("Configuration read");

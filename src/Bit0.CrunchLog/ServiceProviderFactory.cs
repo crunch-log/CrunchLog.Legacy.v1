@@ -8,9 +8,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Bit0.CrunchLog
 {

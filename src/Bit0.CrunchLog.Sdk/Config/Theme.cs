@@ -3,9 +3,6 @@ using Bit0.Registry.Core;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Bit0.CrunchLog.Config
 {

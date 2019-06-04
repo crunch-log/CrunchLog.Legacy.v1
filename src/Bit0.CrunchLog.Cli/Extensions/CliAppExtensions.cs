@@ -163,6 +163,8 @@ namespace Bit0.CrunchLog.Cli.Extensions
         }
 
         public static String GetVersion<TObject>(this CommandLineApplication app) where TObject : class
-            => typeof(TObject).Assembly.GetName().Version.ToString();
+        {
+            return typeof(TObject).Assembly.GetName().Version.ToString();
+        }
     }
 }

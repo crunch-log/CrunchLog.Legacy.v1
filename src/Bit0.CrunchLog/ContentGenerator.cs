@@ -1,6 +1,7 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Factory;
+using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -93,6 +94,18 @@ namespace Bit0.CrunchLog
             _logger.LogDebug($"Published {published.Count} posts/pages");
         }
 
+        public void PublishContentRedirects()
+        {
+            var redirects = _contentProvider.PublishedContent.SelectMany(c => c.GetRedirectModels(_siteConfig)) .ToList();
+
+            foreach (var redirect in redirects)
+            {
+                _templateFactory.Render(redirect);
+            }
+
+            _logger.LogDebug($"Published {redirects.Count} redirects.");
+        }
+
         public void PublishImages()
         {
             _siteConfig.Paths.ImagesPath.Copy(_siteConfig.Paths.OutputPath.CombineDirPath("images"));
@@ -121,7 +134,7 @@ namespace Bit0.CrunchLog
 
         public void PublishRedirectsList()
         {
-            var model = _contentProvider.PublishedContent.GetRedirectModel();
+            var model = _contentProvider.PublishedContent.GetRedirectListModel();
             _templateFactory.Render(model);
 
             _logger.LogDebug("Site redirects published");
@@ -145,11 +158,17 @@ namespace Bit0.CrunchLog
             _logger.LogDebug($"Published {drafts.Count} drafts.");
         }
 
+        public void Publish404()
+        {
+            var model = new NotFoundTemplateModel();
+            _templateFactory.Render(model);
+
+            _logger.LogDebug("Site 404 published");
+        }
+
         public void Publish()
         {
             _templateFactory.PreProcess();
-
-            // TODO: Check SHA1 new System.Security.Cryptography.SHA1Managed().ComputeHash()
 
             PublishSiteInfo();
             PublishRedirectsList();
@@ -157,11 +176,13 @@ namespace Bit0.CrunchLog
             PublishAssets();
             PublisHome();
             PublishContent();
+            PublishContentRedirects();
             PublishDrafts();
             PublishArchive();
             PublishCategories();
             PublishTags();
             PublishAuthors();
+            Publish404();
 
             _templateFactory.PostProcess();
         }

@@ -1,5 +1,6 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
 using Bit0.CrunchLog.JsonConverters;
 using Markdig;
 using Newtonsoft.Json;
@@ -66,6 +67,9 @@ namespace Bit0.CrunchLog
         [JsonProperty("permaLink")]
         public String Permalink { get; set; }
 
+        [JsonProperty("shortUrl")]
+        public String ShortUrl => String.Format(StaticKeys.PostPathFormat, Id);
+
         [JsonProperty("author")]
         [JsonConverter(typeof(AuthorConverter))]
         public Author Author { get; set; }
@@ -75,6 +79,9 @@ namespace Bit0.CrunchLog
 
         [JsonIgnore]
         public FileInfo ContentFile { get; }
+
+        [JsonProperty("redirects")]
+        public IEnumerable<String> Redirects { get; set; } = new List<String>();
 
         [JsonIgnore]
         public String Html
@@ -143,6 +150,11 @@ namespace Bit0.CrunchLog
             if (DateUpdated < DatePublished)
             {
                 DateUpdated = DatePublished;
+            }
+
+            if (!Redirects.Contains(ShortUrl))
+            {
+                Redirects = Redirects.Concat(new[] { ShortUrl });
             }
         }
     }

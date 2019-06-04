@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Bit0.CrunchLog.Template.Models
 {
-    public class RedirectsTemplateModel : ITemplateModel
+    public class RedirectsListTemplateModel : ITemplateModel
     {
         [JsonIgnore]
         public String Title { get; set; }

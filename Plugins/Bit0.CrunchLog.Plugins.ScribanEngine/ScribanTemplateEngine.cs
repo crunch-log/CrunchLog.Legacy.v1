@@ -37,24 +37,25 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
         {
             var outputDir = _siteConfig.Paths.OutputPath;
 
-            if (model is RedirectsTemplateModel)
+            if (model is PostRedirectTemplateModel redirect)
             {
-                //Render(model, "Redirect", outputDir.CombineFilePath(".json", "redirects"));
-                return;
+                outputDir = outputDir.CombineDirPath(redirect.RedirectUrl.Substring(1));
+                Render(model, "Redirect", outputDir.CombineFilePath(".html", "index"));
             }
-            if (model is PostTemplateModel m)
+            else if (model is PostTemplateModel post)
             {
-                outputDir = !m.IsDraft ? outputDir.CombineDirPath(m.Permalink.Substring(1)) : outputDir.CombineDirPath("draft", m.Id);
+                outputDir = !post.IsDraft ? outputDir.CombineDirPath(post.Permalink.Substring(1)) : outputDir.CombineDirPath("draft", post.Id);
                 Render(model, "Post", outputDir.CombineFilePath(".html", "index"));
-                return;
+            } else if (model is NotFoundTemplateModel)
+            {
+                outputDir = outputDir.CombineDirPath("404");
+                Render(model, "404", outputDir.CombineFilePath(".html", "index"));
             }
-            if (model is PostListTemplateModel)
+            else if (model is PostListTemplateModel)
             {
                 outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
                 Render(model, "List", outputDir.CombineFilePath(".html", "index"));
-                return;
             }
-
         }
 
         private void Render<TModel>(TModel model, String viewName, FileInfo outputFile) where TModel : ITemplateModel

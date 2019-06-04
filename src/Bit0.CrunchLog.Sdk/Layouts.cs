@@ -27,5 +27,7 @@ namespace Bit0.CrunchLog
         Author,
         [String("site")]
         Site,
+        [String("404")]
+        NotFound
     }
 }

@@ -14,7 +14,15 @@ namespace Bit0.CrunchLog.Extensions
             return new PostTemplateModel(content, siteConfig, inList);
         }
 
-        public static RedirectsTemplateModel GetRedirectModel(this IEnumerable<IContent> contents)
+        public static IEnumerable<PostRedirectTemplateModel> GetRedirectModels(this IContent content, CrunchSite siteConfig)
+        {
+            foreach (var url in content.Redirects)
+            {
+                yield return new PostRedirectTemplateModel(content, siteConfig, url);
+            }
+        }
+
+        public static RedirectsListTemplateModel GetRedirectListModel(this IEnumerable<IContent> contents)
         {
             var redirects = new Dictionary<String, String>();
             redirects = redirects.Concat(contents.ToDictionary(k => k.Id, v => v.Permalink))
@@ -25,7 +33,7 @@ namespace Bit0.CrunchLog.Extensions
                 .GroupBy(k => k.Key)
                 .ToDictionary(k => k.Key, v => v.First().Value);
 
-            return new RedirectsTemplateModel
+            return new RedirectsListTemplateModel
             {
                 Redirects = redirects
             };
@@ -114,7 +122,7 @@ namespace Bit0.CrunchLog.Extensions
                 PublishedDate = content.DatePublished,
                 UpdatedDate = content.DateUpdated,
                 Category = content.DefaultCategory.Title,
-                ShortUrl = content.Permalink, // TODO: Fix short url (use id)
+                ShortUrl = content.ShortUrl,
                 Archive = new ArchiveMetaData
                 {
                     Text = archive,
@@ -223,7 +231,7 @@ namespace Bit0.CrunchLog.Extensions
             }
 
             return new PaginationListTemplateModel
-            {  // TODO: Fix the logic
+            {
                 AllPages = pages,
                 PageSpan = pages.Values.Skip(startPage - 1).Take((pageSpan * 2) + 1),
                 FirstPage = firstPage,

@@ -65,7 +65,7 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonIgnore]
         public Boolean IsDraft { get; }
         [JsonProperty("meta")]
-        public PostMetaData Meta { get; set; }
+        public PostMetaData Meta { get; set; }        
 
         public override String ToString() => Permalink;
     }

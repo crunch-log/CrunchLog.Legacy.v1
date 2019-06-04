@@ -20,6 +20,7 @@ namespace Bit0.CrunchLog
         SiteImage Image { get; set; }
         FileInfo ContentFile { get; }
         String Html { get; }
-
+        String ShortUrl { get; }
+        IEnumerable<String> Redirects { get; set; }
     }
 }

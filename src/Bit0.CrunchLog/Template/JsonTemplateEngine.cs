@@ -29,7 +29,7 @@ namespace Bit0.CrunchLog.Template
             {
                 Render(model, outputDir, "siteInfo");
             }
-            if (model is RedirectsTemplateModel)
+            if (model is RedirectsListTemplateModel)
             {
                 Render(model, outputDir, "redirects");
             }

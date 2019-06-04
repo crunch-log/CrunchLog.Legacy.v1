@@ -32,14 +32,14 @@ namespace Bit0.CrunchLog.Cli
                 generator.CleanOutput();
                 generator.Publish();
 
-                var host = new WebHostBuilder()
-                    .UseKestrel()
-                    .UseWebRoot(site.Paths.OutputPath.FullName)
-                    .Configure(config => 
-                        config
-                            .UseFileServer()
-                            .UseDirectoryBrowser()
-                            .UseStatusCodePages()
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseWebRoot(site.Paths.OutputPath.FullName)
+                .Configure(config =>
+                    config
+                        .UseFileServer()
+                        .UseDirectoryBrowser()
+                        .UseStatusCodePagesWithRedirects("/{0}")
                     )
                     .UseUrls(args.Url)
                     .ConfigureLogging(logging => 

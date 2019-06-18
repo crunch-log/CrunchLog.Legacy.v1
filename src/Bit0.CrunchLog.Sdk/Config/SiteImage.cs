@@ -9,7 +9,7 @@ namespace Bit0.CrunchLog.Config
         public String Url { get; set; }
 
         [JsonProperty("size")]
-        public String Size { get; set; }
+        public String Size => $"{Width}x{Height}";
 
         [JsonProperty("type")]
         public String Type { get; set; }

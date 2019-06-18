@@ -58,8 +58,20 @@ namespace Bit0.CrunchLog
         [JsonIgnore]
         public CategoryInfo DefaultCategory { get; set; }
 
+        private Boolean _isPublished;
+
         [JsonProperty("published")]
-        public Boolean IsPublished { get; set; }
+        public Boolean IsPublished
+        {
+            get
+            {
+                return _isPublished && DatePublished < DateTime.UtcNow;
+            }
+            set
+            {
+                _isPublished = value;
+            }
+        }
 
         [JsonProperty("intro")]
         public String Intro { get; set; }

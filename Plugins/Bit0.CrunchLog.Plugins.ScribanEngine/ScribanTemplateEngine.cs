@@ -1,11 +1,10 @@
-﻿using AngleSharp.Html;
-using AngleSharp.Html.Parser;
-using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NUglify;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
@@ -99,11 +98,8 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
 
         private static String FormatHtml(String content)
         {
-            var parser = new HtmlParser();
-            var sw = new StringWriter();
-            var document = parser.ParseDocument(content);
-            document.ToHtml(sw, new PrettyMarkupFormatter());
-            content = sw.ToString();
+            var result = Uglify.Html(content);
+            content = result.Code;
             return content;
         }
     }

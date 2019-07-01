@@ -92,7 +92,8 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
             context.PushGlobal(contextObj);
 
             var template = ScribanTemplate.Parse("{{ include '" + viewName + "' }}");
-            var content = FormatHtml(template.Render(context));
+            var content = template.Render(context);
+            //content = FormatHtml(content);
             return content;
         }
 

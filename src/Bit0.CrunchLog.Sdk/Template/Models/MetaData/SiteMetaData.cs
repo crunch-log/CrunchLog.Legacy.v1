@@ -19,5 +19,6 @@ namespace Bit0.CrunchLog.Template.Models.MetaData
         [JsonProperty("icon")] public IconMetaData Icon { get; set; }
         [JsonProperty("generator")] public String Generator => $"CrunchLog {typeof(CrunchSite).Assembly.GetName().Version.ToString()}";
         [JsonProperty("baseUrl")]  public String BaseUrl { get; set; }
+        [JsonProperty("language")]  public String Language { get; set; }
     }
 }

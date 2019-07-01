@@ -150,6 +150,7 @@ namespace Bit0.CrunchLog.Extensions
                 CanonicalUrl = siteConfig.BaseUrl,
                 BaseUrl = siteConfig.BaseUrl,
                 Social = siteConfig.Social,
+                Language = siteConfig.LanguageCode,
                 Icon = new IconMetaData
                 {
                     Favicon = siteConfig.Icons["favicon"].Url,

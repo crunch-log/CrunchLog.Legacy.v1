@@ -1,8 +1,11 @@
 ﻿using Bit0.CrunchLog.Extensions;
 using Bit0.Registry.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -13,6 +16,9 @@ namespace Bit0.CrunchLog.Config
             PackFile = themeConfig;
         }
 
+        [JsonExtensionData]
+        private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
+
         [JsonProperty("outputType")]
         public ThemeOutputType OutputType { get; set; } = ThemeOutputType.Html;
 
@@ -22,13 +28,18 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("engineType")]
         public String EngineType { get; set; }
 
+        [JsonIgnore]
+        public DirectoryInfo TemplateRoot { get; set; }
+
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            var srcKey = (String)_additionalData["sourceDir"];
+            TemplateRoot = PackFile.Directory.CombineDirPath(srcKey);
+        }
+
         public static Theme Get(FileInfo themeFile, DirectoryInfo outputDir)
         {
-            if (!themeFile.Exists)
-            {
-                themeFile = themeFile.Directory.Parent.CombineFilePath(".json", "pack");
-            }
-
             var theme = new Theme(themeFile);
 
             using (var streamReader = themeFile.OpenText())

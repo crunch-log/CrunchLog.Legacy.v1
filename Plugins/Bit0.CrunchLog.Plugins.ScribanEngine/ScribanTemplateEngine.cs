@@ -78,7 +78,7 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
         {
             var context = new TemplateContext
             {
-                TemplateLoader = new CrunchTemplateLoader(_siteConfig.Theme.PackFile.Directory),
+                TemplateLoader = new CrunchTemplateLoader(_siteConfig.Theme.TemplateRoot),
                 MemberRenamer = member => member.Name,
                 MemberFilter = member => member is PropertyInfo
             };

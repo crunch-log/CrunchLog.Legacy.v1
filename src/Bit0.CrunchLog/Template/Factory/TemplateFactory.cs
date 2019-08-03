@@ -42,7 +42,7 @@ namespace Bit0.CrunchLog.Template.Factory
 
             foreach (var dir in Theme.Output.Copy["dirs"])
             {
-                var from = SiteConfig.Paths.ThemesPath.CombineDirPath(dir);
+                var from = SiteConfig.Theme.TemplateRoot.CombineDirPath(dir);
                 var to = SiteConfig.Paths.OutputPath.CombineDirPath(dir);
 
                 from.Copy(to);

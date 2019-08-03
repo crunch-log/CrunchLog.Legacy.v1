@@ -104,7 +104,10 @@ namespace Bit0.CrunchLog.Config
         private void SetupTheme()
         {
             var themeKey = (String)_additionalData["theme"];
-            Theme = Theme.Get(Paths.ThemesPath.CombineDirPath(themeKey).CombineFilePath(".json", "pack"), Paths.OutputPath);
+            var packFile = Paths.ThemesPath.CombineDirPath(themeKey)
+                .GetFiles("pack.json", System.IO.SearchOption.AllDirectories)
+                .FirstOrDefault();
+            Theme = Theme.Get(packFile, Paths.OutputPath);
 
             _logger.LogDebug($"Loaded theme({Theme.Name}).");
         }

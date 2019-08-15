@@ -7,6 +7,7 @@ namespace Bit0.CrunchLog.Config
     public class Arguments : Dictionary<String, Object>
     {
         public const String UrlDefault = "http://localhost:3576/";
+        //public const String UrlDefault = "http://localhost:43114/";
 
         public String BasePath
         {

@@ -34,7 +34,7 @@ namespace Bit0.CrunchLog.Config
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            var srcKey = (String)_additionalData["sourceDir"];
+            var srcKey = (String)_additionalData["sourceDir"][0];
             TemplateRoot = PackFile.Directory.CombineDirPath(srcKey);
         }
 

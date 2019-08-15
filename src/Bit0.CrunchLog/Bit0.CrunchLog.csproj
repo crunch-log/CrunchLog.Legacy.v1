@@ -11,17 +11,17 @@
     <NoWarn>1701;1702;IDE0022;CC0057</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Bit0.Registry.Core" Version="1.2.0" />
-    <PackageReference Include="Markdig" Version="0.17.0" />
+    <PackageReference Include="Bit0.Plugins.Loader" Version="3.0.0" />
+    <PackageReference Include="Bit0.Plugins.Sdk" Version="3.0.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="3.0.0" />
+    <PackageReference Include="Markdig" Version="0.17.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="YamlDotNet" Version="6.1.1" />
+    <PackageReference Include="YamlDotNet" Version="6.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugins\Bit0.Plugins.Loader\Bit0.Plugins.Loader.csproj" />
-    <ProjectReference Include="..\..\Plugins\Bit0.Plugins.Sdk\Bit0.Plugins.Sdk.csproj" />
-    <ProjectReference Include="..\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
+    <ProjectReference Include="..\sdk\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
   </ItemGroup>
 </Project>

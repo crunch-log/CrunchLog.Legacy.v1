@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		.gitmodules = .gitmodules
 		LICENSE = LICENSE
+		nuget.config = nuget.config
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -18,21 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog", "src\Bit0.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Cli", "src\Bit0.CrunchLog.Cli\Bit0.CrunchLog.Cli.csproj", "{80598995-96DD-4E06-904E-931B2F841CD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Sdk", "src\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj", "{6E317935-B8B7-4B81-ACDC-E67575BD9884}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Sdk", "src\sdk\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj", "{6E317935-B8B7-4B81-ACDC-E67575BD9884}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Utils", "src\Bit0.CrunchLog.Utils\Bit0.CrunchLog.Utils.csproj", "{3F42D359-C849-43EA-A3BB-0033D2253CD3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.Plugins.Loader", "Plugins\Bit0.Plugins.Loader\Bit0.Plugins.Loader.csproj", "{BD9968E8-82AF-4325-AF9A-D0BB60C5C126}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.Plugins.Sdk", "Plugins\Bit0.Plugins.Sdk\Bit0.Plugins.Sdk.csproj", "{563601DD-4EB0-48FC-8C50-41E8FAB28FAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Utils", "src\sdk\Bit0.CrunchLog.Utils\Bit0.CrunchLog.Utils.csproj", "{3F42D359-C849-43EA-A3BB-0033D2253CD3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E430405D-9682-4FA8-B364-5502C3A849EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sdk", "sdk", "{3F84FB17-0E7F-4E60-91CD-318F68CE0E2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Template.Sdk", "src\Bit0.CrunchLog.Template.Sdk\Bit0.CrunchLog.Template.Sdk.csproj", "{D0173B51-F5B9-4214-BC5F-6090E0278EF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Template.Sdk", "src\sdk\Bit0.CrunchLog.Template.Sdk\Bit0.CrunchLog.Template.Sdk.csproj", "{D0173B51-F5B9-4214-BC5F-6090E0278EF0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Plugins.ScribanEngine", "Plugins\Bit0.CrunchLog.Plugins.ScribanEngine\Bit0.CrunchLog.Plugins.ScribanEngine.csproj", "{03AAB532-936A-4FF6-8762-B758F90389B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bit0.CrunchLog.Plugins.ScribanEngine", "src\Plugins\Bit0.CrunchLog.Plugins.ScribanEngine\Bit0.CrunchLog.Plugins.ScribanEngine.csproj", "{03AAB532-936A-4FF6-8762-B758F90389B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,14 +53,6 @@ Global
 		{3F42D359-C849-43EA-A3BB-0033D2253CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F42D359-C849-43EA-A3BB-0033D2253CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F42D359-C849-43EA-A3BB-0033D2253CD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD9968E8-82AF-4325-AF9A-D0BB60C5C126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD9968E8-82AF-4325-AF9A-D0BB60C5C126}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD9968E8-82AF-4325-AF9A-D0BB60C5C126}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD9968E8-82AF-4325-AF9A-D0BB60C5C126}.Release|Any CPU.Build.0 = Release|Any CPU
-		{563601DD-4EB0-48FC-8C50-41E8FAB28FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{563601DD-4EB0-48FC-8C50-41E8FAB28FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{563601DD-4EB0-48FC-8C50-41E8FAB28FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{563601DD-4EB0-48FC-8C50-41E8FAB28FAC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0173B51-F5B9-4214-BC5F-6090E0278EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0173B51-F5B9-4214-BC5F-6090E0278EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0173B51-F5B9-4214-BC5F-6090E0278EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,12 +66,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{4C71924C-0C84-4F4E-8E1A-87A8A6C1183E} = {E430405D-9682-4FA8-B364-5502C3A849EB}
 		{3D421BB3-DAEA-4DDA-AF2F-931AFC915189} = {E430405D-9682-4FA8-B364-5502C3A849EB}
 		{80598995-96DD-4E06-904E-931B2F841CD7} = {E430405D-9682-4FA8-B364-5502C3A849EB}
 		{6E317935-B8B7-4B81-ACDC-E67575BD9884} = {3F84FB17-0E7F-4E60-91CD-318F68CE0E2F}
 		{3F42D359-C849-43EA-A3BB-0033D2253CD3} = {3F84FB17-0E7F-4E60-91CD-318F68CE0E2F}
-		{BD9968E8-82AF-4325-AF9A-D0BB60C5C126} = {4C71924C-0C84-4F4E-8E1A-87A8A6C1183E}
-		{563601DD-4EB0-48FC-8C50-41E8FAB28FAC} = {4C71924C-0C84-4F4E-8E1A-87A8A6C1183E}
+		{3F84FB17-0E7F-4E60-91CD-318F68CE0E2F} = {E430405D-9682-4FA8-B364-5502C3A849EB}
 		{D0173B51-F5B9-4214-BC5F-6090E0278EF0} = {3F84FB17-0E7F-4E60-91CD-318F68CE0E2F}
 		{03AAB532-936A-4FF6-8762-B758F90389B7} = {4C71924C-0C84-4F4E-8E1A-87A8A6C1183E}
 	EndGlobalSection

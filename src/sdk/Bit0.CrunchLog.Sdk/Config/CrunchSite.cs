@@ -1,6 +1,7 @@
 ﻿using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Helpers;
 using Bit0.Registry.Core;
+using Bit0.Registry.Core.Exceptions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,15 +14,16 @@ namespace Bit0.CrunchLog.Config
 {
     public class CrunchSite
     {
-        public CrunchSite(ConfigPaths paths, String baseUrl, ILogger<CrunchSite> logger)
+        public CrunchSite(ConfigPaths paths, String baseUrl, IPackageManager packageManager, ILogger<CrunchSite> logger)
         {
             Paths = paths;
+            _packageManager = packageManager;
             _logger = logger;
         }
 
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
-        
+        private readonly IPackageManager _packageManager;
         private readonly ILogger<CrunchSite> _logger;
 
         [JsonProperty("languageCode")]
@@ -101,15 +103,21 @@ namespace Bit0.CrunchLog.Config
             //Plugins
         }
 
-        private void SetupTheme()
+        private void SetupCategories()
         {
-            var themeKey = (String)_additionalData["theme"];
-            var packFile = Paths.ThemesPath.CombineDirPath(themeKey)
-                .GetFiles("pack.json", System.IO.SearchOption.AllDirectories)
-                .FirstOrDefault();
-            Theme = Theme.Get(packFile, Paths.OutputPath);
+            Categories = Categories.ToDictionary(k => k.Key, v =>
+                {
+                    var cat = v.Value;
 
-            _logger.LogDebug($"Loaded theme({Theme.Name}).");
+                    cat.Title = v.Key;
+                    cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
+
+                    return cat;
+                });
+
+
+
+            _logger.LogTrace($"Read Categories.");
         }
 
         private void SetupTags()
@@ -128,32 +136,37 @@ namespace Bit0.CrunchLog.Config
             _logger.LogTrace($"Read Tags.");
         }
 
-        private void SetupCategories()
-        {
-            Categories = Categories.ToDictionary(k => k.Key, v =>
-                {
-                    var cat = v.Value;
-
-                    cat.Title = v.Key;
-                    cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
-
-                    return cat;
-                });
-
-
-
-            _logger.LogTrace($"Read Categories.");
-        }
-
         private void SetupPackageFeeds()
         {
             var defaultSources = new Dictionary<String, String>
             {
-                { "default", "https://packages.0labs.se/crunchlog/index.json" }
+                { "default", "https://packages.0labs.se/crunchlog/" }
             };
             PackageSources = defaultSources.Concat(PackageSources).ToDictionary(k => k.Key, v => v.Value);
 
+            PackageSources.ToList().ForEach(feed =>
+            {
+                try
+                {
+                    _packageManager.AddFeed(feed.Key, feed.Value);
+                } 
+                catch (InvalidFeedException)
+                {
+                    _logger.LogWarning($"Could load package feed: ({feed.Key}) {feed.Value}");
+                }
+            });
+
             _logger.LogDebug($"Read package feeds.");
+        }
+
+        private void SetupTheme()
+        {
+            var themePackageName = (String)_additionalData["theme"];
+            var package = _packageManager.Get(themePackageName);
+
+            Theme = Theme.Get(package.PackFile, Paths.OutputPath);
+
+            _logger.LogDebug($"Loaded theme({Theme.Name}).");
         }
     }
 }

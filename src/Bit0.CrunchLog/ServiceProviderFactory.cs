@@ -3,11 +3,14 @@ using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
 using Bit0.Plugins.Loader;
+using Bit0.Registry.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.IO;
+using System.Net;
 
 namespace Bit0.CrunchLog
 {
@@ -28,6 +31,12 @@ namespace Bit0.CrunchLog
 
             var jsonSerializer = new JsonSerializer();
             var configFile = ConfigFile.Load(args, jsonSerializer);
+
+            services.AddSingleton<IPackageManager>(factory =>
+            {
+                var packsDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".packs"));
+                return new PackageManager(packsDir, new WebClient(), factory.GetService<ILogger<IPackageManager>>());
+            });
 
             services.AddSingleton(args);
             services.AddSingleton(jsonSerializer);

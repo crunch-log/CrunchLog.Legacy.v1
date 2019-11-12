@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\sdk\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
   </ItemGroup>
 
 </Project>

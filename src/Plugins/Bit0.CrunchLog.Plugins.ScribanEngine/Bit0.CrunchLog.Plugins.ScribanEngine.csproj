@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\sdk\Bit0.CrunchLog.Sdk\Bit0.CrunchLog.Sdk.csproj" />
-    <ProjectReference Include="..\..\sdk\Bit0.CrunchLog.Utils\Bit0.CrunchLog.Utils.csproj" />
   </ItemGroup>
 
 </Project>

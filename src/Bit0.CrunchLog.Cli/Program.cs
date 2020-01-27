@@ -11,7 +11,6 @@ namespace Bit0.CrunchLog.Cli
             CommandLineApplication.Execute<CliOptions>(args);
             
 #if DEBUG
-           Thread.Sleep(100);
            Console.Write(Environment.NewLine + "Press any key to continue...");
            Console.ReadKey();
 #endif

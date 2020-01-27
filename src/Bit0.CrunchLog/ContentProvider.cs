@@ -52,7 +52,7 @@ namespace Bit0.CrunchLog
                             var frontMatter = (md[0] as LeafBlock).Lines.ToString();
 
                             var deserializer = new DeserializerBuilder()
-                                .WithNamingConvention(new CamelCaseNamingConvention())
+                                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                 .Build();
                             using (var stringReader = new StringReader(frontMatter))
                             {

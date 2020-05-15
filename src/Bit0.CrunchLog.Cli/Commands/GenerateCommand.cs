@@ -9,14 +9,9 @@ namespace Bit0.CrunchLog.Cli.Commands
     [Command(CliOptionKeys.GenerateCommand, Description = CliOptionKeys.GenerateCommandDescription)]
     public class GenerateCommand : CliBase
     {
-        [Argument(0, Description = CliOptionKeys.BasePathDescription)]
-        [DirectoryExists]
-        private String BasePath { get; } = "";
-
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            var args = app.BuildArguments(BasePath, VerboseLevel);
-            return app.Execute(args, (provider, logger) =>
+            return this.Execute<GenerateCommand>((provider, logger, site) =>
             {
                 logger.LogDebug(nameof(GenerateCommand));
 

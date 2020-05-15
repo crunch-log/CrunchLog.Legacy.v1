@@ -12,8 +12,7 @@ namespace Bit0.CrunchLog.Cli.Commands
 
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            var args = app.BuildArguments(String.Empty, VerboseLevel);
-            return app.Execute(args, (provider, logger) =>
+            return this.Execute<InitCommand>((provider, logger, site) =>
             {
                 logger.LogDebug(nameof(InitCommand));
 

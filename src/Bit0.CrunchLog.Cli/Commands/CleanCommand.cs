@@ -9,14 +9,9 @@ namespace Bit0.CrunchLog.Cli.Commands
     [Command(CliOptionKeys.CleanCommand, Description = CliOptionKeys.CleanCommandDescription)]
     public class CleanCommand : CliBase
     {
-        [Argument(0, Description = CliOptionKeys.BasePathDescription)]
-        [DirectoryExists]
-        private String BasePath { get; } = "";
-
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            var args = app.BuildArguments(BasePath, VerboseLevel);
-            return app.Execute(args, (provider, logger) =>
+            return this.Execute<CleanCommand>((provider, logger, site) =>
             {
                 logger.LogDebug(nameof(CleanCommand));
 

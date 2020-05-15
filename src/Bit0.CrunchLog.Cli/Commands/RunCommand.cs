@@ -11,18 +11,13 @@ namespace Bit0.CrunchLog.Cli.Commands
     [Command(CliOptionKeys.RunCommand, Description = CliOptionKeys.RunCommandDescription)]
     public class RunCommand : CliBase
     {
-        [Argument(0, CliOptionKeys.BasePathTemplate, Description = CliOptionKeys.BasePathDescription)]
-        [DirectoryExists]
-        private String BasePath { get; } = "";
-
         [Argument(1, CliOptionKeys.UrlTemplate, Description = CliOptionKeys.UrlDescription)]
         [DirectoryExists]
-        private String Url { get; } = "";
+        private String Url { get; } = "http://localhost:3576/";
 
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            var args = app.BuildArguments(BasePath, VerboseLevel, Url);
-            return app.Execute(args, (provider, logger, site) =>
+            return this.Execute<RunCommand>((provider, logger, site) =>
             {
                 logger.LogDebug(nameof(RunCommand));
 
@@ -48,7 +43,7 @@ namespace Bit0.CrunchLog.Cli.Commands
                         .Build();
                 var task = host.RunAsync();
 
-                app.OpenBrowser(Url);
+                new Uri(Url).OpenBrowser();
                 task.Wait();
             });
         }

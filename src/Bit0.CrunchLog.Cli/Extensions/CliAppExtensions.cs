@@ -1,77 +1,19 @@
 ﻿using Bit0.CrunchLog.Config;
-using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Bit0.CrunchLog.Cli.Extensions
 {
     public static class CliAppExtensions
     {
-//        public static void WriteBanner(this CommandLineApplication app)
-//        {
-//#if DEBUG
-//            var fc = Console.ForegroundColor;
-//            Console.ForegroundColor = ConsoleColor.DarkRed;
-//            Console.Write("DEBUG BUILD ");
-//            Console.ForegroundColor = fc;
-//#endif
-//            Console.WriteLine(CliOptionKeys.Banner, app.GetVersion<CrunchSite>());
-//        }
-
-        public static Arguments BuildArguments(
-            this CommandLineApplication app,
-            String basePath = null,
-            LogLevel verboseLevel = LogLevel.Information,
-            String url = Arguments.UrlDefault)
+        public static void OpenBrowser(this Uri uri)
         {
-            if (String.IsNullOrWhiteSpace(basePath))
-            {
+            var url = uri.AbsoluteUri;
 
-#if DEBUG
-                basePath = "Samples\\Site1";
-
-                while (true)
-                {
-                    var dir = new DirectoryInfo(basePath);
-
-                    if (dir.Exists)
-                    {
-                        basePath = dir.FullName;
-                        break;
-                    }
-
-                    basePath = $"..\\{basePath}";
-                }
-#else
-
-                basePath = app.WorkingDirectory;
-#endif
-            }
-
-            if (String.IsNullOrWhiteSpace(url))
-            {
-                url = Arguments.UrlDefault;
-            }
-
-#if DEBUG
-            verboseLevel = LogLevel.Trace;
-#endif
-
-            return new Arguments
-            {
-                BasePath = basePath,
-                Url = url,
-                VerboseLevel = verboseLevel
-            };
-        }
-
-        public static void OpenBrowser(this CommandLineApplication app, String url)
-        {
             try
             {
                 Process.Start(url);
@@ -99,15 +41,14 @@ namespace Bit0.CrunchLog.Cli.Extensions
             }
         }
 
-        public static Int32 Execute(
-            this CommandLineApplication app,
-            Arguments args,
-            Action<IServiceProvider, ILogger<CliOptions>, CrunchSite> executeFunc)
+        public static Int32 Execute<T>(
+            this ICliApp cli,
+            Action<IServiceProvider, ILogger<T>, CrunchSite> executeFunc)
+            where T : ICliApp
         {
-            ILogger<CliOptions> logger = null;
+            ILogger<T> logger = null;
 
             var sw = Stopwatch.StartNew();
-
 
             if (executeFunc == null)
             {
@@ -122,9 +63,9 @@ namespace Bit0.CrunchLog.Cli.Extensions
                     NullValueHandling = NullValueHandling.Ignore,
                 };
 
-                var provider = ServiceProviderFactory.Build(args);
+                var provider = ServiceProviderFactory.Build(cli.BasePath, cli.VerboseLevel);
 
-                logger = provider.GetService<ILogger<CliOptions>>();
+                logger = provider.GetService<ILogger<T>>();
 
                 var config = provider.GetService<CrunchSite>();
 
@@ -146,19 +87,6 @@ namespace Bit0.CrunchLog.Cli.Extensions
             logger.LogInformation($"Time elapsed: {sw.Elapsed}");
 
             return 0;
-        }
-
-        public static Int32 Execute(
-            this CommandLineApplication app,
-            Arguments args,
-            Action<IServiceProvider, ILogger<CliOptions>> executeFunc)
-        {
-            if (executeFunc == null)
-            {
-                throw new Exception("Cannot find Logger function.");
-            }
-
-            return app.Execute(args, (provider, logger, config) => executeFunc(provider, logger));
         }
     }
 }

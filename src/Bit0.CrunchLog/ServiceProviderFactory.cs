@@ -1,5 +1,4 @@
-﻿using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Logging;
+﻿using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
 using Bit0.Plugins.Loader;
@@ -18,19 +17,19 @@ namespace Bit0.CrunchLog
     {
         public static IServiceProvider Current { get; private set; }
 
-        public static IServiceProvider Build(Arguments args)
+        public static IServiceProvider Build(String basePath, LogLevel logLevel)
         {
             var services = new ServiceCollection();
             services.AddLogging(builder =>
             {
                 builder
-                    .SetMinimumLevel(args.VerboseLevel)
+                    .SetMinimumLevel(logLevel)
                     .AddConsole();
             });
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));  // TODO: replace with another logger
 
             var jsonSerializer = new JsonSerializer();
-            var configFile = ConfigFile.Load(args, jsonSerializer);
+            var configFile = ConfigFile.Load(basePath, jsonSerializer);
 
             services.AddSingleton<IPackageManager>(factory =>
             {
@@ -38,7 +37,6 @@ namespace Bit0.CrunchLog
                 return new PackageManager(packsDir, new WebClient(), factory.GetService<ILogger<IPackageManager>>());
             });
 
-            services.AddSingleton(args);
             services.AddSingleton(jsonSerializer);
             services.AddSingleton(configFile);
             services.AddSingleton<CrunchLog>();

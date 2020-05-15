@@ -2,6 +2,7 @@
 using Bit0.CrunchLog.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -28,9 +29,9 @@ namespace Bit0.CrunchLog
             }
         }
 
-        public ConfigFile(Arguments arguments, JsonSerializer jsonSerializer)
+        public ConfigFile(String basePath, JsonSerializer jsonSerializer)
         {
-            Directory = new DirectoryInfo(arguments.BasePath);
+            Directory = new DirectoryInfo(basePath);
             var configFile = Directory.GetFiles(StaticPaths.ConfigFile, SearchOption.TopDirectoryOnly).SingleOrDefault();
 
             if (configFile == null)
@@ -48,9 +49,9 @@ namespace Bit0.CrunchLog
             Paths = paths;
         }
 
-        public static IConfigFile Load(Arguments arguments, JsonSerializer jsonSerializer)
+        public static IConfigFile Load(String basePath, JsonSerializer jsonSerializer)
         {
-            _instance = new ConfigFile(arguments, jsonSerializer);
+            _instance = new ConfigFile(basePath, jsonSerializer);
             return _instance;
         }
     }

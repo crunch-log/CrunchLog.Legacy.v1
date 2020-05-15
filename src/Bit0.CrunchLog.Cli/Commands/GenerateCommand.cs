@@ -4,14 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Bit0.CrunchLog.Cli
+namespace Bit0.CrunchLog.Cli.Commands
 {
-    [Command(CliOptionKeys.CleanCommand, Description = CliOptionKeys.CleanCommandDescription)]
-    public class CleanCommand : CliBase
+    [Command(CliOptionKeys.GenerateCommand, Description = CliOptionKeys.GenerateCommandDescription)]
+    public class GenerateCommand : CliBase
     {
-        [Option(CliOptionKeys.VerboseTemplate, Description = CliOptionKeys.VerboseDescription)]
-        private LogLevel VerboseLevel { get; } = LogLevel.Information;
-
         [Argument(0, Description = CliOptionKeys.BasePathDescription)]
         [DirectoryExists]
         private String BasePath { get; } = "";
@@ -21,10 +18,13 @@ namespace Bit0.CrunchLog.Cli
             var args = app.BuildArguments(BasePath, VerboseLevel);
             return app.Execute(args, (provider, logger) =>
             {
-                logger.LogDebug("Clean");
+                logger.LogDebug(nameof(GenerateCommand));
+
                 var generator = provider.GetService<IContentGenerator>();
                 generator.CleanOutput();
+                generator.Publish();
             });
         }
+
     }
 }

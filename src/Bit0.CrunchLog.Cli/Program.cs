@@ -10,10 +10,10 @@ namespace Bit0.CrunchLog.Cli
         {
             CommandLineApplication.Execute<CliOptions>(args);
             
-#if DEBUG
-           Console.Write(Environment.NewLine + "Press any key to continue...");
-           Console.ReadKey();
-#endif
+//#if DEBUG
+//           Console.Write(Environment.NewLine + "Press any key to continue...");
+//           Console.ReadKey();
+//#endif
         }
     }
 }

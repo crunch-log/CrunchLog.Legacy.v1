@@ -14,11 +14,11 @@ namespace Bit0.CrunchLog.Cli
         
         public const String VersionTemplate = "--version";
         public const String VersionDescription = "Display CrunchLog version.";
-        #endregion
 
-        #region Arguments
+        public const String BasePathTemplate = "--path";
         public const String BasePathDescription = "Directory with CrunchLog project";
 
+        public const String UrlTemplate = "-u|--url|--set-url";
         public const String UrlDescription = "Url for the preview server";
         #endregion
 
@@ -31,6 +31,9 @@ namespace Bit0.CrunchLog.Cli
         
         public const String RunCommand = "run";
         public const String RunCommandDescription = "Generate and Run in a preview server";
+
+        public const String InitCommand = "init";
+        public const String InitCommandDescription = "Creates an empty Crunchlog project";
         #endregion
     }
 }

@@ -12,16 +12,16 @@ namespace Bit0.CrunchLog.Cli.Extensions
 {
     public static class CliAppExtensions
     {
-        public static void WriteBanner(this CommandLineApplication app)
-        {
-#if DEBUG
-            var fc = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.Write("DEBUG BUILD ");
-            Console.ForegroundColor = fc;
-#endif
-            Console.WriteLine(CliOptionKeys.Banner, app.GetVersion<CrunchSite>());
-        }
+//        public static void WriteBanner(this CommandLineApplication app)
+//        {
+//#if DEBUG
+//            var fc = Console.ForegroundColor;
+//            Console.ForegroundColor = ConsoleColor.DarkRed;
+//            Console.Write("DEBUG BUILD ");
+//            Console.ForegroundColor = fc;
+//#endif
+//            Console.WriteLine(CliOptionKeys.Banner, app.GetVersion<CrunchSite>());
+//        }
 
         public static Arguments BuildArguments(
             this CommandLineApplication app,
@@ -108,7 +108,6 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
             var sw = Stopwatch.StartNew();
 
-            app.WriteBanner();
 
             if (executeFunc == null)
             {
@@ -160,11 +159,6 @@ namespace Bit0.CrunchLog.Cli.Extensions
             }
 
             return app.Execute(args, (provider, logger, config) => executeFunc(provider, logger));
-        }
-
-        public static String GetVersion<TObject>(this CommandLineApplication app) where TObject : class
-        {
-            return typeof(TObject).Assembly.GetName().Version.ToString();
         }
     }
 }

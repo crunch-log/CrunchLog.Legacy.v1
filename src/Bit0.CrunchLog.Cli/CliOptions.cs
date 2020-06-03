@@ -10,6 +10,7 @@ namespace Bit0.CrunchLog.Cli
     [Subcommand(typeof(GenerateCommand))]
     [Subcommand(typeof(CleanCommand))]
     [Subcommand(typeof(RunCommand))]
+    [Subcommand(typeof(InitCommand))]
     public class CliOptions : CliAppBase
     {
         //[Option(CliOptionKeys.VersionTemplate, Description = CliOptionKeys.VersionDescription)]

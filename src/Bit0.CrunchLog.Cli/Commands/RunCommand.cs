@@ -9,15 +9,18 @@ using System;
 namespace Bit0.CrunchLog.Cli.Commands
 {
     [Command(CliOptionKeys.RunCommand, Description = CliOptionKeys.RunCommandDescription)]
-    public class RunCommand : CliBase
+    public class RunCommand : CliAppBase
     {
         [Argument(1, CliOptionKeys.UrlTemplate, Description = CliOptionKeys.UrlDescription)]
         [DirectoryExists]
         private String Url { get; } = "http://localhost:3576/";
 
+        public RunCommand() : base(loadConfig: true)
+        { }
+
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            return this.Execute<RunCommand>((provider, logger, site) =>
+            return this.Execute<RunCommand>((provider, logger, crunch) =>
             {
                 logger.LogDebug(nameof(RunCommand));
 
@@ -27,7 +30,7 @@ namespace Bit0.CrunchLog.Cli.Commands
 
                 var host = new WebHostBuilder()
                     .UseKestrel()
-                    .UseWebRoot(site.Paths.OutputPath.FullName)
+                    .UseWebRoot(crunch.SiteConfig.Paths.OutputPath.FullName)
                     .Configure(config =>
                         config
                             .UseFileServer()

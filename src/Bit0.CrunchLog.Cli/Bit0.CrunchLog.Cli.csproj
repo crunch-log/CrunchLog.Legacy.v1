@@ -13,6 +13,9 @@
     <None Remove="a\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
     <!--<PackageReference Include="EmbedIO" Version="2.2.9" />-->
     <PackageReference Include="Bit0.Registry.Core" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

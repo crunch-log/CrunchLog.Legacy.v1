@@ -1,6 +1,5 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
-using System.Threading;
 
 namespace Bit0.CrunchLog.Cli
 {

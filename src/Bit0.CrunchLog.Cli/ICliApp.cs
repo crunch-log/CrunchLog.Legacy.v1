@@ -7,5 +7,6 @@ namespace Bit0.CrunchLog.Cli
     {
         String BasePath { get; }
         LogLevel VerboseLevel { get; }
+        Boolean LoadConfig { get; }
     }
 }

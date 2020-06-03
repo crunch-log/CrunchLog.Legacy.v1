@@ -7,11 +7,14 @@ using System;
 namespace Bit0.CrunchLog.Cli.Commands
 {
     [Command(CliOptionKeys.GenerateCommand, Description = CliOptionKeys.GenerateCommandDescription)]
-    public class GenerateCommand : CliBase
+    public class GenerateCommand : CliAppBase
     {
+        public GenerateCommand() : base(loadConfig: true)
+        { }
+
         protected override Int32 OnExecute(CommandLineApplication app)
         {
-            return this.Execute<GenerateCommand>((provider, logger, site) =>
+            return this.Execute<GenerateCommand>((provider, logger, crunch) =>
             {
                 logger.LogDebug(nameof(GenerateCommand));
 

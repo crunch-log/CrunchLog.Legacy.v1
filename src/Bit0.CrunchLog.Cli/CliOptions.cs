@@ -1,5 +1,4 @@
 ﻿using Bit0.CrunchLog.Cli.Commands;
-using Bit0.CrunchLog.Cli.Extensions;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Diagnostics;
@@ -11,8 +10,7 @@ namespace Bit0.CrunchLog.Cli
     [Subcommand(typeof(GenerateCommand))]
     [Subcommand(typeof(CleanCommand))]
     [Subcommand(typeof(RunCommand))]
-    [Subcommand(typeof(InitCommand))]
-    public class CliOptions : CliBase
+    public class CliOptions : CliAppBase
     {
         //[Option(CliOptionKeys.VersionTemplate, Description = CliOptionKeys.VersionDescription)]
         //private Boolean ShowVersion { get; } = false;

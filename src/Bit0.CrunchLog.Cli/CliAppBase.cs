@@ -5,7 +5,7 @@ using System;
 namespace Bit0.CrunchLog.Cli
 {
     [HelpOption(CliOptionKeys.HelpTemplate)]
-    public abstract class CliBase : ICliApp
+    public abstract class CliAppBase : ICliApp
     {
         [Argument(0, CliOptionKeys.BasePathTemplate, Description = CliOptionKeys.BasePathDescription)]
         [DirectoryExists]
@@ -14,12 +14,15 @@ namespace Bit0.CrunchLog.Cli
         [Option(CliOptionKeys.VerboseTemplate, Description = CliOptionKeys.VerboseDescription)]
         public LogLevel VerboseLevel { get; } = LogLevel.Information;
 
+        public Boolean LoadConfig { get; }
+
         protected abstract Int32 OnExecute(CommandLineApplication app);
 
-        public CliBase()
+        public CliAppBase(Boolean loadConfig = false)
         {
 #if DEBUG
             VerboseLevel = LogLevel.Trace;
+            LoadConfig = loadConfig;
 #endif
         }
     }

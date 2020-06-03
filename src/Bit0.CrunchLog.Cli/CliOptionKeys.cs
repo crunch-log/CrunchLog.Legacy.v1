@@ -20,6 +20,9 @@ namespace Bit0.CrunchLog.Cli
 
         public const String UrlTemplate = "-u|--url|--set-url";
         public const String UrlDescription = "Url for the preview server";
+
+        public const String DevTemplate = "-d|--dev";
+        public const String DevDescription = "Sample project for plugin or theme development";
         #endregion
 
         #region Commands

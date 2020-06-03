@@ -5,7 +5,7 @@ namespace Bit0.CrunchLog.Template.Factory
 {
     public interface ITemplateFactory
     {
-        CrunchSite SiteConfig { get; }
+        CrunchConfig SiteConfig { get; }
 
         Theme Theme { get; }
 

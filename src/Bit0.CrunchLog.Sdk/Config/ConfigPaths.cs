@@ -4,23 +4,17 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 
 namespace Bit0.CrunchLog.Config
 {
     public class ConfigPaths
     {
-        public ConfigPaths(IConfigFile configFile)
-        {
-            BasePath = configFile.Directory;
-        }
-        
         [JsonExtensionData]
         private readonly IDictionary<String, JToken> _additionalData = new Dictionary<String, JToken>();
 
         [JsonIgnore]
-        public DirectoryInfo BasePath { get; }
-                
+        public DirectoryInfo BasePath { get; private set; }
+
         [JsonIgnore]
         public DirectoryInfo ContentPath { get; set; }
 
@@ -39,9 +33,10 @@ namespace Bit0.CrunchLog.Config
         [JsonIgnore]
         public DirectoryInfo AssetsPath { get; set; }
 
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
+        internal void SetupPaths(DirectoryInfo basePath)
         {
+            BasePath = basePath;
+
             ContentPath = GetPath("content", StaticPaths.Content);
             ThemesPath = GetPath("themes", StaticPaths.Themes);
             PluginsPath = GetPath("plugins", StaticPaths.Plugins);
@@ -52,8 +47,12 @@ namespace Bit0.CrunchLog.Config
 
         private DirectoryInfo GetPath(String name, String fallback)
         {
-            var key = _additionalData.ContainsKey(name) ? (String)_additionalData[name] : String.Empty;
-            var path = !String.IsNullOrWhiteSpace(key) ? key : fallback;
+            var path = fallback;
+
+            if (_additionalData != null && _additionalData.ContainsKey(name))
+            {
+                path = (String)_additionalData[name];
+            }
 
             return BasePath.CombineDirPath(path.NormalizePath());
         }

@@ -11,12 +11,12 @@ namespace Bit0.CrunchLog
     {
         private readonly IContentProvider _contentProvider;
         private readonly ITemplateFactory _templateFactory;
-        private readonly CrunchSite _siteConfig;
+        private readonly CrunchConfig _siteConfig;
         private readonly ILogger<ContentGenerator> _logger;
 
         public ContentGenerator(IContentProvider contentProvider,
             ITemplateFactory templateFactory,
-            CrunchSite siteConfig,
+            CrunchConfig siteConfig,
             ILogger<ContentGenerator> logger)
         {
             _templateFactory = templateFactory;

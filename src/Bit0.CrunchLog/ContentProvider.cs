@@ -16,12 +16,12 @@ namespace Bit0.CrunchLog
 {
     public class ContentProvider : IContentProvider
     {
-        private readonly CrunchSite _siteConfig;
+        private readonly CrunchConfig _siteConfig;
         private readonly ILogger<ContentProvider> _logger;
 
         private IDictionary<String, IContent> _allContent;
 
-        public ContentProvider(CrunchSite siteConfig, ILogger<ContentProvider> logger)
+        public ContentProvider(CrunchConfig siteConfig, ILogger<ContentProvider> logger)
         {
             _logger = logger;
             _siteConfig = siteConfig;
@@ -39,44 +39,54 @@ namespace Bit0.CrunchLog
                 var allContent = new List<IContent>();
                 var files = _siteConfig.Paths.ContentPath.GetFiles("*.md", SearchOption.AllDirectories);
 
+
                 foreach (var file in files)
                 {
-                    var pipeline = new MarkdownPipelineBuilder()
-                        .UseYamlFrontMatter()
-                        .Build();
-                    var md = Markdown.Parse(file.ReadText(), pipeline);
-                    if (md[0] is YamlFrontMatterBlock)
+                    try
                     {
-                        try
+                        var pipeline = new MarkdownPipelineBuilder()
+                            .UseYamlFrontMatter()
+                            .Build();
+                        var md = Markdown.Parse(file.ReadText(), pipeline);
+                        if (md[0] is YamlFrontMatterBlock)
                         {
-                            var frontMatter = (md[0] as LeafBlock).Lines.ToString();
-
-                            var deserializer = new DeserializerBuilder()
-                                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                                .Build();
-                            using (var stringReader = new StringReader(frontMatter))
+                            try
                             {
-                                var yaml = deserializer.Deserialize(stringReader);
+                                var frontMatter = (md[0] as LeafBlock).Lines.ToString();
 
-                                var serializer = new SerializerBuilder()
-                                    .JsonCompatible()
+                                var deserializer = new DeserializerBuilder()
+                                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                     .Build();
+                                using (var stringReader = new StringReader(frontMatter))
+                                {
+                                    var yaml = deserializer.Deserialize(stringReader);
 
-                                var json = serializer.Serialize(yaml);
-                                var content = new Content(file, _siteConfig);
+                                    var serializer = new SerializerBuilder()
+                                        .JsonCompatible()
+                                        .Build();
 
-                                JsonConvert.PopulateObject(json, content);
-                                allContent.Add(content);
+                                    var json = serializer.Serialize(yaml);
+                                    var content = new Content(file, _siteConfig);
+
+                                    JsonConvert.PopulateObject(json, content);
+                                    allContent.Add(content);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, $"Error reading front matter from: {file.FullName}");
                             }
                         }
-                        catch (Exception e)
+                        else
                         {
-                            _logger.LogError(e, $"Error reading front matter from: {file.FullName}");
+                            _logger.LogWarning($"Skipping: {file}. Could not find front matter.");
                         }
+
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        _logger.LogWarning($"Skipping: {file}. Could not find front matter.");
+                        _logger.LogError(ex, $"Error reading front matter from: {file.FullName}");
+
                     }
                 }
 

@@ -10,7 +10,7 @@ namespace Bit0.CrunchLog.Template.Models
         [JsonProperty("redirectUrl")]
         public String RedirectUrl { get; set; }
 
-        public PostRedirectTemplateModel(IContent content, CrunchSite siteConfig, String redirectUrl)
+        public PostRedirectTemplateModel(IContent content, CrunchConfig siteConfig, String redirectUrl)
             : base(content, siteConfig, inList: false)
         {
             RedirectUrl = redirectUrl;

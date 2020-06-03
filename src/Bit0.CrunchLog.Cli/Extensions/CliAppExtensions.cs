@@ -43,7 +43,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
         public static Int32 Execute<T>(
             this ICliApp cli,
-            Action<IServiceProvider, ILogger<T>, CrunchSite> executeFunc)
+            Action<IServiceProvider, ILogger<T>, CrunchLog> executeFunc)
             where T : ICliApp
         {
             ILogger<T> logger = null;
@@ -63,13 +63,17 @@ namespace Bit0.CrunchLog.Cli.Extensions
                     NullValueHandling = NullValueHandling.Ignore,
                 };
 
-                var provider = ServiceProviderFactory.Build(cli.BasePath, cli.VerboseLevel);
+                var provider = ServiceProviderFactory.Build(new Arguments{
+                    BasePath = cli.BasePath, 
+                    LogLevel = cli.VerboseLevel,
+                    LoadConfig = cli.LoadConfig
+                });
 
                 logger = provider.GetService<ILogger<T>>();
 
-                var config = provider.GetService<CrunchSite>();
+                var crunchLog = provider.GetService<CrunchLog>();
 
-                executeFunc(provider, logger, config);
+                executeFunc(provider, logger, crunchLog);
             }
             catch (OperationCanceledException)
             {

@@ -1,4 +1,5 @@
-﻿using Bit0.CrunchLog.Logging;
+﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
 using Bit0.Plugins.Loader;
@@ -17,38 +18,41 @@ namespace Bit0.CrunchLog
     {
         public static IServiceProvider Current { get; private set; }
 
-        public static IServiceProvider Build(String basePath, LogLevel logLevel)
+        public static IServiceProvider Build(Arguments args)
         {
+            var jsonSerializer = new JsonSerializer();
             var services = new ServiceCollection();
+
+            // setup
+            var packsDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".packs"));
+            var pakageManager = new PackageManager(packsDir, new WebClient(), new LoggerFactory().CreateLogger<IPackageManager>());
+            var crunch = new CrunchLog(args, jsonSerializer, pakageManager, new LoggerFactory().CreateLogger<CrunchLog>());
+
+            // add logger
             services.AddLogging(builder =>
             {
                 builder
-                    .SetMinimumLevel(logLevel)
+                    .SetMinimumLevel(args.LogLevel)
                     .AddConsole();
             });
             services.Replace(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(TimedLogger<>)));  // TODO: replace with another logger
 
-            var jsonSerializer = new JsonSerializer();
-            var configFile = ConfigFile.Load(basePath, jsonSerializer);
-
-            services.AddSingleton<IPackageManager>(factory =>
-            {
-                var packsDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".packs"));
-                return new PackageManager(packsDir, new WebClient(), factory.GetService<ILogger<IPackageManager>>());
-            });
-
+            // add to IoC
+            services.AddSingleton(args);
             services.AddSingleton(jsonSerializer);
-            services.AddSingleton(configFile);
-            services.AddSingleton<CrunchLog>();
-            services.AddSingleton(factory => factory.GetService<CrunchLog>().SiteConfig);
+            services.AddSingleton(crunch);
+            services.AddSingleton(crunch.SiteConfig);
+            services.AddSingleton<IPackageManager>(pakageManager);
 
             services.AddSingleton<IContentProvider, ContentProvider>();
             services.AddSingleton<IContentGenerator, ContentGenerator>();
+            services.AddSingleton<IContentInitializer, ContentInitializer>();
             services.AddSingleton<ITemplateFactory, TemplateFactory>();
-            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>();
+            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>(); // Fix: JsonTemplate
 
+            // load plugins
             services.LoadPlugins(new[] {
-                configFile.Paths.PluginsPath,
+                crunch.SiteConfig.Paths.PluginsPath,
             }, new LoggerFactory().CreateLogger<IPluginLoader>());
 
             return Current = services.BuildServiceProvider();

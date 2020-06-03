@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bit0.CrunchLog.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,19 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class DirectoryInfoExtensions
     {
+        public static FileInfo GetConfigFile(this DirectoryInfo workingDirectory, Boolean loadFile)
+        {
+            var configFile = workingDirectory.GetFiles(StaticPaths.ConfigFile, SearchOption.TopDirectoryOnly).SingleOrDefault();
+
+            if (configFile == null && loadFile)
+            {
+                var errorMsg = $"Cannot find {workingDirectory.CombineFilePath(StaticPaths.ConfigFile)}";
+                throw new FileNotFoundException(errorMsg);
+            }
+
+            return configFile ?? workingDirectory.CombineFilePath(StaticPaths.ConfigFile);
+        }
+
         public static void ClearFolder(this DirectoryInfo dir)
         {
             dir.GetFiles().ToList().ForEach(f =>
@@ -68,7 +82,6 @@ namespace Bit0.CrunchLog.Extensions
 
             return path;
         }
-
 
         public static void Copy(this DirectoryInfo dir, DirectoryInfo destDir, Boolean copySubDirs = true)
         {

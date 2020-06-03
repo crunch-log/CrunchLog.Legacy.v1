@@ -9,12 +9,12 @@ namespace Bit0.CrunchLog.Extensions
 {
     public static class ContentExtensions
     {
-        public static PostTemplateModel GetModel(this IContent content, CrunchSite siteConfig, Boolean inList = false)
+        public static PostTemplateModel GetModel(this IContent content, CrunchConfig siteConfig, Boolean inList = false)
         {
             return new PostTemplateModel(content, siteConfig, inList);
         }
 
-        public static IEnumerable<PostRedirectTemplateModel> GetRedirectModels(this IContent content, CrunchSite siteConfig)
+        public static IEnumerable<PostRedirectTemplateModel> GetRedirectModels(this IContent content, CrunchConfig siteConfig)
         {
             foreach (var url in content.Redirects)
             {
@@ -54,7 +54,7 @@ namespace Bit0.CrunchLog.Extensions
             return $"{contentListItem.Permalink}/page{page:00}";
         }
 
-        public static IEnumerable<PostListTemplateModel> GetPages(this IContentListItem contentListItem, CrunchSite siteConfig)
+        public static IEnumerable<PostListTemplateModel> GetPages(this IContentListItem contentListItem, CrunchConfig siteConfig)
         {
             var totalPages = (Int32)Math.Ceiling(contentListItem.Children.Count() / (Double)siteConfig.Pagination.PageSize);
 
@@ -64,7 +64,7 @@ namespace Bit0.CrunchLog.Extensions
             }
         }
 
-        public static ListMetaData GetMetaData(this IContentListItem contentListItem, CrunchSite siteConfig, IEnumerable<ITemplateModel> posts)
+        public static ListMetaData GetMetaData(this IContentListItem contentListItem, CrunchConfig siteConfig, IEnumerable<ITemplateModel> posts)
         {
             var image = siteConfig.DefaultBannerImage;
             var description = siteConfig.Description;
@@ -110,7 +110,7 @@ namespace Bit0.CrunchLog.Extensions
             };
         }
 
-        public static PostMetaData GetMetaData(this IContent content, CrunchSite siteConfig)
+        public static PostMetaData GetMetaData(this IContent content, CrunchConfig siteConfig)
         {
             var archive = content.DatePublished.ToString(@"\/yyyy\/MM\/");
 
@@ -136,7 +136,7 @@ namespace Bit0.CrunchLog.Extensions
             };
         }
 
-        public static SiteMetaData GetMetaData(this CrunchSite siteConfig)
+        public static SiteMetaData GetMetaData(this CrunchConfig siteConfig)
         {
             return new SiteMetaData
             {
@@ -165,7 +165,7 @@ namespace Bit0.CrunchLog.Extensions
             };
         }
 
-        public static SiteTemplateModel GetModel(this CrunchSite siteConfig)
+        public static SiteTemplateModel GetModel(this CrunchConfig siteConfig)
         {
             return new SiteTemplateModel
             {
@@ -176,7 +176,7 @@ namespace Bit0.CrunchLog.Extensions
                 CopyrightYear = siteConfig.Copyright.StartYear
             };
         }
-        public static SiteTemplateModel GetModel(this CrunchSite siteConfig, IContentProvider contentProvider)
+        public static SiteTemplateModel GetModel(this CrunchConfig siteConfig, IContentProvider contentProvider)
         {
             return new SiteTemplateModel
             {

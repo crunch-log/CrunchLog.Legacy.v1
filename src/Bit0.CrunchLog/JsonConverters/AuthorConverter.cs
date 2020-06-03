@@ -17,7 +17,7 @@ namespace Bit0.CrunchLog.JsonConverters
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            var config = ServiceProviderFactory.Current.GetService<CrunchSite>();
+            var config = ServiceProviderFactory.Current.GetService<CrunchConfig>();
             
             var authorKey = (String)reader.Value;
 

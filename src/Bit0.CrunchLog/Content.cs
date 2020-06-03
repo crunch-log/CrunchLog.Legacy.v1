@@ -16,12 +16,12 @@ namespace Bit0.CrunchLog
     public class Content : IContent
     {
         private const String _regex = @"(^[0-9]{1,4})-(.*)\.md$";
-        private readonly CrunchSite _siteConfig;
+        private readonly CrunchConfig _siteConfig;
 
         public Content()
         { }
 
-        public Content(FileInfo contentFile, CrunchSite siteConfig)
+        public Content(FileInfo contentFile, CrunchConfig siteConfig)
         {
             _siteConfig = siteConfig;
 

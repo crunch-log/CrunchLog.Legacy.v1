@@ -1,33 +1,85 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
 using Bit0.Registry.Core;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace Bit0.CrunchLog
 {
     public class CrunchLog
     {
-        public CrunchSite SiteConfig { get; }
+        private readonly JsonSerializer _jsonSerializer;
+        private readonly IPackageManager _packageManager;
+        private readonly ILogger<CrunchLog> _logger;
 
-        public CrunchLog(IConfigFile configFile, String basePath, JsonSerializer jsonSerializer, IPackageManager packageManager, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
+        public CrunchConfig SiteConfig { get; }
+
+        public CrunchLog(Arguments args, JsonSerializer jsonSerializer, IPackageManager packageManager, ILogger<CrunchLog> logger)
         {
-            logger.LogInformation($"Base path: {configFile.Paths.BasePath}");
+            _jsonSerializer = jsonSerializer;
+            _packageManager = packageManager;
+            _logger = logger;
+            _logger.LogInformation($"Base path: {args.BasePath}");
 
-            SiteConfig = ReadConfigFile(configFile, basePath, jsonSerializer, packageManager, logger, siteLogger);
+            var configFile = new DirectoryInfo(args.BasePath).GetConfigFile(args.LoadConfig);
+            SiteConfig = new CrunchConfig(configFile);
+
+            if (args.LoadConfig)
+            {
+                Load();
+            }
         }
 
-        private static CrunchSite ReadConfigFile(IConfigFile configFile, String baseUrl, JsonSerializer jsonSerializer, IPackageManager packageManager, ILogger<CrunchLog> logger, ILogger<CrunchSite> siteLogger)
+        internal void Load()
         {
-            logger.LogDebug($"Read configuration from: {configFile}");
+            ReadConfig();
+            LoadPackageFeeds();
+            LoadCategories();
+            LoadTheme();
+        }
 
-            var siteConfig = new CrunchSite(configFile.Paths, baseUrl, packageManager, siteLogger);
-            jsonSerializer.Populate(configFile.JsonObject.CreateReader(), siteConfig);
+        private void ReadConfig()
+        {
+            _logger.LogDebug($"Read configuration: {SiteConfig.File.FullName}");
 
-            logger.LogDebug("Configuration read");
-            logger.LogInformation($"Output path: {siteConfig.Paths.OutputPath}");
+            var jsonObject = JObject.Parse(SiteConfig.File.ReadText());
 
-            return siteConfig;
+            _jsonSerializer.Populate(jsonObject.CreateReader(), SiteConfig);
+
+            _logger.LogDebug("Configuration read");
+            _logger.LogInformation($"Output path: {SiteConfig.Paths.OutputPath}");
+        }
+
+        private void LoadPackageFeeds()
+        {
+            SiteConfig.PackageSources.ToList().ForEach(feed =>
+            {
+                _packageManager.AddFeed(feed.Key, feed.Value);
+            });
+        }
+
+        private void LoadCategories()
+        {
+            SiteConfig.Categories = SiteConfig.Categories.ToDictionary(k => k.Key, v =>
+            {
+                var cat = v.Value;
+
+                cat.Title = v.Key;
+                cat.Permalink = String.Format(StaticKeys.CategoryPathFormat, v.Key);
+
+                return cat;
+            });
+        }
+
+        private void LoadTheme()
+        {
+            var package = _packageManager.Get(SiteConfig.Theme.Name);
+            SiteConfig.Theme = Theme.Get(package.PackFile, SiteConfig.Paths.OutputPath);
         }
     }
 }

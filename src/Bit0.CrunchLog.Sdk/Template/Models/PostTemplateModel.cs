@@ -10,7 +10,7 @@ namespace Bit0.CrunchLog.Template.Models
 {
     public class PostTemplateModel : ITemplateModel
     {
-        public PostTemplateModel(IContent content, CrunchSite siteConfig, Boolean inList = false)
+        public PostTemplateModel(IContent content, CrunchConfig siteConfig, Boolean inList = false)
         {
             Id = content.Id;
             Title = content.Title;

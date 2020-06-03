@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using Bit0.CrunchLog.Extensions;
+﻿using Bit0.CrunchLog.Extensions;
 using Bit0.Registry.Core;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
 
-namespace Bit0.CrunchLog.Config {
+namespace Bit0.CrunchLog.Config
+{
     public class Theme : Pack {
+
+        public Theme (String themeName)
+        {
+            Name = themeName;
+        }
+
         public Theme (FileInfo themeConfig) {
             PackFile = themeConfig;
 
@@ -37,7 +41,7 @@ namespace Bit0.CrunchLog.Config {
                 JsonConvert.PopulateObject (streamReader.ReadToEnd (), theme);
             }
 
-            theme.Output.Data = outputDir.CombineDirPath (theme.Output.Data.Name);
+            theme.Output.Data = outputDir.CombineDirPath(theme.Output.Data.Name);
 
             return theme;
         }

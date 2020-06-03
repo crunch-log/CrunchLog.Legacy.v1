@@ -10,9 +10,9 @@ namespace Bit0.CrunchLog.Template
 {
     public class JsonTemplateEngine : ITemplateEngine
     {
-        private readonly CrunchSite _siteConfig;
+        private readonly CrunchConfig _siteConfig;
 
-        public JsonTemplateEngine(CrunchSite siteConfig)
+        public JsonTemplateEngine(CrunchConfig siteConfig)
         {
             _siteConfig = siteConfig;
         }
@@ -64,12 +64,12 @@ namespace Bit0.CrunchLog.Template
 
         public void PreProcess() { }
 
-        public void PostProcess(CrunchSite siteConfig, Theme theme)
+        public void PostProcess(CrunchConfig siteConfig, Theme theme)
         {
             ProcessPreCache(siteConfig, theme);
         }
 
-        private void ProcessPreCache(CrunchSite siteConfig, Theme theme)
+        private void ProcessPreCache(CrunchConfig siteConfig, Theme theme)
         {
             var precache = siteConfig.Paths.ThemesPath
                 .GetFiles(theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
@@ -77,8 +77,8 @@ namespace Bit0.CrunchLog.Template
 
             var to = siteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
 
-            var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
-            var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid().ToString("N")}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
+            var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
+            var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
 
             var preContent = precache.ReadText();
             preContent = preContent.Replace("\n];", $",\r\n{indexH},\r\n{siteInfoH}\r\n];");

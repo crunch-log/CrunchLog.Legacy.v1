@@ -30,7 +30,7 @@ namespace Bit0.CrunchLog.Template.Models
         public ListMetaData Meta { get; set; }
 
         public PostListTemplateModel(
-            IContentListItem contentListItem, CrunchSite config,
+            IContentListItem contentListItem, CrunchConfig config,
             Int32 page, Int32 totalPages)
         {
             Pagination = Enumerable.Range(1, totalPages).ToDictionary(k => k, i => new PaginationPageTemplateModel

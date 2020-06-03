@@ -9,14 +9,14 @@ namespace Bit0.CrunchLog.Template.Factory
     {
         private readonly ILogger<TemplateFactory> _logger;
 
-        public CrunchSite SiteConfig { get; }
+        public CrunchConfig SiteConfig { get; }
 
         public Theme Theme { get; }
 
         public ITemplateEngine Engine { get; }
 
         public TemplateFactory(
-            CrunchSite siteConfig,
+            CrunchConfig siteConfig,
             ITemplateEngine templateEngine,
             ILogger<TemplateFactory> logger)
         {

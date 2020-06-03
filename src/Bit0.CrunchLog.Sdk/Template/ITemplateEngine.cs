@@ -6,7 +6,7 @@ namespace Bit0.CrunchLog.Template
     public interface ITemplateEngine
     {
         void PreProcess();
-        void PostProcess(CrunchSite siteConfig, Theme theme);
+        void PostProcess(CrunchConfig siteConfig, Theme theme);
         void Render(ITemplateModel model);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Bit0.CrunchLog.Template;
 using Bit0.Plugins;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bit0.CrunchLog.Plugins.ScribanEngine
 {
@@ -10,7 +11,7 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
     {
         public override IServiceCollection Register(IServiceCollection services)
         {
-            services.AddSingleton<ITemplateEngine, ScribanTemplateEngine>();
+            services.Replace(ServiceDescriptor.Singleton<ITemplateEngine, ScribanTemplateEngine>());
             return services;
         }
     }

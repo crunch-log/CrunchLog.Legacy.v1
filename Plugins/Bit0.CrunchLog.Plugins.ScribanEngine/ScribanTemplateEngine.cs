@@ -4,7 +4,6 @@ using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using NUglify;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
@@ -18,11 +17,11 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
 {
     internal class ScribanTemplateEngine : ITemplateEngine
     {
-        private readonly CrunchSite _siteConfig;
+        private readonly CrunchConfig _siteConfig;
         private readonly ILogger<ScribanEnginePlugin> _logger;
         private readonly IContentProvider _contentProvider;
 
-        public ScribanTemplateEngine(CrunchSite siteConfig, ILogger<ScribanEnginePlugin> logger, IContentProvider contentProvider)
+        public ScribanTemplateEngine(CrunchConfig siteConfig, ILogger<ScribanEnginePlugin> logger, IContentProvider contentProvider)
         {
             _siteConfig = siteConfig;
             _logger = logger;
@@ -30,7 +29,7 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
         }
 
         public void PreProcess() { }
-        public void PostProcess(CrunchSite siteConfig, Theme theme) { }
+        public void PostProcess(CrunchConfig siteConfig, Theme theme) { }
 
         public void Render(ITemplateModel model)
         {
@@ -83,24 +82,18 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
                 MemberFilter = member => member is PropertyInfo
             };
 
-            var contextObj = new ScriptObject();
-            contextObj["site"] = _siteConfig.GetModel(_contentProvider);
-            contextObj["model"] = model;
-            contextObj["title"] = model.Title;
+            var contextObj = new ScriptObject
+            {
+                ["site"] = _siteConfig.GetModel(_contentProvider),
+                ["model"] = model,
+                ["title"] = model.Title
+            };
             contextObj.SetValue("dump", new DumpFunction(), true);
 
             context.PushGlobal(contextObj);
 
             var template = ScribanTemplate.Parse("{{ include '" + viewName + "' }}");
             var content = template.Render(context);
-            //content = FormatHtml(content);
-            return content;
-        }
-
-        private static String FormatHtml(String content)
-        {
-            var result = Uglify.Html(content);
-            content = result.Code;
             return content;
         }
     }

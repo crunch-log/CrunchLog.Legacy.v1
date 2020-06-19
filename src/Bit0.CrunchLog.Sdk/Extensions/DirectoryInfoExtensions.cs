@@ -35,6 +35,14 @@ namespace Bit0.CrunchLog.Extensions
             });
         }
 
+        public static FileInfo CreateFile(this DirectoryInfo dir, String name, String content = "")
+        {
+            var file = dir.CombineFilePath(name);
+            file.WriteText(content);
+
+            return file;
+        }
+
         public static DirectoryInfo CombineDirPath(this DirectoryInfo dir, params String[] paths)
         {
             var pathList = new List<String>(new[] { dir.FullName });

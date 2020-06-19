@@ -78,8 +78,14 @@ namespace Bit0.CrunchLog
 
         private void LoadTheme()
         {
-            var package = _packageManager.Get(SiteConfig.Theme.Name);
-            SiteConfig.Theme = Theme.Get(package.PackFile, SiteConfig.Paths.OutputPath);
+            var packFile = SiteConfig.Paths.ThemesPath.CombineDirPath(SiteConfig.Theme.Name).CombineFilePath("pack.json");
+
+            if (!packFile.Exists)
+            {
+                packFile = _packageManager.Get(SiteConfig.Theme.Name).PackFile;
+            }
+
+            SiteConfig.Theme = Theme.Get(packFile, SiteConfig.Paths.OutputPath);
         }
     }
 }

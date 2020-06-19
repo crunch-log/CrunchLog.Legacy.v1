@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace Bit0.CrunchLog.Extensions
@@ -24,6 +25,16 @@ namespace Bit0.CrunchLog.Extensions
         public static String ToRelative(this FileInfo fileInfo, DirectoryInfo basePath)
         {
             return fileInfo.FullName.Replace(basePath.FullName, "").NormalizeRelativePath('/');
+        }
+
+        public static JsonTextReader OpenJsonReader(this FileInfo entry)
+        {
+            return entry.OpenRead().GetJsonReader();
+        }
+
+        public static JsonTextReader GetJsonReader(this Stream stream)
+        {
+            return new JsonTextReader(new StreamReader(stream));
         }
     }
 }

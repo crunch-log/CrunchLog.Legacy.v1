@@ -1,9 +1,11 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Helpers;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -98,12 +100,70 @@ namespace Bit0.CrunchLog
 
             // add default feed when ready
             // _siteConfig.PackageSources.Add("Default", "https://packages.0labs.se/crunchlog/");
+
+            _siteConfig.Paths.BasePath
+                .CreateFile("crunch.json", JsonConvert.SerializeObject(_siteConfig, Formatting.Indented));
+
+            _logger.LogInformation("Created `crunch.json` file");
+        }
+
+        private void GenerateDirectory()
+        {
+            CreateDirecory(_siteConfig.Paths.ContentPath);
+            CreateDirecory(_siteConfig.Paths.ContentPath.CombineDirPath("Posts"));
+            CreateDirecory(_siteConfig.Paths.ContentPath.CombineDirPath("Pages"));
+            CreateDirecory(_siteConfig.Paths.ContentPath.CombineDirPath("Drafts"));
+
+
+            CreateDirecory(_siteConfig.Paths.ImagesPath);
+            CreateDirecory(_siteConfig.Paths.AssetsPath);
+            CreateDirecory(_siteConfig.Paths.PluginsPath);
+            CreateDirecory(_siteConfig.Paths.ThemesPath);
+        }
+
+        private void GeneratePostDraft()
+        {
+            var date = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            var content = @$"---
+title: ""Title""
+slug: slug
+datePublished: {date}
+dateUpdated: {date}
+tags:
+- tags
+categories:
+- Uncatorized
+published: false
+intro: ""Intro""
+---
+
+Main Body
+
+*Tips:* Start with a H2 ( ## ).
+";
+
+            _siteConfig.Paths.ContentPath
+                .GetDirectories("Drafts", SearchOption.TopDirectoryOnly)
+                .First()
+                .CreateFile("0000-draft.md", content);
+
+            _logger.LogInformation("Created a draft template");
+
+        }
+
+        private void CreateDirecory(DirectoryInfo dir)
+        {
+            dir.Create();
+            var file = dir.CreateFile("notempty");
+
+            _logger.LogInformation($"Created `{dir.Name}` directory");
         }
 
         public void Generate()
         {
             GenerateConfig();
-            //JsonConvert.SerializeObject(_siteConfig, Formatting.Indented);
+            GenerateDirectory();
+            GeneratePostDraft();
         }
 
         private String ReadLine(String text)

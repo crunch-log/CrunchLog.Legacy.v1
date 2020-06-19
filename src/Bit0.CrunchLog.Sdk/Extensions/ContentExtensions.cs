@@ -146,21 +146,21 @@ namespace Bit0.CrunchLog.Extensions
                 Copyright = siteConfig.Copyright.ToString(),
                 Description = siteConfig.Description,
                 Manifest = "/manifest.json",
-                ThemeColor = siteConfig.Manifest.ThemeColor,
+                ThemeColor = siteConfig.Manifest?.ThemeColor,
                 CanonicalUrl = siteConfig.BaseUrl,
                 BaseUrl = siteConfig.BaseUrl,
                 Social = siteConfig.Social,
                 Language = siteConfig.LanguageCode,
                 Icon = new IconMetaData
                 {
-                    Favicon = siteConfig.Icons["favicon"].Url,
-                    Favicon16 = siteConfig.Icons["favicon16"].Url,
-                    Favicon32 = siteConfig.Icons["favicon32"].Url,
-                    Favicon144 = siteConfig.Icons["favicon144"].Url,
-                    Favicon152 = siteConfig.Icons["favicon152"].Url,
-                    Favicon192 = siteConfig.Icons["favicon192"].Url,
-                    Favicon512 = siteConfig.Icons["favicon512"].Url,
-                    PinSvg = siteConfig.Icons["pinSvg"].Url
+                    Favicon = siteConfig.Icons?["favicon"]?.Url,
+                    Favicon16 = siteConfig.Icons?["favicon16"]?.Url,
+                    Favicon32 = siteConfig.Icons?["favicon32"]?.Url,
+                    Favicon144 = siteConfig.Icons?["favicon144"]?.Url,
+                    Favicon152 = siteConfig.Icons?["favicon152"]?.Url,
+                    Favicon192 = siteConfig.Icons?["favicon192"]?.Url,
+                    Favicon512 = siteConfig.Icons?["favicon512"]?.Url,
+                    PinSvg = siteConfig.Icons?["pinSvg"]?.Url
                 },
             };
         }

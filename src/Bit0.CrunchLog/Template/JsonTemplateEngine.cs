@@ -71,19 +71,22 @@ namespace Bit0.CrunchLog.Template
 
         private void ProcessPreCache(CrunchConfig siteConfig, Theme theme)
         {
-            var precache = siteConfig.Paths.ThemesPath
-                .GetFiles(theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
-                .FirstOrDefault();
+            if (theme.Output.Process?["precache"] != null)
+            {
+                var precache = siteConfig.Paths.ThemesPath
+                    .GetFiles(theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)
+                    .FirstOrDefault();
 
-            var to = siteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
+                var to = siteConfig.Paths.OutputPath.CombineFilePath("js", precache.Name);
 
-            var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
-            var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
+                var indexH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/index.json\"\r\n  }}";
+                var siteInfoH = $"  {{\r\n    \"revision\": \"{Guid.NewGuid():N}\",\r\n    \"url\": \"/data/siteInfo.json\"\r\n  }}";
 
-            var preContent = precache.ReadText();
-            preContent = preContent.Replace("\n];", $",\r\n{indexH},\r\n{siteInfoH}\r\n];");
+                var preContent = precache.ReadText();
+                preContent = preContent.Replace("\n];", $",\r\n{indexH},\r\n{siteInfoH}\r\n];");
 
-            to.WriteText(preContent);
+                to.WriteText(preContent);
+            }
         }
     }
 }

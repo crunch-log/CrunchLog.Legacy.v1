@@ -17,12 +17,12 @@
   </ItemGroup>
   <ItemGroup>
     <!--<PackageReference Include="EmbedIO" Version="2.2.9" />-->
-    <PackageReference Include="Bit0.Registry.Core" Version="4.0.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.4" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bit0.CrunchLog\Bit0.CrunchLog.csproj" />

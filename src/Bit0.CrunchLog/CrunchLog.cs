@@ -38,7 +38,6 @@ namespace Bit0.CrunchLog
         internal void Load()
         {
             ReadConfig();
-            LoadPackageFeeds();
             LoadCategories();
             LoadTheme();
         }
@@ -53,14 +52,6 @@ namespace Bit0.CrunchLog
 
             _logger.LogDebug("Configuration read");
             _logger.LogInformation($"Output path: {SiteConfig.Paths.OutputPath}");
-        }
-
-        private void LoadPackageFeeds()
-        {
-            SiteConfig.PackageSources.ToList().ForEach(feed =>
-            {
-                _packageManager.AddFeed(feed.Key, feed.Value);
-            });
         }
 
         private void LoadCategories()
@@ -82,7 +73,7 @@ namespace Bit0.CrunchLog
 
             if (!packFile.Exists)
             {
-                packFile = _packageManager.Get(SiteConfig.Theme.Name).PackFile;
+                packFile = _packageManager.GetPack(SiteConfig.Theme.Name).PackFile;
             }
 
             SiteConfig.Theme = Theme.Get(packFile, SiteConfig.Paths.OutputPath);

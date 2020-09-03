@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Bit0.Registry.Core" Version="4.0.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="5.1.0" />
   </ItemGroup>
 
 </Project>

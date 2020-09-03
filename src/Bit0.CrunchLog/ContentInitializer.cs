@@ -98,9 +98,6 @@ namespace Bit0.CrunchLog
                 }
             });
 
-            // add default feed when ready
-            // _siteConfig.PackageSources.Add("Default", "https://packages.0labs.se/crunchlog/");
-
             _siteConfig.Paths.BasePath
                 .CreateFile("crunch.json", JsonConvert.SerializeObject(_siteConfig, Formatting.Indented));
 

@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bit0.Plugins.Sdk" Version="4.0.0" />
-    <PackageReference Include="Bit0.Registry.Core" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Bit0.Plugins.Sdk" Version="5.2.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Scriban" Version="2.1.1" />
+    <PackageReference Include="Scriban" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup>

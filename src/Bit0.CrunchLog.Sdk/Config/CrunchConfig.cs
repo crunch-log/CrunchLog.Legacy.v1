@@ -26,7 +26,6 @@ namespace Bit0.CrunchLog.Config
             Categories = new Dictionary<String, CategoryInfo>();
             Tags = new Dictionary<String, CategoryInfo>();
             Pagination = new Pagination();
-            PackageSources = new Dictionary<String, String>();
         }
 
         [JsonIgnore]
@@ -82,9 +81,6 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("defaultImage")]
         public SiteImage DefaultBannerImage { get; set; }
-
-        [JsonProperty("packageSources")]
-        public IDictionary<String, String> PackageSources { get; }
 
         [JsonProperty("manifest")]
         public SiteManifest Manifest { get; set; }

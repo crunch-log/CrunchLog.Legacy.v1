@@ -3,6 +3,7 @@ using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
 using Bit0.Plugins.Loader;
+using Bit0.Plugins.Sdk;
 using Bit0.Registry.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -23,11 +24,6 @@ namespace Bit0.CrunchLog
             var jsonSerializer = new JsonSerializer();
             var services = new ServiceCollection();
 
-            // setup
-            var packsDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".packs"));
-            var pakageManager = new PackageManager(packsDir, new WebClient(), new LoggerFactory().CreateLogger<IPackageManager>());
-            var crunch = new CrunchLog(args, jsonSerializer, pakageManager, new LoggerFactory().CreateLogger<CrunchLog>());
-
             // add logger
             services.AddLogging(builder =>
             {
@@ -39,11 +35,17 @@ namespace Bit0.CrunchLog
 
             // add to IoC
             services.AddSingleton(args);
-            services.AddSingleton(jsonSerializer);
-            services.AddSingleton(crunch);
-            services.AddSingleton(crunch.SiteConfig);
-            services.AddSingleton<IPackageManager>(pakageManager);
 
+            services.AddSingleton<JsonSerializer>();
+            services.AddSingleton<CrunchLog>();
+
+            services.AddSingleton(provider => provider.GetService<CrunchLog>().SiteConfig);
+            services.AddSingleton<IPluginOptions>(provider => new PluginOptions
+            {
+                Directories = new[] { provider.GetService<CrunchConfig>().Paths.PluginsPath }
+            });
+
+            services.AddSingleton<IPackageManager, PackageManager>();
             services.AddSingleton<IContentProvider, ContentProvider>();
             services.AddSingleton<IContentGenerator, ContentGenerator>();
             services.AddSingleton<IContentInitializer, ContentInitializer>();
@@ -51,9 +53,7 @@ namespace Bit0.CrunchLog
             services.AddSingleton<ITemplateEngine, JsonTemplateEngine>(); // Fix: JsonTemplate
 
             // load plugins
-            services.LoadPlugins(new[] {
-                crunch.SiteConfig.Paths.PluginsPath,
-            }, new LoggerFactory().CreateLogger<IPluginLoader>());
+            services.LoadPlugins();
 
             return Current = services.BuildServiceProvider();
         }

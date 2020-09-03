@@ -73,7 +73,7 @@ namespace Bit0.CrunchLog
 
             if (!packFile.Exists)
             {
-                packFile = _packageManager.GetPack(SiteConfig.Theme.Name).PackFile;
+                packFile = _packageManager.GetPack(SiteConfig.Theme.DownloadUrl).PackFile;
             }
 
             SiteConfig.Theme = Theme.Get(packFile, SiteConfig.Paths.OutputPath);

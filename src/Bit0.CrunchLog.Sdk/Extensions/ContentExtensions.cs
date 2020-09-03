@@ -1,4 +1,5 @@
 ﻿using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Helpers;
 using Bit0.CrunchLog.Template.Models;
 using Bit0.CrunchLog.Template.Models.MetaData;
 using System;
@@ -72,7 +73,7 @@ namespace Bit0.CrunchLog.Extensions
 
             if (contentListItem.Layout == Layouts.Category)
             {
-                var category = siteConfig.Categories[contentListItem.Name];
+                var category = GetCategory(siteConfig, contentListItem.Name);
                 description = category.Description;
                 image = category.Image;
                 tags = new[] { category.Title }.Concat(tags);
@@ -80,7 +81,7 @@ namespace Bit0.CrunchLog.Extensions
 
             if (contentListItem.Layout == Layouts.Tag)
             {
-               tags = new[] { contentListItem.Name }.Concat(tags);
+                tags = new[] { contentListItem.Name }.Concat(tags);
             }
 
             image = image ?? siteConfig.DefaultBannerImage;
@@ -185,7 +186,7 @@ namespace Bit0.CrunchLog.Extensions
                 Menu = siteConfig.Menu,
                 Authors = siteConfig.Authors,
                 Categories = contentProvider.Categories
-                    .Select(c => siteConfig.Categories[c.Name])
+                    .Select(c => GetCategory(siteConfig, c.Name))
                     .OrderBy(c => c.Title)
                     .ToDictionary(k => k.Title, v => v),
                 Tags = contentProvider.Tags
@@ -196,6 +197,27 @@ namespace Bit0.CrunchLog.Extensions
                 CopyrightYear = siteConfig.Copyright.StartYear,
                 Meta = siteConfig.GetMetaData()
             };
+        }
+
+        private static CategoryInfo GetCategory(CrunchConfig siteConfig, String catName)
+        {
+            if (!siteConfig.Categories.ContainsKey(catName))
+            {
+
+                var defaultCat = siteConfig.Categories[siteConfig.DefaultCategory];
+
+                var cat = new CategoryInfo
+                {
+                    Title = catName,
+                    Permalink = String.Format(StaticKeys.CategoryPathFormat, catName),
+                    Color = defaultCat.Color,
+                    ShowInMainMenu = false
+                };
+
+                siteConfig.Categories.Add(catName, cat);
+            }
+
+            return siteConfig.Categories[catName];
         }
 
         public static PaginationListTemplateModel GetModel(this IDictionary<Int32, PaginationPageTemplateModel> pages, Int32 totalPages)

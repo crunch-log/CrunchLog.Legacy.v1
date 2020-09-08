@@ -15,6 +15,7 @@ namespace Bit0.CrunchLog.Config
         public Theme(String themeName)
         {
             Name = themeName;
+            OriginalName = Name;
 
             var match = Regex.Match(Name, @"^(.*)\|(.*)$");
             if (match.Success)
@@ -49,7 +50,10 @@ namespace Bit0.CrunchLog.Config
         }
 
         [JsonIgnore]
-        public String DownloadUrl { get; set; }
+        public String OriginalName { get; }
+
+        [JsonIgnore]
+        public String DownloadUrl { get; }
 
         [JsonProperty("outputType")]
         public ThemeOutputType OutputType { get; set; } = ThemeOutputType.Html;

@@ -10,7 +10,7 @@ namespace Bit0.CrunchLog.JsonConverters
 
         public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
         {
-            writer.WriteValue(((Theme)value).Name);
+            writer.WriteValue(((Theme)value).OriginalName);
         }
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)

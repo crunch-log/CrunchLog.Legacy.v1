@@ -19,7 +19,7 @@ namespace Bit0.CrunchLog.Config
             Paths = new ConfigPaths();
             Paths.SetupPaths(configFile.Directory);
 
-            Theme = new Theme("default");
+            Theme = new Theme("github:crunch-log/theme-m20");
             Copyright = new Copyright();
             Authors = new Dictionary<String, Author>();
             Menu = new Dictionary<String, IEnumerable<MenuItem>>();

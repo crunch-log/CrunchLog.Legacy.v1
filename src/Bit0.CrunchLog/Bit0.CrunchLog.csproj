@@ -4,9 +4,8 @@
     <Authors>b1thunt3r</Authors>
     <Company>Nullbit</Company>
     <Description>Static blog generator</Description>
-    <Copyright>Copyright (c) 2018-2019 Nullbit.</Copyright>
+    <Copyright>Copyright (c) 2018-2020 Nullbit.</Copyright>
     <Version>0.7.1</Version>
-    <InformationalVersion>0.4.0-beta1</InformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;IDE0022;CC0057</NoWarn>

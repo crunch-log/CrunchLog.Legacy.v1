@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <RootNamespace>Bit0.CrunchLog</RootNamespace>
+    <RootNamespace>Bit0.CrunchLog.Sdk</RootNamespace>
+    <Description>CrunchLog Sdk</Description>
+    <PackageTags>blog; cms; markdown; yaml; generator; platform; static; sdk</PackageTags>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;IDE0022</NoWarn>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Bit0.Registry.Core" Version="5.1.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="5.2.9" />
   </ItemGroup>
+  
+  <Import Project="..\..\Solution.props" />
+  <Import Project="..\..\Common.props" />
 
 </Project>

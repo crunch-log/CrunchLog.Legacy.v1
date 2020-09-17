@@ -13,11 +13,8 @@
     <None Remove="a\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
     <!--<PackageReference Include="EmbedIO" Version="2.2.9" />-->
-    <PackageReference Include="Bit0.Registry.Core" Version="5.1.0" />
+    <PackageReference Include="Bit0.Registry.Core" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />

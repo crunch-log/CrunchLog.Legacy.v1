@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace Bit0.CrunchLog.Template
 {
+    [Obsolete(message: "Only for reference to re-implement as a external plugin.", error: true)]
     public class JsonTemplateEngine : ITemplateEngine
     {
         private readonly CrunchConfig _siteConfig;

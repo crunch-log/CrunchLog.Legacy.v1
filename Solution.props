@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Version>0.8</Version>
     <PackageProjectUrl Condition="'$(PackageProjectUrl)'==''">https://github.com/crunch-log/CrunchLog</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/crunch-log/CrunchLog</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/crunch-log/CrunchLog.git</RepositoryUrl>
   </PropertyGroup>
 </Project>

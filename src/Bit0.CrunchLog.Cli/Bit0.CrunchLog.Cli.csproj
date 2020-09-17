@@ -8,6 +8,7 @@
     
   <ItemGroup>
     <!--<PackageReference Include="EmbedIO" Version="2.2.9" />-->
+    <PackageReference Include="Bit0.PipeLines" Version="1.0.36" />
     <PackageReference Include="Bit0.Registry.Core" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />

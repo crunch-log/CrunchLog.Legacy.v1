@@ -1,4 +1,6 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using Bit0.CrunchLog.Cli.Commands;
+using Bit0.CrunchLog.Config;
+using Bit0.PipeLines;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -43,7 +45,7 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
         public static Int32 Execute<T>(
             this ICliApp cli,
-            Action<IServiceProvider, ILogger<T>, CrunchLog> executeFunc)
+            Action<IActionPipeLine<ActionPipeLineContext<T>>> executeFunc)
             where T : ICliApp
         {
             ILogger<T> logger = null;
@@ -73,7 +75,10 @@ namespace Bit0.CrunchLog.Cli.Extensions
 
                 var crunchLog = provider.GetService<CrunchLog>();
 
-                executeFunc(provider, logger, crunchLog);
+                var context = new ActionPipeLineContext<T>(provider, logger, crunchLog);
+                var pipeline = new ActionPipeLine<ActionPipeLineContext<T>>(context);
+                executeFunc(pipeline);
+                pipeline.Execute();
             }
             catch (OperationCanceledException)
             {

@@ -2,6 +2,7 @@
 using Bit0.CrunchLog.Logging;
 using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Factory;
+using Bit0.CrunchLog.Template.ScribanEngine;
 using Bit0.Plugins.Loader;
 using Bit0.Plugins.Sdk;
 using Bit0.Registry.Core;
@@ -50,7 +51,7 @@ namespace Bit0.CrunchLog
             services.AddSingleton<IContentGenerator, ContentGenerator>();
             services.AddSingleton<IContentInitializer, ContentInitializer>();
             services.AddSingleton<ITemplateFactory, TemplateFactory>();
-            services.AddSingleton<ITemplateEngine, JsonTemplateEngine>(); // Fix: JsonTemplate
+            services.AddSingleton<ITemplateEngine, ScribanTemplateEngine>(); // Fix: JsonTemplate
 
             // load plugins
             services.LoadPlugins();

@@ -1,6 +1,5 @@
 ﻿using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.Template;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -13,15 +12,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ScribanTemplate = Scriban.Template;
 
-namespace Bit0.CrunchLog.Plugins.ScribanEngine
+namespace Bit0.CrunchLog.Template.ScribanEngine
 {
     internal class ScribanTemplateEngine : ITemplateEngine
     {
         private readonly CrunchConfig _siteConfig;
-        private readonly ILogger<ScribanEnginePlugin> _logger;
+        private readonly ILogger<ScribanTemplateEngine> _logger;
         private readonly IContentProvider _contentProvider;
 
-        public ScribanTemplateEngine(CrunchConfig siteConfig, ILogger<ScribanEnginePlugin> logger, IContentProvider contentProvider)
+        public ScribanTemplateEngine(CrunchConfig siteConfig, ILogger<ScribanTemplateEngine> logger, IContentProvider contentProvider)
         {
             _siteConfig = siteConfig;
             _logger = logger;
@@ -77,7 +76,7 @@ namespace Bit0.CrunchLog.Plugins.ScribanEngine
         {
             var context = new TemplateContext
             {
-                TemplateLoader = new CrunchTemplateLoader(_siteConfig.Theme.TemplateRoot),
+                TemplateLoader = new ScribanTemplateLoader(_siteConfig.Theme.TemplateRoot),
                 MemberRenamer = member => member.Name,
                 MemberFilter = member => member is PropertyInfo
             };

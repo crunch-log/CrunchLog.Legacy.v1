@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bit0.CrunchLog.Plugins.ScribanEngine
+namespace Bit0.CrunchLog.Template.ScribanEngine
 {
-    public class CrunchTemplateLoader : ITemplateLoader
+    public class ScribanTemplateLoader : ITemplateLoader
     {
         private readonly DirectoryInfo _templateRoot;
 
-        public CrunchTemplateLoader(DirectoryInfo templateRoot)
+        public ScribanTemplateLoader(DirectoryInfo templateRoot)
         {
             _templateRoot = templateRoot;
         }

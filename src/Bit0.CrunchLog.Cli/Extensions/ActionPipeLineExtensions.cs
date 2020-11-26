@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Bit0.CrunchLog.Cli.Extensions
 {

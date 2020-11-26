@@ -11,8 +11,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.IO;
-using System.Net;
 
 namespace Bit0.CrunchLog
 {

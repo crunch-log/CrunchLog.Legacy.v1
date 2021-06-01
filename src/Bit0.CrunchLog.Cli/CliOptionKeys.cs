@@ -23,6 +23,12 @@ namespace Bit0.CrunchLog.Cli
 
         public const String DevTemplate = "-d|--dev";
         public const String DevDescription = "Sample project for plugin or theme development";
+
+        public const String DotNotCleanContentTemplate = "--no-clean";
+        public const String DotNotCleanContentDescription = "Clean up the generated content from previois runs";
+
+        public const String DotNotGenerateContentTemplate = "--no-generate";
+        public const String DotNotGenerateContentDescription = "Do not generate content";
         #endregion
 
         #region Commands

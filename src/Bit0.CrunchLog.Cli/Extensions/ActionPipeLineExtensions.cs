@@ -16,23 +16,29 @@ namespace Bit0.CrunchLog.Cli.Extensions
             return pipeLine;
         }
 
-        public static IActionPipeLine<ActionPipeLineContext<T>> AddCleanAction<T>(this IActionPipeLine<ActionPipeLineContext<T>> pipeLine)
+        public static IActionPipeLine<ActionPipeLineContext<T>> AddCleanAction<T>(this IActionPipeLine<ActionPipeLineContext<T>> pipeLine, Boolean cleanContent = true)
         {
-            pipeLine.AddProcess(ctx =>
+            if(cleanContent)
             {
-                var generator = ctx.ServiceProvider.GetService<IContentGenerator>();
-                generator.CleanOutput();
-            });
+                pipeLine.AddProcess(ctx =>
+                {
+                    var generator = ctx.ServiceProvider.GetService<IContentGenerator>();
+                    generator.CleanOutput();
+                });
+            }
             return pipeLine;
         }
 
-        public static IActionPipeLine<ActionPipeLineContext<T>> AddGenerateAction<T>(this IActionPipeLine<ActionPipeLineContext<T>> pipeLine)
+        public static IActionPipeLine<ActionPipeLineContext<T>> AddGenerateAction<T>(this IActionPipeLine<ActionPipeLineContext<T>> pipeLine, Boolean generateContent = true)
         {
-            pipeLine.AddProcess(ctx =>
+            if(generateContent)
             {
-                var generator = ctx.ServiceProvider.GetService<IContentGenerator>();
-                generator.Publish();
-            });
+                pipeLine.AddProcess(ctx =>
+                {
+                    var generator = ctx.ServiceProvider.GetService<IContentGenerator>();
+                    generator.Publish();
+                });
+            }
             return pipeLine;
         }
 

@@ -8,6 +8,12 @@ namespace Bit0.CrunchLog.Cli.Commands
     [Command(CliOptionKeys.GenerateCommand, Description = CliOptionKeys.GenerateCommandDescription)]
     public class GenerateCommand : CliAppBase
     {
+        [Option(CliOptionKeys.DotNotCleanContentTemplate, Description = CliOptionKeys.DotNotCleanContentDescription)]
+        public Boolean DoNotCleanContent { get; } = false;
+
+        [Option(CliOptionKeys.DotNotGenerateContentTemplate, Description = CliOptionKeys.DotNotGenerateContentDescription)]
+        public Boolean DoNotGeneratenContent { get; } = false;
+
         public GenerateCommand() : base(loadConfig: true)
         { }
 
@@ -16,8 +22,8 @@ namespace Bit0.CrunchLog.Cli.Commands
             return this.Execute<GenerateCommand>(pipeline =>
             {
                 pipeline.AddLog(LogLevel.Debug, nameof(GenerateCommand))
-                    .AddCleanAction()
-                    .AddGenerateAction();
+                    .AddCleanAction(cleanContent: !DoNotCleanContent || !DoNotGeneratenContent) // need to clean up output before generating new content
+                    .AddGenerateAction(generateContent: !DoNotCleanContent || !DoNotGeneratenContent);
             });
         }
 

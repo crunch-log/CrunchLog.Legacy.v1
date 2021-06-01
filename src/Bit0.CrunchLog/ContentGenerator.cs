@@ -1,9 +1,9 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System.Linq;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Factory;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace Bit0.CrunchLog
 {
@@ -12,12 +12,12 @@ namespace Bit0.CrunchLog
         private readonly IContentProvider _contentProvider;
         private readonly ITemplateFactory _templateFactory;
         private readonly CrunchConfig _siteConfig;
-        private readonly ILogger<ContentGenerator> _logger;
+        private readonly ILogger<IContentGenerator> _logger;
 
         public ContentGenerator(IContentProvider contentProvider,
             ITemplateFactory templateFactory,
             CrunchConfig siteConfig,
-            ILogger<ContentGenerator> logger)
+            ILogger<IContentGenerator> logger)
         {
             _templateFactory = templateFactory;
             _logger = logger;
@@ -27,7 +27,7 @@ namespace Bit0.CrunchLog
 
         public void CleanOutput()
         {
-            if (_siteConfig.Paths.OutputPath.Exists)
+            if(_siteConfig.Paths.OutputPath.Exists)
             {
                 _siteConfig.Paths.OutputPath.ClearFolder();
                 _logger.LogDebug($"Cleaned output folder {_siteConfig.Paths.OutputPath.FullName}");
@@ -38,7 +38,7 @@ namespace Bit0.CrunchLog
         {
             var pages = _contentProvider.Categories.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
-            foreach (var page in pages)
+            foreach(var page in pages)
             {
                 _templateFactory.Render(page);
             }
@@ -50,7 +50,7 @@ namespace Bit0.CrunchLog
         {
             var pages = _contentProvider.Tags.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
-            foreach (var page in pages)
+            foreach(var page in pages)
             {
                 _templateFactory.Render(page);
             }
@@ -62,7 +62,7 @@ namespace Bit0.CrunchLog
         {
             var pages = _contentProvider.PostArchives.SelectMany(archive => archive.GetPages(_siteConfig)).ToList();
 
-            foreach (var page in pages)
+            foreach(var page in pages)
             {
                 _templateFactory.Render(page);
             }
@@ -74,7 +74,7 @@ namespace Bit0.CrunchLog
         {
             var pages = _contentProvider.Home.GetPages(_siteConfig).ToList();
 
-            foreach (var page in pages)
+            foreach(var page in pages)
             {
                 _templateFactory.Render(page);
             }
@@ -86,7 +86,7 @@ namespace Bit0.CrunchLog
         {
             var published = _contentProvider.PublishedContent.ToList();
 
-            foreach (var content in published)
+            foreach(var content in published)
             {
                 _templateFactory.Render(content.GetModel(_siteConfig));
             }
@@ -96,9 +96,9 @@ namespace Bit0.CrunchLog
 
         public void PublishContentRedirects()
         {
-            var redirects = _contentProvider.PublishedContent.SelectMany(c => c.GetRedirectModels(_siteConfig)) .ToList();
+            var redirects = _contentProvider.PublishedContent.SelectMany(c => c.GetRedirectModels(_siteConfig)).ToList();
 
-            foreach (var redirect in redirects)
+            foreach(var redirect in redirects)
             {
                 _templateFactory.Render(redirect);
             }
@@ -116,7 +116,7 @@ namespace Bit0.CrunchLog
         {
             var authors = _contentProvider.Authors.SelectMany(author => author.GetPages(_siteConfig)).ToList();
 
-            foreach (var author in authors)
+            foreach(var author in authors)
             {
                 _templateFactory.Render(author);
             }
@@ -132,14 +132,6 @@ namespace Bit0.CrunchLog
             _logger.LogDebug($"Site information published");
         }
 
-        public void PublishRedirectsList()
-        {
-            var model = _contentProvider.PublishedContent.GetRedirectListModel();
-            _templateFactory.Render(model);
-
-            _logger.LogDebug("Site redirects published");
-        }
-
         public void PublishAssets()
         {
             _siteConfig.Paths.AssetsPath.Copy(_siteConfig.Paths.OutputPath);
@@ -150,7 +142,7 @@ namespace Bit0.CrunchLog
         {
             var drafts = _contentProvider.DraftContent.ToList();
 
-            foreach (var content in drafts)
+            foreach(var content in drafts)
             {
                 _templateFactory.Render(content.GetModel(_siteConfig));
             }
@@ -171,7 +163,6 @@ namespace Bit0.CrunchLog
             _templateFactory.PreProcess();
 
             PublishSiteInfo();
-            PublishRedirectsList();
             PublishImages();
             PublishAssets();
             PublisHome();

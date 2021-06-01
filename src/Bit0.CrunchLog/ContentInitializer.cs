@@ -1,13 +1,13 @@
-﻿using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.Helpers;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
@@ -20,6 +20,13 @@ namespace Bit0.CrunchLog
         {
             _siteConfig = siteConfig;
             _logger = logger;
+        }
+
+        public void Generate()
+        {
+            GenerateConfig();
+            GenerateDirectory();
+            GeneratePostDraft();
         }
 
         private void GenerateConfig()
@@ -48,10 +55,12 @@ namespace Bit0.CrunchLog
             _siteConfig.Description = ReadLine("Site Description: ");
             _siteConfig.BaseUrl = ReadLine("Base Url: ");
 
-            var author = new Author();
-            author.Name = ReadLine("Author Name: ");
-            author.Alias = ReadLine("Author Alias: ");
-            author.Email = ReadLine("Author Email: ");
+            var author = new Author
+            {
+                Name = ReadLine("Author Name: "),
+                Alias = ReadLine("Author Alias: "),
+                Email = ReadLine("Author Email: ")
+            };
 
             _siteConfig.Authors.Add(author.Alias, author);
             _siteConfig.Copyright = new Copyright
@@ -151,18 +160,11 @@ Main Body
         private void CreateDirecory(DirectoryInfo dir)
         {
             dir.Create();
-            var file = dir.CreateFile("notempty");
+
+            _ = dir.CreateFile("notempty");
 
             _logger.LogInformation($"Created `{dir.Name}` directory");
         }
-
-        public void Generate()
-        {
-            GenerateConfig();
-            GenerateDirectory();
-            GeneratePostDraft();
-        }
-
         private String ReadLine(String text)
         {
             Console.Write(text);

@@ -1,15 +1,15 @@
-﻿using Bit0.CrunchLog.Config;
-using Bit0.CrunchLog.Extensions;
-using Bit0.CrunchLog.Helpers;
-using Bit0.CrunchLog.JsonConverters;
-using Markdig;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using Bit0.CrunchLog.Config;
+using Bit0.CrunchLog.Extensions;
+using Bit0.CrunchLog.Helpers;
+using Bit0.CrunchLog.JsonConverters;
+using Markdig;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog
 {
@@ -80,7 +80,7 @@ namespace Bit0.CrunchLog
         public String Permalink { get; set; }
 
         [JsonProperty("shortUrl")]
-        public String ShortUrl => String.Format(StaticKeys.PostPathFormat, Id);
+        public String ShortUrl => String.Format(StaticKeys.PostPathFormat, Id.TrimStart('0'));
 
         [JsonProperty("author")]
         [JsonConverter(typeof(AuthorConverter))]
@@ -126,12 +126,12 @@ namespace Bit0.CrunchLog
         {
             var match = Regex.Match(ContentFile.Name, _regex);
 
-            if (String.IsNullOrWhiteSpace(Id) && match.Success)
+            if(String.IsNullOrWhiteSpace(Id) && match.Success)
             {
                 Id = match.Groups[1].Value;
             }
 
-            if (String.IsNullOrWhiteSpace(Slug) && match.Success)
+            if(String.IsNullOrWhiteSpace(Slug) && match.Success)
             {
                 Slug = match.Groups[2].Value;
             }
@@ -143,30 +143,36 @@ namespace Bit0.CrunchLog
                 .Replace(":day", DatePublished.ToString("dd"))
                 .Replace(":slug", Slug);
 
-            if (Author == null)
+            if(Author == null)
             {
                 Author = _siteConfig.Authors.FirstOrDefault().Value;
             }
 
             DefaultCategory = Categories.FirstOrDefault().Value;
-            if (DefaultCategory.Image == null)
+            if(DefaultCategory.Image == null)
             {
                 DefaultCategory.Image = _siteConfig.DefaultBannerImage;
             }
 
-            if (Image == null)
+            if(Image == null)
             {
                 Image = DefaultCategory.Image;
             }
 
-            if (DateUpdated < DatePublished)
+            if(DateUpdated < DatePublished)
             {
                 DateUpdated = DatePublished;
             }
 
-            if (!Redirects.Contains(ShortUrl))
+            if(!Redirects.Contains(ShortUrl) && ShortUrl != String.Format(StaticKeys.PostPathFormat, ""))
             {
                 Redirects = Redirects.Concat(new[] { ShortUrl });
+            }
+
+            var paddedShortUrl = String.Format(StaticKeys.PostPathFormat, Id);
+            if(!Redirects.Contains(paddedShortUrl) && paddedShortUrl != String.Format(StaticKeys.PostPathFormat, ""))
+            {
+                Redirects = Redirects.Concat(new[] { paddedShortUrl });
             }
         }
     }

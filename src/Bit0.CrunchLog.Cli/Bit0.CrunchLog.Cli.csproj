@@ -4,6 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>crunch</AssemblyName>
     <IsPackable>false</IsPackable>
+
+    <NoWarn>1701;1702;IDE0002;IDE0022;CC0057;IDE0063;IDE0046;IDE0066;CA1822</NoWarn>
   </PropertyGroup>
     
   <ItemGroup>

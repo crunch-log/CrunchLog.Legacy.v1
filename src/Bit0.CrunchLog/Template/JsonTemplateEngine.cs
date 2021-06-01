@@ -1,10 +1,10 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace Bit0.CrunchLog.Template
 {
@@ -21,27 +21,27 @@ namespace Bit0.CrunchLog.Template
         public void Render(ITemplateModel model)
         {
             var outputDir = _siteConfig.Paths.OutputPath;
-            if (_siteConfig.Theme.OutputType == ThemeOutputType.Json)
+            if(_siteConfig.Theme.OutputType == ThemeOutputType.Json)
             {
                 outputDir = _siteConfig.Theme.Output.Data;
             }
 
-            if (model is SiteTemplateModel)
+            if(model is SiteTemplateModel)
             {
                 Render(model, outputDir, "siteInfo");
             }
-            if (model is RedirectsListTemplateModel)
+            if(model is RedirectsListTemplateModel)
             {
                 Render(model, outputDir, "redirects");
             }
-            if (model is PostTemplateModel m && m.IsDraft)
+            if(model is PostTemplateModel m && m.IsDraft)
             {
                 outputDir = outputDir.CombineDirPath("draft", m.Id);
                 Render(model, outputDir, "index");
             }
             else
             {
-                outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+                outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/")[1..]);
                 Render(model, outputDir, "index");
             }
 
@@ -49,14 +49,14 @@ namespace Bit0.CrunchLog.Template
 
         private static void Render<T>(T model, DirectoryInfo outputDir, String name) where T : class
         {
-            if (!outputDir.Exists)
+            if(!outputDir.Exists)
             {
                 outputDir.Create();
             }
 
             var file = outputDir.CombineFilePath(".json", name);
 
-            using (var sw = file.CreateText())
+            using(var sw = file.CreateText())
             {
                 sw.Write(JsonConvert.SerializeObject(model));
             }
@@ -72,7 +72,7 @@ namespace Bit0.CrunchLog.Template
 
         private void ProcessPreCache(CrunchConfig siteConfig, Theme theme)
         {
-            if (theme.Output.Process?["precache"] != null)
+            if(theme.Output.Process?["precache"] != null)
             {
                 var precache = siteConfig.Paths.ThemesPath
                     .GetFiles(theme.Output.Process["precache"], System.IO.SearchOption.TopDirectoryOnly)

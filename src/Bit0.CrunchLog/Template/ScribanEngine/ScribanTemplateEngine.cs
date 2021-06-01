@@ -1,4 +1,8 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models;
 using Microsoft.Extensions.Logging;
@@ -6,10 +10,6 @@ using Newtonsoft.Json;
 using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
 using ScribanTemplate = Scriban.Template;
 
 namespace Bit0.CrunchLog.Template.ScribanEngine
@@ -34,38 +34,39 @@ namespace Bit0.CrunchLog.Template.ScribanEngine
         {
             var outputDir = _siteConfig.Paths.OutputPath;
 
-            if (model is PostRedirectTemplateModel redirect)
+            if(model is PostRedirectTemplateModel redirect)
             {
-                outputDir = outputDir.CombineDirPath(redirect.RedirectUrl.Substring(1));
+                outputDir = outputDir.CombineDirPath(redirect.RedirectUrl[1..]);
                 Render(model, "Redirect", outputDir.CombineFilePath(".html", "index"));
             }
-            else if (model is PostTemplateModel post)
+            else if(model is PostTemplateModel post)
             {
-                outputDir = !post.IsDraft ? outputDir.CombineDirPath(post.Permalink.Substring(1)) : outputDir.CombineDirPath("draft", post.Id);
+                outputDir = !post.IsDraft ? outputDir.CombineDirPath(post.Permalink[1..]) : outputDir.CombineDirPath("draft", post.Id);
                 Render(model, "Post", outputDir.CombineFilePath(".html", "index"));
-            } else if (model is NotFoundTemplateModel)
+            }
+            else if(model is NotFoundTemplateModel)
             {
                 outputDir = outputDir.CombineDirPath("404");
                 Render(model, "404", outputDir.CombineFilePath(".html", "index"));
             }
-            else if (model is PostListTemplateModel)
+            else if(model is PostListTemplateModel)
             {
-                outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/").Substring(1));
+                outputDir = outputDir.CombineDirPath(model.Permalink.Replace("//", "/")[1..]);
                 Render(model, "List", outputDir.CombineFilePath(".html", "index"));
             }
         }
 
         private void Render<TModel>(TModel model, String viewName, FileInfo outputFile) where TModel : ITemplateModel
         {
-            if (!outputFile.Directory.Exists)
+            if(!outputFile.Directory.Exists)
             {
                 _logger.LogTrace($"Create directory: {outputFile.Directory.FullName}");
                 outputFile.Directory.Create();
             }
 
-            _logger.LogTrace($"Render template from view: {viewName}");
+            _logger.LogTrace($"Render template from view: {viewName} ({model.Permalink})");
 
-            using (var sw = outputFile.CreateText())
+            using(var sw = outputFile.CreateText())
             {
                 var content = RenderView(viewName, model);
                 sw.WriteLine(content);

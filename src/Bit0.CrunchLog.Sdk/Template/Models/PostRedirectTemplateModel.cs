@@ -1,7 +1,7 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Template.Models.MetaData;
 using Newtonsoft.Json;
-using System;
 
 namespace Bit0.CrunchLog.Template.Models
 {

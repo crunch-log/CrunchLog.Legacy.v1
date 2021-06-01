@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -22,6 +22,5 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("placeholder")]
         public String Placeholder { get; set; }
-
     }
 }

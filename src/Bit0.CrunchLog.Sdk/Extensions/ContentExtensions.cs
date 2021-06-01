@@ -1,10 +1,10 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Helpers;
 using Bit0.CrunchLog.Template.Models;
 using Bit0.CrunchLog.Template.Models.MetaData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bit0.CrunchLog.Extensions
 {
@@ -17,37 +17,20 @@ namespace Bit0.CrunchLog.Extensions
 
         public static IEnumerable<PostRedirectTemplateModel> GetRedirectModels(this IContent content, CrunchConfig siteConfig)
         {
-            foreach (var url in content.Redirects)
+            foreach(var url in content.Redirects)
             {
                 yield return new PostRedirectTemplateModel(content, siteConfig, url);
             }
         }
 
-        public static RedirectsListTemplateModel GetRedirectListModel(this IEnumerable<IContent> contents)
-        {
-            var redirects = new Dictionary<String, String>();
-            redirects = redirects.Concat(contents.ToDictionary(k => k.Id, v => v.Permalink))
-                .GroupBy(k => k.Key)
-                .ToDictionary(k => k.Key, v => v.First().Value);
-
-            redirects = redirects.Concat(contents.ToDictionary(k => k.Slug, v => v.Permalink))
-                .GroupBy(k => k.Key)
-                .ToDictionary(k => k.Key, v => v.First().Value);
-
-            return new RedirectsListTemplateModel
-            {
-                Redirects = redirects
-            };
-        }
-
         public static String GetPagePermaLink(this IContentListItem contentListItem, Int32 page)
         {
-            if (page == 1)
+            if(page == 1)
             {
                 return contentListItem.Permalink;
             }
 
-            if (contentListItem.Permalink.EndsWith("/"))
+            if(contentListItem.Permalink.EndsWith("/"))
             {
                 return $"{contentListItem.Permalink}page{page:00}";
             }
@@ -59,7 +42,7 @@ namespace Bit0.CrunchLog.Extensions
         {
             var totalPages = (Int32)Math.Ceiling(contentListItem.Children.Count() / (Double)siteConfig.Pagination.PageSize);
 
-            for (var i = 1; i <= totalPages; i++)
+            for(var i = 1; i <= totalPages; i++)
             {
                 yield return new PostListTemplateModel(contentListItem, siteConfig, i, totalPages);
             }
@@ -71,7 +54,7 @@ namespace Bit0.CrunchLog.Extensions
             var description = siteConfig.Description;
             var tags = siteConfig.Tags.Keys as IEnumerable<String>;
 
-            if (contentListItem.Layout == Layouts.Category)
+            if(contentListItem.Layout == Layouts.Category)
             {
                 var category = GetCategory(siteConfig, contentListItem.Name);
                 description = category.Description;
@@ -79,12 +62,12 @@ namespace Bit0.CrunchLog.Extensions
                 tags = new[] { category.Title }.Concat(tags);
             }
 
-            if (contentListItem.Layout == Layouts.Tag)
+            if(contentListItem.Layout == Layouts.Tag)
             {
                 tags = new[] { contentListItem.Name }.Concat(tags);
             }
 
-            image = image ?? siteConfig.DefaultBannerImage;
+            image ??= siteConfig.DefaultBannerImage;
 
             var publishedDate = posts.Cast<PostTemplateModel>().Max(p => p.Published);
             var updatedDate = posts.Cast<PostTemplateModel>().Max(p => p.Updated);
@@ -128,7 +111,7 @@ namespace Bit0.CrunchLog.Extensions
                 {
                     Text = archive,
                     Url = archive
-                },// TODO: Fix Archive
+                },
                 Type = content.Layout.GetValue(),
                 CanonicalUrl = content.Permalink,
                 Language = siteConfig.LanguageCode,
@@ -146,6 +129,7 @@ namespace Bit0.CrunchLog.Extensions
                 Designer = siteConfig.Theme.Author.ToString(),
                 Copyright = siteConfig.Copyright.ToString(),
                 Description = siteConfig.Description,
+                Logo = siteConfig.Logo,
                 Manifest = "/manifest.json",
                 ThemeColor = siteConfig.Manifest?.ThemeColor,
                 CanonicalUrl = siteConfig.BaseUrl,
@@ -172,6 +156,7 @@ namespace Bit0.CrunchLog.Extensions
             {
                 Title = siteConfig.Title,
                 SubTitle = siteConfig.SubTitle,
+                Logo = siteConfig.Logo,
                 Menu = siteConfig.Menu,
                 Owner = siteConfig.Copyright.Owner,
                 CopyrightYear = siteConfig.Copyright.StartYear
@@ -183,6 +168,7 @@ namespace Bit0.CrunchLog.Extensions
             {
                 Title = siteConfig.Title,
                 SubTitle = siteConfig.SubTitle,
+                Logo = siteConfig.Logo,
                 Menu = siteConfig.Menu,
                 Authors = siteConfig.Authors,
                 Categories = contentProvider.Categories
@@ -201,7 +187,7 @@ namespace Bit0.CrunchLog.Extensions
 
         private static CategoryInfo GetCategory(CrunchConfig siteConfig, String catName)
         {
-            if (!siteConfig.Categories.ContainsKey(catName))
+            if(!siteConfig.Categories.ContainsKey(catName))
             {
 
                 var defaultCat = siteConfig.Categories[siteConfig.DefaultCategory];
@@ -232,23 +218,23 @@ namespace Bit0.CrunchLog.Extensions
             var startPage = 1;
             var endPage = totalPages;
 
-            if (currentPage - pageSpan > 1)
+            if(currentPage - pageSpan > 1)
             {
                 startPage = currentPage - pageSpan;
                 firstPage = pages[startPage - 1];
             }
-            if (currentPage + pageSpan < totalPages)
+            if(currentPage + pageSpan < totalPages)
             {
                 endPage = currentPage + pageSpan;
                 lastPage = pages[endPage + 1];
             }
 
-            if (pages.ContainsKey(currentPage - 1))
+            if(pages.ContainsKey(currentPage - 1))
             {
                 prevPage = pages[currentPage - 1];
             }
 
-            if (pages.ContainsKey(currentPage + 1))
+            if(pages.ContainsKey(currentPage + 1))
             {
                 nextPage = pages[currentPage + 1];
             }
@@ -256,7 +242,7 @@ namespace Bit0.CrunchLog.Extensions
             return new PaginationListTemplateModel
             {
                 AllPages = pages,
-                PageSpan = pages.Values.Skip(startPage - 1).Take((pageSpan * 2) + 1),
+                PageSpan = pages.Values.Skip(startPage - 1).Take(( pageSpan * 2 ) + 1),
                 FirstPage = firstPage,
                 LastPage = lastPage,
                 PreviousPage = prevPage,

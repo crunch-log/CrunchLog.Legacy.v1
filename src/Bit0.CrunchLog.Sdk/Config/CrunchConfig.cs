@@ -1,11 +1,11 @@
-﻿using Bit0.CrunchLog.JsonConverters;
-using Bit0.Registry.Core;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
+using Bit0.CrunchLog.JsonConverters;
+using Bit0.Registry.Core;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Config
 {
@@ -46,6 +46,9 @@ namespace Bit0.CrunchLog.Config
 
         [JsonProperty("description")]
         public String Description { get; set; } = "Static blog generator, written in .NET Core.";
+
+        [JsonProperty("logo")]
+        public SiteImage Logo { get; set; }
 
         [JsonProperty("theme")]
         [JsonConverter(typeof(ThemeConverter))]

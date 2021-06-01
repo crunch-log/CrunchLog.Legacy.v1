@@ -1,9 +1,9 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.Collections.Generic;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Bit0.CrunchLog.Template.Models.MetaData;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace Bit0.CrunchLog.Template.Models
 {
@@ -17,6 +17,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String Permalink { get; set; } = "/";
         [JsonProperty("subTitle")]
         public String SubTitle { get; set; }
+        [JsonProperty("logo")]
+        public SiteImage Logo { get; set; }
         [JsonProperty("owner")]
         public String Owner { get; set; }
         [JsonProperty("copyright")]

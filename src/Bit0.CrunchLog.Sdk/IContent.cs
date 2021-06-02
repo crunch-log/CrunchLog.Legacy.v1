@@ -18,6 +18,7 @@ namespace Bit0.CrunchLog
         CategoryInfo DefaultCategory { get; set; }
         Boolean IsPublished { get; set; }
         Author Author { get; set; }
+        String DisclaimMessage { get; set; }
         SiteImage Image { get; set; }
         FileInfo ContentFile { get; }
         String Html { get; }

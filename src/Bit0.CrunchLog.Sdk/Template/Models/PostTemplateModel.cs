@@ -17,6 +17,7 @@ namespace Bit0.CrunchLog.Template.Models
             Id = content.Id;
             Title = content.Title;
             Description = content.Intro;
+            DisclaimMessage = content.DisclaimMessage;
             Author = content.Author.Alias;
             Published = content.DatePublished;
             Updated = content.DateUpdated;
@@ -47,6 +48,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String Title { get; }
         [JsonProperty("keywords")]
         public IEnumerable<CategoryInfo> Keywords { get; }
+        [JsonProperty("disclaimMessage")]
+        public String DisclaimMessage { get; }
         [JsonProperty("description")]
         public String Description { get; }
         [JsonProperty("content")]

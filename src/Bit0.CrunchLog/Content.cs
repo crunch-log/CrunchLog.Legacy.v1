@@ -50,6 +50,9 @@ namespace Bit0.CrunchLog
         [JsonProperty("updates")]
         public IDictionary<DateTime, String> Updates { get; set; } = new Dictionary<DateTime, String>();
 
+        [JsonProperty("disclaimMessage")]
+        public String DisclaimMessage { get; set; }
+
         [JsonProperty("tags")]
         [JsonConverter(typeof(ListConverter), Layouts.Tag)]
         public IDictionary<String, CategoryInfo> Tags { get; set; }

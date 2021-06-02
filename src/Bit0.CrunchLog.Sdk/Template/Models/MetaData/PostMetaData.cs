@@ -1,7 +1,7 @@
-﻿using Bit0.CrunchLog.Config;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Bit0.CrunchLog.Config;
+using Newtonsoft.Json;
 
 namespace Bit0.CrunchLog.Template.Models.MetaData
 {
@@ -22,6 +22,7 @@ namespace Bit0.CrunchLog.Template.Models.MetaData
         [JsonProperty("image")] public SiteImage Image { get; set; }
         [JsonProperty("redirect")] public RedirectMetaData Redirect { get; set; }
         [JsonProperty("social")] public IDictionary<String, String> Social { get; set; }
+        public Object UpdateMessage { get; internal set; }
     }
 
     public class ListMetaData : PostMetaData

@@ -44,8 +44,11 @@ namespace Bit0.CrunchLog
         [JsonProperty("datePublished")]
         public DateTime DatePublished { get; set; } = DateTime.UtcNow;
 
-        [JsonProperty("dateUpdated")]
+        [JsonIgnore]
         public DateTime DateUpdated { get; set; } = DateTime.MinValue;
+
+        [JsonProperty("updates")]
+        public IDictionary<DateTime, String> Updates { get; set; } = new Dictionary<DateTime, String>();
 
         [JsonProperty("tags")]
         [JsonConverter(typeof(ListConverter), Layouts.Tag)]
@@ -157,6 +160,11 @@ namespace Bit0.CrunchLog
             if(Image == null)
             {
                 Image = DefaultCategory.Image;
+            }
+
+            if(Updates.Keys.Any())
+            {
+                DateUpdated = Updates.Keys.Max();
             }
 
             if(DateUpdated < DatePublished)

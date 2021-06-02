@@ -1,7 +1,7 @@
-﻿using Bit0.CrunchLog.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Bit0.CrunchLog.Config;
 
 namespace Bit0.CrunchLog
 {
@@ -12,6 +12,7 @@ namespace Bit0.CrunchLog
         String Intro { get; set; }
         DateTime DatePublished { get; set; }
         DateTime DateUpdated { get; set; }
+        IDictionary<DateTime, String> Updates { get; set; }
         IDictionary<String, CategoryInfo> Tags { get; set; }
         IDictionary<String, CategoryInfo> Categories { get; set; }
         CategoryInfo DefaultCategory { get; set; }

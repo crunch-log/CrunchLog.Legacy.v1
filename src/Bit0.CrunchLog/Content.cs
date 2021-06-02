@@ -175,6 +175,15 @@ namespace Bit0.CrunchLog
                 DateUpdated = DatePublished;
             }
 
+            if(!String.IsNullOrWhiteSpace(DisclaimMessage))
+            {
+                var disclaimMatch = new Regex(@"^\[(?<disclaim>.*)\]$").Match(DisclaimMessage);
+                if(disclaimMatch.Success)
+                {
+                    DisclaimMessage = _siteConfig.DisclaimMessages[disclaimMatch.Groups["disclaim"].Value];
+                }
+            }
+
             if(!Redirects.Contains(ShortUrl) && ShortUrl != String.Format(StaticKeys.PostPathFormat, ""))
             {
                 Redirects = Redirects.Concat(new[] { ShortUrl });

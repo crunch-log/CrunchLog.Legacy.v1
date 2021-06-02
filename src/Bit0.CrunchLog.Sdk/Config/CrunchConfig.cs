@@ -63,6 +63,9 @@ namespace Bit0.CrunchLog.Config
         [JsonProperty("authors")]
         public IDictionary<String, Author> Authors { get; set; }
 
+        [JsonProperty("disclaimMessages")]
+        public IDictionary<String, String> DisclaimMessages { get; set; }
+
         [JsonProperty("menu")]
         public IDictionary<String, IEnumerable<MenuItem>> Menu { get; set; }
 

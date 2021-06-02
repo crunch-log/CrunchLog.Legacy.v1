@@ -87,9 +87,13 @@ namespace Bit0.CrunchLog
         [JsonProperty("shortUrl")]
         public String ShortUrl => String.Format(StaticKeys.PostPathFormat, Id.TrimStart('0'));
 
+        [JsonProperty("authors")]
+        [JsonConverter(typeof(AuthorConverter))]
+        public IEnumerable<Author> Authors { get; set; } = new List<Author>();
+
         [JsonProperty("author")]
         [JsonConverter(typeof(AuthorConverter))]
-        public Author Author { get; set; }
+        public IEnumerable<Author> Author { set { Authors = value; } }
 
         [JsonProperty("image")]
         public SiteImage Image { get; set; }
@@ -148,9 +152,9 @@ namespace Bit0.CrunchLog
                 .Replace(":day", DatePublished.ToString("dd"))
                 .Replace(":slug", Slug);
 
-            if(Author == null)
+            if(!Authors.Any())
             {
-                Author = _siteConfig.Authors.FirstOrDefault().Value;
+                Authors = new List<Author> { _siteConfig.Authors.FirstOrDefault().Value };
             }
 
             DefaultCategory = Categories.FirstOrDefault().Value;

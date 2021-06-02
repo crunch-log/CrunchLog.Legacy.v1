@@ -11,4 +11,13 @@ namespace Bit0.CrunchLog
         public String Name { get; set; }
         public IEnumerable<IContent> Children { get; set; }
     }
+
+    public class AuthorListItem : ContentListItem
+    {
+        public String Alias { get; set; }
+        public String Email { get; set; }
+        public String Homepage { get; set; }
+        public String Description { get; set; }
+        public IDictionary<String, String> Social { get; set; }
+    }
 }

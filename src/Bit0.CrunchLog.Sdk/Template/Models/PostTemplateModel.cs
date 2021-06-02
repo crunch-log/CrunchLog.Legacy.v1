@@ -18,7 +18,7 @@ namespace Bit0.CrunchLog.Template.Models
             Title = content.Title;
             Description = content.Intro;
             DisclaimMessage = content.DisclaimMessage;
-            Author = content.Author.Alias;
+            Author = content.Authors.FirstOrDefault()?.Alias;
             Published = content.DatePublished;
             Updated = content.DateUpdated;
             Updates = content.Updates.Select(u => new PostUpdateModel { UpdatedOn = u.Key, Message = u.Value });

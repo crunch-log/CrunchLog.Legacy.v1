@@ -1,8 +1,10 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Bit0.CrunchLog.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Bit0.CrunchLog.JsonConverters
 {
@@ -10,32 +12,42 @@ namespace Bit0.CrunchLog.JsonConverters
     {
         public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
         {
-            var user = (Author)value;
-
-            writer.WriteValue(user.Alias);
+            var users = ( (IEnumerable<Author>)value ).Select(a => a.Alias);
+            writer.WriteValue(users);
         }
 
         public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
         {
-            var config = ServiceProviderFactory.Current.GetService<CrunchConfig>();
-            
-            var authorKey = (String)reader.Value;
+            switch(reader.TokenType)
+            {
+                case JsonToken.StartArray:
+                    var authors = JToken.Load(reader).ToObject<IEnumerable<String>>();
+                    return authors.Select(a => GetAuthor(a));
+                case JsonToken.String:
+                    return new List<Author> { GetAuthor((String)reader.Value) };
+            }
 
-            if (!String.IsNullOrWhiteSpace(authorKey)
-                && config.Authors.ContainsKey(authorKey))
-            {
-                return config.Authors[authorKey];
-            }
-            else
-            {
-                var author = config.Authors.FirstOrDefault();
-                return author.Value;
-            }
+
+            return new List<Author> { GetAuthor() };
         }
 
         public override Boolean CanConvert(Type objectType)
         {
-            return objectType == typeof(Author);
+            return objectType == typeof(IEnumerable<Author>);
+        }
+
+        private Author GetAuthor(String authorKey = null)
+        {
+            var config = ServiceProviderFactory.Current.GetService<CrunchConfig>();
+            var defaultAuthor = config.Authors.FirstOrDefault().Value;
+
+            if(!String.IsNullOrWhiteSpace(authorKey)
+                        && config.Authors.ContainsKey(authorKey))
+            {
+                return config.Authors[authorKey];
+            }
+
+            return defaultAuthor;
         }
     }
 }

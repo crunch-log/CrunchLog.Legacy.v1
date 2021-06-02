@@ -1,14 +1,14 @@
-﻿using Bit0.CrunchLog.Config;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Bit0.CrunchLog.Config;
 using Bit0.CrunchLog.Extensions;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -31,7 +31,7 @@ namespace Bit0.CrunchLog
         {
             get
             {
-                if (_allContent != null)
+                if(_allContent != null)
                 {
                     return _allContent;
                 }
@@ -40,7 +40,7 @@ namespace Bit0.CrunchLog
                 var files = _siteConfig.Paths.ContentPath.GetFiles("*.md", SearchOption.AllDirectories);
 
 
-                foreach (var file in files)
+                foreach(var file in files)
                 {
                     try
                     {
@@ -48,16 +48,16 @@ namespace Bit0.CrunchLog
                             .UseYamlFrontMatter()
                             .Build();
                         var md = Markdown.Parse(file.ReadText(), pipeline);
-                        if (md[0] is YamlFrontMatterBlock)
+                        if(md[0] is YamlFrontMatterBlock)
                         {
                             try
                             {
-                                var frontMatter = (md[0] as LeafBlock).Lines.ToString();
+                                var frontMatter = ( md[0] as LeafBlock ).Lines.ToString();
 
                                 var deserializer = new DeserializerBuilder()
                                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                     .Build();
-                                using (var stringReader = new StringReader(frontMatter))
+                                using(var stringReader = new StringReader(frontMatter))
                                 {
                                     var yaml = deserializer.Deserialize(stringReader);
 
@@ -72,7 +72,7 @@ namespace Bit0.CrunchLog
                                     allContent.Add(content);
                                 }
                             }
-                            catch (Exception ex)
+                            catch(Exception ex)
                             {
                                 _logger.LogError(ex, $"Error reading front matter from: {file.FullName}");
                             }
@@ -83,7 +83,7 @@ namespace Bit0.CrunchLog
                         }
 
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
                         _logger.LogError(ex, $"Error reading front matter from: {file.FullName}");
 
@@ -137,17 +137,23 @@ namespace Bit0.CrunchLog
                         Children = Posts.Where(p => p.Categories.Keys.Contains(c.Title))
                     });
 
-        public IEnumerable<IContentListItem> Authors => AllContent.Select(p => p.Value)
-                    .Where(p => p.Author != null)
-                    .Select(p => p.Author)
+        public IEnumerable<IContentListItem> Authors => AllContent.Select(post => post.Value)
+                    .Where(post => post.Authors.Any())
+                    .SelectMany(post => post.Authors)
                     .Distinct()
-                    .Select(a => new ContentListItem
+                    .Select(author => new AuthorListItem
                     {
-                        Title = $"Author: {a.Name} ({a.Alias})",
-                        Name = a.Name,
-                        Permalink = a.Permalink,
+                        Title = $"Author: {author.Name} ({author.Alias})",
+                        Name = author.Name,
+                        Alias = author.Alias,
+                        Email = author.Email,
+                        Homepage = author.HomePage,
+                        Description = author.Description,
+                        Social = author.Social,
+                        Permalink = author.Permalink,
                         Layout = Layouts.Author,
-                        Children = Posts.Where(p => p.Author.Alias.Equals(a.Alias, StringComparison.InvariantCultureIgnoreCase))
+                        Children = Posts.Where(p => p.Authors.Any(postAuthor => postAuthor.Alias.Equals(author.Alias, StringComparison.InvariantCultureIgnoreCase)))
+
                     });
 
         public IEnumerable<IContentListItem> PostArchives
@@ -164,7 +170,7 @@ namespace Bit0.CrunchLog
                     .Select(x => x[1])
                     .Distinct();
 
-                foreach (var year in years)
+                foreach(var year in years)
                 {
                     var ySlug = $"/{year}/";
                     archives.Add(new ContentListItem
@@ -180,7 +186,7 @@ namespace Bit0.CrunchLog
                         .Select(x => x[2])
                         .Distinct();
 
-                    foreach (var month in months)
+                    foreach(var month in months)
                     {
                         var mSlug = $"/{year}/{month}/";
                         archives.Add(new ContentListItem
@@ -214,27 +220,27 @@ namespace Bit0.CrunchLog
                     { "/", Home }
                 };
 
-                foreach (var content in PublishedContent)
+                foreach(var content in PublishedContent)
                 {
                     dict.Add(content.Permalink, content);
                 }
 
-                foreach (var archive in PostArchives)
+                foreach(var archive in PostArchives)
                 {
                     dict.Add(archive.Permalink, archive);
                 }
 
-                foreach (var tags in Tags)
+                foreach(var tags in Tags)
                 {
                     dict.Add(tags.Permalink, tags);
                 }
 
-                foreach (var category in Categories)
+                foreach(var category in Categories)
                 {
                     dict.Add(category.Permalink, category);
                 }
 
-                foreach (var author in Authors)
+                foreach(var author in Authors)
                 {
                     dict.Add(author.Permalink, author);
                 }

@@ -116,7 +116,6 @@ namespace Bit0.CrunchLog.Extensions
                 CanonicalUrl = content.Permalink,
                 Language = siteConfig.LanguageCode,
                 Image = content.Image,
-                Social = content.Author.Social
             };
         }
 

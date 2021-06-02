@@ -15,7 +15,6 @@ namespace Bit0.CrunchLog
 {
     public class Content : IContent
     {
-        private const String _regex = @"(^[0-9]{1,4})-(.*)\.md$";
         private readonly CrunchConfig _siteConfig;
 
         public Content()
@@ -130,16 +129,16 @@ namespace Bit0.CrunchLog
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            var match = Regex.Match(ContentFile.Name, _regex);
+            var filenameMatch = Regex.Match(ContentFile.Name, @"(^[0-9]{1,4})-(.*)\.md$");
 
-            if(String.IsNullOrWhiteSpace(Id) && match.Success)
+            if(String.IsNullOrWhiteSpace(Id) && filenameMatch.Success)
             {
-                Id = match.Groups[1].Value;
+                Id = filenameMatch.Groups[1].Value;
             }
 
-            if(String.IsNullOrWhiteSpace(Slug) && match.Success)
+            if(String.IsNullOrWhiteSpace(Slug) && filenameMatch.Success)
             {
-                Slug = match.Groups[2].Value;
+                Slug = filenameMatch.Groups[2].Value;
             }
 
             // fix permalink
@@ -175,20 +174,23 @@ namespace Bit0.CrunchLog
                 DateUpdated = DatePublished;
             }
 
+            // get disclaim message from config if needed
             if(!String.IsNullOrWhiteSpace(DisclaimMessage))
             {
-                var disclaimMatch = new Regex(@"^\[(?<disclaim>.*)\]$").Match(DisclaimMessage);
+                var disclaimMatch = Regex.Match(DisclaimMessage, @"^\[(?<disclaim>.*)\]$");
                 if(disclaimMatch.Success)
                 {
                     DisclaimMessage = _siteConfig.DisclaimMessages[disclaimMatch.Groups["disclaim"].Value];
                 }
             }
 
+            // redirect post id to permalink
             if(!Redirects.Contains(ShortUrl) && ShortUrl != String.Format(StaticKeys.PostPathFormat, ""))
             {
                 Redirects = Redirects.Concat(new[] { ShortUrl });
             }
 
+            // pad post id with Zero
             var paddedShortUrl = String.Format(StaticKeys.PostPathFormat, Id);
             if(!Redirects.Contains(paddedShortUrl) && paddedShortUrl != String.Format(StaticKeys.PostPathFormat, ""))
             {

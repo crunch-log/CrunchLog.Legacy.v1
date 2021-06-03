@@ -18,7 +18,7 @@ namespace Bit0.CrunchLog.Template.Models
             Title = content.Title;
             Description = content.Intro;
             DisclaimMessage = content.DisclaimMessage;
-            Author = content.Authors.FirstOrDefault()?.Alias;
+            Authors = content.Authors.Select(author => author.Alias);
             Published = content.DatePublished;
             Updated = content.DateUpdated;
             Updates = content.Updates.Select(u => new PostUpdateModel { UpdatedOn = u.Key, Message = u.Value });
@@ -56,8 +56,8 @@ namespace Bit0.CrunchLog.Template.Models
         public String Content { get; }
         [JsonProperty("url")]
         public String Permalink { get; set; }
-        [JsonProperty("author")]
-        public String Author { get; }
+        [JsonProperty("authors")]
+        public IEnumerable<String> Authors { get; }
         [JsonProperty("published")]
         public DateTime Published { get; }
         [JsonProperty("updated")]

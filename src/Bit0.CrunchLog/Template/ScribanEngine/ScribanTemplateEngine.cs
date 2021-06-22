@@ -93,8 +93,16 @@ namespace Bit0.CrunchLog.Template.ScribanEngine
             context.PushGlobal(contextObj);
 
             var template = ScribanTemplate.Parse("{{ include '" + viewName + "' }}");
-            var content = template.Render(context);
-            return content;
+            try
+            {
+                //var a = ScribanTemplate.Parse("{{ for alias in model.Authors }}{{ author = site.Authors[alias] }}{{ dump author }}{{ end }}").Render(context);
+                var content = template.Render(context);
+                return content;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error rendering template: {viewName}", ex);
+            }
         }
     }
 

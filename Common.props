@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ProjectExtensions>
-    <DotNetVersion>5.0.100</DotNetVersion>
+    <DotNetVersion>5.0.300</DotNetVersion>
   </ProjectExtensions>
 
 </Project>

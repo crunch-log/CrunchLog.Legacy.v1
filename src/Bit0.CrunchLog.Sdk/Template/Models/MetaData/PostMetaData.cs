@@ -20,7 +20,6 @@ namespace Bit0.CrunchLog.Template.Models.MetaData
         [JsonProperty("language")] public String Language { get; set; }
         [JsonProperty("image")] public SiteImage Image { get; set; }
         [JsonProperty("redirect")] public RedirectMetaData Redirect { get; set; }
-        public Object UpdateMessage { get; internal set; }
     }
 
     public class ListMetaData : PostMetaData

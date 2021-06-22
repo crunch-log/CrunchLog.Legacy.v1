@@ -109,26 +109,34 @@ namespace Bit0.CrunchLog
         {
             get
             {
-                var pipeline = new MarkdownPipelineBuilder()
-                    .UseAdvancedExtensions()
-                    .UseAutoIdentifiers()
-                    .UseAutoLinks()
-                    .UseTaskLists()
-                    .UsePipeTables()
-                    .UseGridTables()
-                    .UseEmphasisExtras()
-                    .UseGenericAttributes()
-                    .UseFootnotes()
-                    .UseAbbreviations()
-                    .UseEmojiAndSmiley()
-                    .UsePreciseSourceLocation()
-                    .UseYamlFrontMatter()
-                    .Build();
-                return Markdown.ToHtml(ContentFile.ReadText(), pipeline);
+                return Markdown.ToHtml(ContentFile.ReadText(), MarkDownPipeline());
             }
         }
 
+        private static MarkdownPipeline MarkDownPipeline()
+        {
+            return new MarkdownPipelineBuilder()
+                                .UseAdvancedExtensions()
+                                .UseAutoIdentifiers()
+                                .UseAutoLinks()
+                                .UseTaskLists()
+                                .UsePipeTables()
+                                .UseGridTables()
+                                .UseEmphasisExtras()
+                                .UseGenericAttributes()
+                                .UseFootnotes()
+                                .UseAbbreviations()
+                                .UseEmojiAndSmiley()
+                                .UsePreciseSourceLocation()
+                                .UseYamlFrontMatter()
+                                .UseMediaLinks()
+                                .UseMathematics()
+                                .Build();
+        }
+
         public override String ToString() => $"{Id:00000} {Permalink}";
+
+
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)

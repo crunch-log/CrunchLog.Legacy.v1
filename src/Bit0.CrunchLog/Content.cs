@@ -173,6 +173,8 @@ namespace Bit0.CrunchLog
                 DateUpdated = Updates.Keys.Max();
             }
 
+            Updates = Updates.ToDictionary(k => k.Key, v => Markdown.ToHtml(v.Value, MarkDownPipeline()));
+
             if(DateUpdated < DatePublished)
             {
                 DateUpdated = DatePublished;
